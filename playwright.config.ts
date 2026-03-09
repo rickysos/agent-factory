@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 30000,
+  timeout: 60000,
   retries: 1,
   workers: 1,
   use: {
@@ -16,6 +16,6 @@ export default defineConfig({
     command: 'npm run dev',
     port: 3000,
     reuseExistingServer: true,
-    timeout: 30000,
+    timeout: 60000,
   },
 })

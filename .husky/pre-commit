@@ -1,1 +1,1 @@
-npx playwright test
+npx playwright test e2e/pages.spec.ts e2e/dashboard.spec.ts

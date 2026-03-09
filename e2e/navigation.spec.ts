@@ -6,7 +6,7 @@ const navPages = [
   { menu: 'Agents', item: /^Chat$/, url: '/chat', heading: 'Agent Chat' },
   { menu: 'Agents', item: /^Playground$/, url: '/playground', heading: 'Playground' },
   { menu: 'Agents', item: 'Launch & Run', url: '/launch', heading: 'Agent Launcher' },
-  { menu: 'Agents', item: 'Scoring', url: '/scoring', heading: 'Agent Scoring' },
+  { menu: 'Agents', item: 'Scoring', url: '/scoring', heading: 'Agent Evaluation' },
   { menu: 'Build', item: 'Stacks', url: '/stacks', heading: 'Agent Stack Templates' },
   { menu: 'Build', item: /^Sandbox$/, url: '/sandbox', heading: 'Code Sandbox' },
   { menu: 'Build', item: 'Skill Creator', url: '/skill-creator', heading: 'Skill Creator' },
@@ -35,13 +35,9 @@ test.describe('Navigation', () => {
   for (const { menu, item, url, heading } of navPages) {
     const label = typeof item === 'string' ? item : item.source
     test(`navigates to ${menu} > ${label}`, async ({ page }) => {
-      await page.goto('/', { waitUntil: 'networkidle' })
-      const menuBtn = page.locator('header button', { hasText: menu })
-      await menuBtn.waitFor({ state: 'visible', timeout: 15000 })
-      await menuBtn.click()
-      const link = page.locator('header a', { hasText: item })
-      await link.waitFor({ state: 'visible', timeout: 5000 })
-      await link.click()
+      await page.goto('/')
+      await page.locator('header button', { hasText: menu }).click()
+      await page.locator('header a', { hasText: item }).click()
       await expect(page).toHaveURL(url)
       await expect(page.locator('main h1').first()).toContainText(heading, { ignoreCase: true })
     })

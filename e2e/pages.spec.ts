@@ -9,7 +9,7 @@ const pages = [
   { url: '/playground', title: 'Playground' },
   { url: '/launch', title: 'Agent Launcher' },
   { url: '/maintenance', title: 'Maintenance' },
-  { url: '/scoring', title: 'Performance' },
+  { url: '/scoring', title: 'Evaluation' },
   { url: '/stacks', title: 'Stack Templates' },
   { url: '/templates', title: 'Persona' },
   { url: '/templates/teams', title: 'Team' },

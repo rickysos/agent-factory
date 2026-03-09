@@ -263,6 +263,7 @@ export default function WorkflowsPage() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)]">
+      <h1 className="sr-only">Workflow Editor</h1>
       {/* Toolbar */}
       <div className="flex items-center gap-3 px-4 py-2 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shrink-0">
         <input

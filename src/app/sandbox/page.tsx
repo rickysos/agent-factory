@@ -75,7 +75,7 @@ export default function SandboxPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-1">Sandboxed Code Execution</h1>
+        <h1 className="text-3xl font-bold mb-1">Code Sandbox</h1>
         <p className="text-gray-500 dark:text-gray-400 mb-6">Test agent-generated code in an isolated environment</p>
 
         {/* Security info */}
