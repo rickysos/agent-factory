@@ -56,58 +56,58 @@ export default function PresetsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-8">
+    <div className="min-h-screen bg-forge-950 text-forge-100 p-8">
       <h1 className="text-3xl font-bold mb-2">Agent Type Presets</h1>
-      <p className="text-gray-400 mb-8">Quick-start templates to create preconfigured agents</p>
+      <p className="text-forge-300 mb-8">Quick-start templates to create preconfigured agents</p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {presets.map(preset => (
-          <div key={preset.id} className="bg-gray-900 border border-gray-800 rounded-lg p-6 flex flex-col">
-            <div className="mb-1 text-sm text-gray-500 uppercase tracking-wide">{preset.name}</div>
+          <div key={preset.id} className="bg-forge-900 border border-forge-800 rounded p-6 flex flex-col">
+            <div className="mb-1 text-sm text-forge-400 uppercase tracking-wide">{preset.name}</div>
             <h2 className="text-xl font-bold mb-2">{preset.agentName}</h2>
-            <p className="text-gray-400 text-sm mb-4 flex-1">{preset.description}</p>
+            <p className="text-forge-300 text-sm mb-4 flex-1">{preset.description}</p>
 
-            <div className="flex gap-4 text-sm text-gray-400 mb-4">
+            <div className="flex gap-4 text-sm text-forge-300 mb-4">
               <span>{preset.skills.length} skills</span>
               <span>{preset.tools.length} tools</span>
             </div>
 
-            <div className="text-xs text-gray-500 mb-4 font-mono">Model: {preset.model}</div>
+            <div className="text-xs text-forge-400 mb-4 font-mono">Model: {preset.model}</div>
 
             <button
               onClick={() => setExpanded(expanded === preset.id ? null : preset.id)}
-              className="text-sm text-blue-400 hover:text-blue-300 mb-3 text-left"
+              className="text-sm text-accent-400 hover:text-accent-400 mb-3 text-left"
             >
               {expanded === preset.id ? 'Hide details' : 'Show what gets configured'}
             </button>
 
             {expanded === preset.id && (
-              <div className="bg-gray-800 rounded p-4 mb-4 text-sm space-y-3">
+              <div className="bg-forge-850 rounded p-4 mb-4 text-sm space-y-3">
                 <div>
-                  <p className="text-gray-500 text-xs uppercase mb-1">Model</p>
-                  <p className="font-mono text-gray-300">{preset.model}</p>
+                  <p className="text-forge-400 text-xs uppercase mb-1">Model</p>
+                  <p className="font-mono text-forge-300">{preset.model}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-xs uppercase mb-1">Skills</p>
+                  <p className="text-forge-400 text-xs uppercase mb-1">Skills</p>
                   <div className="flex flex-wrap gap-1">
                     {preset.skills.map(s => (
-                      <span key={s} className="px-2 py-0.5 bg-gray-700 rounded text-gray-300 text-xs">{s}</span>
+                      <span key={s} className="px-2 py-0.5 bg-forge-700 rounded text-forge-300 text-xs">{s}</span>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-xs uppercase mb-1">Tools</p>
+                  <p className="text-forge-400 text-xs uppercase mb-1">Tools</p>
                   <div className="flex flex-wrap gap-1">
                     {preset.tools.map(t => (
-                      <span key={t} className="px-2 py-0.5 bg-gray-700 rounded text-gray-300 text-xs">{t}</span>
+                      <span key={t} className="px-2 py-0.5 bg-forge-700 rounded text-forge-300 text-xs">{t}</span>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-xs uppercase mb-1">Markdown Files</p>
+                  <p className="text-forge-400 text-xs uppercase mb-1">Markdown Files</p>
                   <div className="flex flex-wrap gap-1">
                     {preset.markdownFiles.map(f => (
-                      <span key={f} className="px-2 py-0.5 bg-gray-700 rounded text-gray-300 text-xs font-mono">{f}</span>
+                      <span key={f} className="px-2 py-0.5 bg-forge-700 rounded text-forge-300 text-xs font-mono">{f}</span>
                     ))}
                   </div>
                 </div>
@@ -118,8 +118,8 @@ export default function PresetsPage() {
               onClick={() => applyPreset(preset.id)}
               className={`w-full py-2 rounded font-medium text-sm transition-colors ${
                 applied === preset.id
-                  ? 'bg-green-600 text-white'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white'
+                  ? 'bg-accent-500 text-forge-950'
+                  : 'bg-accent-500 hover:bg-accent-400 text-forge-950'
               }`}
             >
               {applied === preset.id ? 'Agent Created' : 'Apply Preset'}

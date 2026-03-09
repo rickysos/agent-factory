@@ -31,10 +31,10 @@ const NODE_H = 60
 const PORT_R = 6
 
 const nodeColors: Record<NodeType, { border: string; bg: string; darkBg: string }> = {
-  trigger:   { border: 'border-l-green-500',  bg: 'bg-green-50',  darkBg: 'dark:bg-green-950' },
-  agent:     { border: 'border-l-blue-500',   bg: 'bg-blue-50',   darkBg: 'dark:bg-blue-950' },
-  condition: { border: 'border-l-yellow-500', bg: 'bg-yellow-50', darkBg: 'dark:bg-yellow-950' },
-  output:    { border: 'border-l-purple-500', bg: 'bg-purple-50', darkBg: 'dark:bg-purple-950' },
+  trigger:   { border: 'border-l-green-500',  bg: 'bg-accent-500/5',  darkBg: 'dark:bg-accent-900' },
+  agent:     { border: 'border-l-blue-500',   bg: 'bg-accent-500/10',   darkBg: 'dark:bg-accent-950' },
+  condition: { border: 'border-l-yellow-500', bg: 'bg-amber-500/5', darkBg: 'dark:bg-amber-900' },
+  output:    { border: 'border-l-purple-500', bg: 'bg-forge-100', darkBg: 'dark:bg-forge-900' },
 }
 
 const nodeTypeLabels: Record<NodeType, string> = {
@@ -265,34 +265,34 @@ export default function WorkflowsPage() {
     <div className="flex flex-col h-[calc(100vh-64px)]">
       <h1 className="sr-only">Workflow Editor</h1>
       {/* Toolbar */}
-      <div className="flex items-center gap-3 px-4 py-2 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shrink-0">
+      <div className="flex items-center gap-3 px-4 py-2 bg-forge-50 dark:bg-forge-900 border-b border-forge-200 dark:border-forge-700 shrink-0">
         <input
           type="text"
           value={workflowName}
           onChange={e => setWorkflowName(e.target.value)}
-          className="text-lg font-semibold bg-transparent border-b border-transparent hover:border-gray-300 dark:hover:border-gray-600 focus:border-blue-500 focus:outline-none px-1 py-0.5 text-gray-900 dark:text-gray-100"
+          className="text-lg font-semibold bg-transparent border-b border-transparent hover:border-forge-200 dark:hover:border-forge-600 focus:border-accent-500 focus:outline-none px-1 py-0.5 text-forge-800 dark:text-forge-100"
         />
         <div className="flex-1" />
         <button
           onClick={saveWorkflow}
-          className="px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          className="px-3 py-1.5 text-sm font-medium bg-accent-500 text-forge-950 rounded hover:bg-accent-400 transition"
         >
           Save
         </button>
         <button
           onClick={loadWorkflow}
-          className="px-3 py-1.5 text-sm font-medium bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+          className="px-3 py-1.5 text-sm font-medium bg-forge-200 dark:bg-forge-700 text-forge-600 dark:text-forge-200 rounded hover:bg-forge-300 dark:hover:bg-forge-600 transition"
         >
           Load
         </button>
         <button
           onClick={clearWorkflow}
-          className="px-3 py-1.5 text-sm font-medium bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded-lg hover:bg-red-200 dark:hover:bg-red-800 transition"
+          className="px-3 py-1.5 text-sm font-medium bg-red-500/50/10 dark:bg-red-900 text-red-700 dark:text-red-200 rounded hover:bg-red-500/50/15 dark:hover:bg-red-700 transition"
         >
           Clear
         </button>
         {connectingFrom && (
-          <span className="text-xs text-purple-600 dark:text-purple-400 ml-2">
+          <span className="text-xs text-forge-500 dark:text-forge-400 ml-2">
             Click an input port to connect...
           </span>
         )}
@@ -377,8 +377,8 @@ export default function WorkflowsPage() {
               return (
                 <div
                   key={node.id}
-                  className={`absolute flex items-center rounded-lg border-l-4 ${colors.border} ${colors.bg} ${colors.darkBg} border border-gray-200 dark:border-gray-700 shadow-md select-none ${
-                    isSelected ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''
+                  className={`absolute flex items-center rounded border-l-4 ${colors.border} ${colors.bg} ${colors.darkBg} border border-forge-200 dark:border-forge-700  select-none ${
+                    isSelected ? 'ring-2 ring-accent-500 dark:ring-blue-400' : ''
                   } ${draggingNodeId === node.id ? 'cursor-grabbing' : 'cursor-grab'}`}
                   style={{
                     left: node.x,
@@ -393,7 +393,7 @@ export default function WorkflowsPage() {
                   {/* Input port */}
                   <div
                     data-port="input"
-                    className={`absolute rounded-full border-2 border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 hover:border-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 transition cursor-pointer ${
+                    className={`absolute rounded-full border-2 border-forge-400 dark:border-forge-500 bg-forge-50 dark:bg-forge-850 hover:border-accent-500 hover:bg-accent-500/10 dark:hover:bg-accent-900 transition cursor-pointer ${
                       connectingFrom ? 'scale-125' : ''
                     }`}
                     style={{ width: PORT_R * 2, height: PORT_R * 2, left: -PORT_R, top: NODE_H / 2 - PORT_R }}
@@ -401,18 +401,18 @@ export default function WorkflowsPage() {
                   />
                   {/* Node content */}
                   <div className="flex-1 px-3 py-1 min-w-0">
-                    <div className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                    <div className="text-xs font-bold uppercase tracking-wider text-forge-300 dark:text-forge-400">
                       {nodeTypeLabels[node.type]}
                     </div>
-                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                    <div className="text-sm font-medium text-forge-800 dark:text-forge-100 truncate">
                       {node.label}
                     </div>
                   </div>
                   {/* Output port */}
                   <div
                     data-port="output"
-                    className={`absolute rounded-full border-2 border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 hover:border-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 transition cursor-pointer ${
-                      connectingFrom === node.id ? 'bg-purple-300 dark:bg-purple-600 border-purple-500' : ''
+                    className={`absolute rounded-full border-2 border-forge-400 dark:border-forge-500 bg-forge-50 dark:bg-forge-850 hover:border-accent-500 hover:bg-accent-500/10 dark:hover:bg-accent-900 transition cursor-pointer ${
+                      connectingFrom === node.id ? 'bg-forge-300 dark:bg-forge-600 border-purple-500' : ''
                     }`}
                     style={{ width: PORT_R * 2, height: PORT_R * 2, right: -PORT_R, top: NODE_H / 2 - PORT_R }}
                     onClick={e => handleOutputPortClick(e, node.id)}
@@ -423,7 +423,7 @@ export default function WorkflowsPage() {
 
             {nodes.length === 0 && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <p className="text-gray-400 dark:text-gray-600 text-lg">
+                <p className="text-forge-300 dark:text-forge-500 text-lg">
                   Drag node types from the sidebar onto the canvas
                 </p>
               </div>
@@ -432,11 +432,11 @@ export default function WorkflowsPage() {
         </div>
 
         {/* Sidebar */}
-        <div className="w-[300px] shrink-0 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 overflow-y-auto">
+        <div className="w-[300px] shrink-0 bg-forge-50 dark:bg-forge-900 border-l border-forge-200 dark:border-forge-700 overflow-y-auto">
           {selectedNode ? (
             <div className="p-4 space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">Node Config</h3>
+                <h3 className="text-sm font-bold text-forge-800 dark:text-forge-100">Node Config</h3>
                 <button
                   onClick={() => deleteNode(selectedNode.id)}
                   className="text-xs text-red-500 hover:text-red-700 dark:hover:text-red-400"
@@ -446,18 +446,18 @@ export default function WorkflowsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Label</label>
+                <label className="block text-xs font-medium text-forge-400 dark:text-forge-500 mb-1">Label</label>
                 <input
                   type="text"
                   value={selectedNode.label}
                   onChange={e => updateNodeLabel(e.target.value)}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full px-2 py-1.5 text-sm border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-850 text-forge-800 dark:text-forge-100 focus:outline-none focus:ring-1 focus:ring-accent-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Type</label>
-                <div className={`text-sm px-2 py-1.5 rounded-lg ${nodeColors[selectedNode.type].bg} ${nodeColors[selectedNode.type].darkBg} ${nodeColors[selectedNode.type].border} border-l-4`}>
+                <label className="block text-xs font-medium text-forge-400 dark:text-forge-500 mb-1">Type</label>
+                <div className={`text-sm px-2 py-1.5 rounded ${nodeColors[selectedNode.type].bg} ${nodeColors[selectedNode.type].darkBg} ${nodeColors[selectedNode.type].border} border-l-4`}>
                   {nodeTypeLabels[selectedNode.type]}
                 </div>
               </div>
@@ -465,11 +465,11 @@ export default function WorkflowsPage() {
               {/* Type-specific config */}
               {selectedNode.type === 'trigger' && (
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Trigger Type</label>
+                  <label className="block text-xs font-medium text-forge-400 dark:text-forge-500 mb-1">Trigger Type</label>
                   <select
                     value={selectedNode.config.triggerType || ''}
                     onChange={e => updateNodeConfig('triggerType', e.target.value)}
-                    className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-2 py-1.5 text-sm border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-850 text-forge-800 dark:text-forge-100 focus:outline-none focus:ring-1 focus:ring-accent-500"
                   >
                     <option value="">Select...</option>
                     {triggerOptions.map(o => <option key={o} value={o}>{o}</option>)}
@@ -479,7 +479,7 @@ export default function WorkflowsPage() {
 
               {selectedNode.type === 'agent' && (
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Agent</label>
+                  <label className="block text-xs font-medium text-forge-400 dark:text-forge-500 mb-1">Agent</label>
                   <select
                     value={selectedNode.config.agentId || ''}
                     onChange={e => {
@@ -487,7 +487,7 @@ export default function WorkflowsPage() {
                       updateNodeConfig('agentId', e.target.value)
                       if (agent) updateNodeLabel(agent.name)
                     }}
-                    className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-2 py-1.5 text-sm border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-850 text-forge-800 dark:text-forge-100 focus:outline-none focus:ring-1 focus:ring-accent-500"
                   >
                     <option value="">Select agent...</option>
                     {agents.map(a => <option key={a.id} value={a.id}>{a.name} ({a.model})</option>)}
@@ -497,24 +497,24 @@ export default function WorkflowsPage() {
 
               {selectedNode.type === 'condition' && (
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Condition</label>
+                  <label className="block text-xs font-medium text-forge-400 dark:text-forge-500 mb-1">Condition</label>
                   <input
                     type="text"
                     placeholder='e.g. sentiment > 0.5'
                     value={selectedNode.config.expression || ''}
                     onChange={e => updateNodeConfig('expression', e.target.value)}
-                    className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-2 py-1.5 text-sm border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-850 text-forge-800 dark:text-forge-100 focus:outline-none focus:ring-1 focus:ring-accent-500"
                   />
                 </div>
               )}
 
               {selectedNode.type === 'output' && (
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Output Type</label>
+                  <label className="block text-xs font-medium text-forge-400 dark:text-forge-500 mb-1">Output Type</label>
                   <select
                     value={selectedNode.config.outputType || ''}
                     onChange={e => updateNodeConfig('outputType', e.target.value)}
-                    className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-2 py-1.5 text-sm border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-850 text-forge-800 dark:text-forge-100 focus:outline-none focus:ring-1 focus:ring-accent-500"
                   >
                     <option value="">Select...</option>
                     {outputOptions.map(o => <option key={o} value={o}>{o}</option>)}
@@ -523,7 +523,7 @@ export default function WorkflowsPage() {
               )}
 
               {/* Position */}
-              <div className="text-xs text-gray-400 dark:text-gray-500 pt-2 border-t border-gray-200 dark:border-gray-700">
+              <div className="text-xs text-forge-300 dark:text-forge-400 pt-2 border-t border-forge-200 dark:border-forge-700">
                 Position: ({Math.round(selectedNode.x)}, {Math.round(selectedNode.y)})
               </div>
 
@@ -533,12 +533,12 @@ export default function WorkflowsPage() {
                 const incoming = connections.filter(c => c.targetId === selectedNode.id)
                 if (outgoing.length === 0 && incoming.length === 0) return null
                 return (
-                  <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400">Connections</label>
+                  <div className="pt-2 border-t border-forge-200 dark:border-forge-700 space-y-1">
+                    <label className="block text-xs font-medium text-forge-400 dark:text-forge-500">Connections</label>
                     {incoming.map(c => {
                       const src = nodes.find(n => n.id === c.sourceId)
                       return (
-                        <div key={c.sourceId} className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+                        <div key={c.sourceId} className="flex items-center justify-between text-xs text-forge-500 dark:text-forge-400">
                           <span>{src?.label} &rarr; this</span>
                           <button onClick={() => deleteConnection(c.sourceId, c.targetId)} className="text-red-400 hover:text-red-600">x</button>
                         </div>
@@ -547,7 +547,7 @@ export default function WorkflowsPage() {
                     {outgoing.map(c => {
                       const tgt = nodes.find(n => n.id === c.targetId)
                       return (
-                        <div key={c.targetId} className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+                        <div key={c.targetId} className="flex items-center justify-between text-xs text-forge-500 dark:text-forge-400">
                           <span>this &rarr; {tgt?.label}</span>
                           <button onClick={() => deleteConnection(c.sourceId, c.targetId)} className="text-red-400 hover:text-red-600">x</button>
                         </div>
@@ -559,23 +559,23 @@ export default function WorkflowsPage() {
             </div>
           ) : (
             <div className="p-4 space-y-3">
-              <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">Node Types</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Drag onto the canvas to add</p>
+              <h3 className="text-sm font-bold text-forge-800 dark:text-forge-100">Node Types</h3>
+              <p className="text-xs text-forge-400 dark:text-forge-500">Drag onto the canvas to add</p>
               {nodeTypePalette.map(item => (
                 <div
                   key={item.type}
                   draggable
                   onDragStart={e => handleSidebarDragStart(e, item.type)}
-                  className={`p-3 rounded-lg border-l-4 ${nodeColors[item.type].border} ${nodeColors[item.type].bg} ${nodeColors[item.type].darkBg} border border-gray-200 dark:border-gray-700 cursor-grab hover:shadow-md transition select-none`}
+                  className={`p-3 rounded border-l-4 ${nodeColors[item.type].border} ${nodeColors[item.type].bg} ${nodeColors[item.type].darkBg} border border-forge-200 dark:border-forge-700 cursor-grab hover: transition select-none`}
                 >
-                  <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">{nodeTypeLabels[item.type]}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">{item.desc}</div>
+                  <div className="text-sm font-semibold text-forge-800 dark:text-forge-100">{nodeTypeLabels[item.type]}</div>
+                  <div className="text-xs text-forge-400 dark:text-forge-500">{item.desc}</div>
                 </div>
               ))}
 
               {agents.length > 0 && (
                 <>
-                  <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 pt-2">Quick Add Agent</h3>
+                  <h3 className="text-sm font-bold text-forge-800 dark:text-forge-100 pt-2">Quick Add Agent</h3>
                   {agents.map(agent => (
                     <div
                       key={agent.id}
@@ -586,10 +586,10 @@ export default function WorkflowsPage() {
                         e.dataTransfer.setData('agent-name', agent.name)
                         e.dataTransfer.effectAllowed = 'copy'
                       }}
-                      className={`p-2 rounded-lg border-l-4 ${nodeColors.agent.border} ${nodeColors.agent.bg} ${nodeColors.agent.darkBg} border border-gray-200 dark:border-gray-700 cursor-grab hover:shadow-md transition select-none`}
+                      className={`p-2 rounded border-l-4 ${nodeColors.agent.border} ${nodeColors.agent.bg} ${nodeColors.agent.darkBg} border border-forge-200 dark:border-forge-700 cursor-grab hover: transition select-none`}
                     >
-                      <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{agent.name}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">{agent.model}</div>
+                      <div className="text-sm font-medium text-forge-800 dark:text-forge-100">{agent.name}</div>
+                      <div className="text-xs text-forge-400 dark:text-forge-500">{agent.model}</div>
                     </div>
                   ))}
                 </>

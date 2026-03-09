@@ -50,7 +50,7 @@ function renderMarkdown(text: string) {
     if (line.startsWith('```')) {
       if (inCodeBlock) {
         elements.push(
-          <pre key={i} className="bg-gray-900 text-green-400 rounded-lg p-4 my-2 overflow-x-auto text-sm font-mono">
+          <pre key={i} className="bg-forge-900 text-accent-400 rounded p-4 my-2 overflow-x-auto text-sm font-mono">
             <code>{codeLines.join('\n')}</code>
           </pre>
         )
@@ -88,7 +88,7 @@ function renderMarkdown(text: string) {
 
   if (inCodeBlock && codeLines.length) {
     elements.push(
-      <pre key="final-code" className="bg-gray-900 text-green-400 rounded-lg p-4 my-2 overflow-x-auto text-sm font-mono">
+      <pre key="final-code" className="bg-forge-900 text-accent-400 rounded p-4 my-2 overflow-x-auto text-sm font-mono">
         <code>{codeLines.join('\n')}</code>
       </pre>
     )
@@ -110,7 +110,7 @@ function processInline(text: string): React.ReactNode {
     const m = match[0]
     if (m.startsWith('`')) {
       parts.push(
-        <code key={match.index} className="bg-gray-800 text-pink-400 px-1.5 py-0.5 rounded text-sm font-mono">
+        <code key={match.index} className="bg-forge-850 text-pink-400 px-1.5 py-0.5 rounded text-sm font-mono">
           {m.slice(1, -1)}
         </code>
       )
@@ -335,28 +335,28 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
     }
   }
 
-  const statusColor = agent?.status === 'active' ? 'bg-green-500' : agent?.status === 'error' ? 'bg-red-500' : 'bg-yellow-500'
+  const statusColor = agent?.status === 'active' ? 'bg-accent-500' : agent?.status === 'error' ? 'bg-red-500/50' : 'bg-amber-400'
 
   return (
     <div className="flex flex-col h-[calc(100vh-theme(spacing.16))] max-w-5xl mx-auto px-4">
       {/* Agent Header */}
-      <div className="flex items-center justify-between py-3 border-b border-gray-200 dark:border-gray-800 shrink-0">
+      <div className="flex items-center justify-between py-3 border-b border-forge-200 dark:border-forge-800 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+          <div className="w-10 h-10 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-forge-950 font-bold text-lg">
             {agent?.name?.[0] || '?'}
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-semibold text-gray-900 dark:text-white">{agent?.name || 'Loading...'}</h1>
+              <h1 className="font-semibold text-forge-800 dark:text-forge-100">{agent?.name || 'Loading...'}</h1>
               <span className={`w-2 h-2 rounded-full ${statusColor}`} />
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{agent?.model || ''}</p>
+            <p className="text-xs text-forge-400 dark:text-forge-500">{agent?.model || ''}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={newConversation}
-            className="px-3 py-1.5 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            className="px-3 py-1.5 text-sm rounded bg-forge-200 dark:bg-forge-800 text-forge-600 dark:text-forge-300 hover:bg-forge-200 dark:hover:bg-forge-800 transition-colors"
           >
             New Chat
           </button>
@@ -367,9 +367,9 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
       <div className="flex-1 overflow-y-auto py-4 space-y-4">
         {messages.length === 0 && (
           <div className="flex items-center justify-center h-full">
-            <div className="text-center text-gray-400 dark:text-gray-600">
+            <div className="text-center text-forge-300 dark:text-forge-500">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-indigo-600/20 flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <svg className="w-8 h-8 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                 </svg>
               </div>
@@ -384,7 +384,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
             <div className={`max-w-[80%] ${msg.role === 'user' ? 'order-1' : ''}`}>
               {/* User message */}
               {msg.role === 'user' && (
-                <div className="bg-blue-600 text-white rounded-2xl rounded-br-md px-4 py-3 text-sm whitespace-pre-wrap">
+                <div className="bg-accent-500 text-forge-950 rounded-2xl rounded-br-md px-4 py-3 text-sm whitespace-pre-wrap">
                   {msg.content}
                 </div>
               )}
@@ -394,7 +394,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
                 <div className="space-y-2">
                   {/* Thinking */}
                   {msg.thinking && (
-                    <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 rounded-xl overflow-hidden">
+                    <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 rounded-md overflow-hidden">
                       <button
                         onClick={() => toggleThinking(msg.id)}
                         className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors"
@@ -417,23 +417,23 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
 
                   {/* Tool calls */}
                   {msg.toolCalls?.map(tc => (
-                    <div key={tc.id} className="border border-indigo-200 dark:border-indigo-800/50 rounded-xl overflow-hidden bg-indigo-50 dark:bg-indigo-950/30">
+                    <div key={tc.id} className="border border-forge-200 dark:border-forge-700 rounded-md overflow-hidden bg-forge-100 dark:bg-forge-900">
                       <button
                         onClick={() => toggleTool(tc.id)}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-colors"
+                        className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-forge-200 dark:hover:bg-forge-800 transition-colors"
                       >
                         <svg
-                          className={`w-3 h-3 text-indigo-500 transition-transform ${expandedTools.has(tc.id) ? 'rotate-90' : ''}`}
+                          className={`w-3 h-3 text-forge-500 transition-transform ${expandedTools.has(tc.id) ? 'rotate-90' : ''}`}
                           fill="currentColor" viewBox="0 0 20 20"
                         >
                           <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
                         </svg>
-                        <span className="font-medium text-indigo-700 dark:text-indigo-400">{tc.name}</span>
+                        <span className="font-medium text-forge-600 dark:text-forge-400">{tc.name}</span>
                         {tc.status && (
                           <span className={`ml-auto px-1.5 py-0.5 rounded text-[10px] font-medium ${
                             tc.status === 'success'
-                              ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400'
-                              : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400'
+                              ? 'bg-accent-500/10 dark:bg-accent-500/10 text-accent-600 dark:text-accent-400'
+                              : 'bg-red-500/50/10 dark:bg-red-500/50/10 text-red-700 dark:text-red-400'
                           }`}>
                             {tc.status}
                           </span>
@@ -441,25 +441,25 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
                         {!tc.status && (
                           <span className="ml-auto">
                             <span className="inline-flex gap-0.5">
-                              <span className="w-1 h-1 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                              <span className="w-1 h-1 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                              <span className="w-1 h-1 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                              <span className="w-1 h-1 rounded-full bg-forge-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                              <span className="w-1 h-1 rounded-full bg-forge-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                              <span className="w-1 h-1 rounded-full bg-forge-400 animate-bounce" style={{ animationDelay: '300ms' }} />
                             </span>
                           </span>
                         )}
                       </button>
                       {expandedTools.has(tc.id) && (
-                        <div className="border-t border-indigo-200 dark:border-indigo-800/50 px-3 py-2 space-y-2">
+                        <div className="border-t border-forge-200 dark:border-forge-700 px-3 py-2 space-y-2">
                           <div>
-                            <p className="text-[10px] font-semibold uppercase tracking-wider text-indigo-500 dark:text-indigo-400 mb-1">Input</p>
-                            <pre className="text-xs bg-gray-900 text-gray-300 rounded-lg p-2 overflow-x-auto font-mono">
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-forge-500 dark:text-forge-400 mb-1">Input</p>
+                            <pre className="text-xs bg-forge-900 text-forge-300 rounded p-2 overflow-x-auto font-mono">
                               {JSON.stringify(tc.input, null, 2)}
                             </pre>
                           </div>
                           {tc.output && (
                             <div>
-                              <p className="text-[10px] font-semibold uppercase tracking-wider text-indigo-500 dark:text-indigo-400 mb-1">Output</p>
-                              <pre className="text-xs bg-gray-900 text-gray-300 rounded-lg p-2 overflow-x-auto font-mono max-h-48 overflow-y-auto">
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-forge-500 dark:text-forge-400 mb-1">Output</p>
+                              <pre className="text-xs bg-forge-900 text-forge-300 rounded p-2 overflow-x-auto font-mono max-h-48 overflow-y-auto">
                                 {tc.output}
                               </pre>
                             </div>
@@ -471,7 +471,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
 
                   {/* Response content */}
                   {msg.content && (
-                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl rounded-bl-md px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
+                    <div className="bg-forge-50 dark:bg-forge-850 border border-forge-200 dark:border-forge-700 rounded-2xl rounded-bl-md px-4 py-3 text-sm text-forge-800 dark:text-forge-100">
                       <div className="prose prose-sm dark:prose-invert max-w-none">
                         {renderMarkdown(msg.content)}
                       </div>
@@ -480,7 +480,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
 
                   {/* Token count */}
                   {msg.tokens != null && (
-                    <p className="text-[10px] text-gray-400 dark:text-gray-600 ml-1">{msg.tokens} tokens</p>
+                    <p className="text-[10px] text-forge-300 dark:text-forge-500 ml-1">{msg.tokens} tokens</p>
                   )}
                 </div>
               )}
@@ -491,7 +491,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
         {/* Thinking indicator */}
         {isThinking && (
           <div className="flex justify-start">
-            <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 rounded-xl px-4 py-2.5 flex items-center gap-2">
+            <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 rounded-md px-4 py-2.5 flex items-center gap-2">
               <span className="inline-flex gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-bounce" style={{ animationDelay: '0ms' }} />
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -510,7 +510,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
         <div className="flex justify-center gap-2 pb-2 shrink-0">
           <button
             onClick={retryLast}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded bg-forge-200 dark:bg-forge-800 text-forge-500 dark:text-forge-400 hover:bg-forge-200 dark:hover:bg-forge-800 transition-colors"
           >
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
@@ -521,7 +521,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
       )}
 
       {/* Input area */}
-      <div className="border-t border-gray-200 dark:border-gray-800 py-3 shrink-0">
+      <div className="border-t border-forge-200 dark:border-forge-800 py-3 shrink-0">
         <div className="flex items-end gap-2">
           <div className="flex-1 relative">
             <textarea
@@ -536,13 +536,13 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
               onKeyDown={handleKeyDown}
               placeholder="Type a message..."
               rows={1}
-              className="w-full resize-none rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full resize-none rounded-md border border-forge-200 dark:border-forge-700 bg-forge-50 dark:bg-forge-850 px-4 py-3 text-sm text-forge-800 dark:text-forge-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent"
             />
           </div>
           {isStreaming ? (
             <button
               onClick={stopGeneration}
-              className="shrink-0 p-3 rounded-xl bg-red-600 hover:bg-red-700 text-white transition-colors"
+              className="shrink-0 p-3 rounded-md bg-red-600 hover:bg-red-700 text-forge-950 transition-colors"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <rect x="6" y="6" width="12" height="12" rx="1" />
@@ -552,7 +552,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
             <button
               onClick={() => sendMessage(input)}
               disabled={!input.trim()}
-              className="shrink-0 p-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white transition-colors"
+              className="shrink-0 p-3 rounded-md bg-accent-500 hover:bg-accent-400 disabled:opacity-40 disabled:cursor-not-allowed text-forge-950 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
@@ -560,7 +560,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
             </button>
           )}
         </div>
-        <p className="text-[10px] text-gray-400 dark:text-gray-600 mt-1.5 text-center">
+        <p className="text-[10px] text-forge-300 dark:text-forge-500 mt-1.5 text-center">
           Enter to send, Shift+Enter for new line
         </p>
       </div>

@@ -28,7 +28,7 @@ export function ThemeMenu() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="p-1.5 rounded text-forge-400 dark:text-forge-500 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-forge-100 dark:hover:bg-forge-800 transition-colors"
+        className="p-1.5 rounded text-forge-400 dark:text-forge-500 hover:text-accent-600 dark:hover:text-accent-400 hover:bg-forge-100 dark:hover:bg-forge-800 transition-colors"
         title="Theme & Accessibility"
         aria-label="Theme settings"
       >
@@ -55,7 +55,7 @@ export function ThemeMenu() {
                 onClick={() => setMode(m)}
                 className={`flex-1 py-1.5 text-xs font-mono uppercase tracking-wider rounded transition-colors ${
                   mode === m
-                    ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                    ? 'bg-accent-500/10 text-accent-600 dark:text-accent-400 border border-accent-500/20'
                     : 'text-forge-500 dark:text-forge-400 border border-transparent hover:text-forge-700 dark:hover:text-forge-200'
                 }`}
               >
@@ -76,11 +76,11 @@ export function ThemeMenu() {
                 onClick={() => setColorVision(opt.value)}
                 className={`w-full text-left px-3 py-2 rounded text-sm transition-colors ${
                   colorVision === opt.value
-                    ? 'bg-amber-500/10 border border-amber-500/20'
+                    ? 'bg-accent-500/10 border border-accent-500/20'
                     : 'border border-transparent hover:bg-forge-100 dark:hover:bg-forge-800'
                 }`}
               >
-                <span className={`text-xs font-mono ${colorVision === opt.value ? 'text-amber-600 dark:text-amber-400' : 'text-forge-700 dark:text-forge-200'}`}>
+                <span className={`text-xs font-mono ${colorVision === opt.value ? 'text-accent-600 dark:text-accent-400' : 'text-forge-700 dark:text-forge-200'}`}>
                   {opt.label}
                 </span>
                 <span className="block text-[10px] font-mono text-forge-400 dark:text-forge-500">{opt.desc}</span>

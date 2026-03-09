@@ -75,12 +75,12 @@ function ChatPanel({
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 flex flex-col h-[600px]">
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div className="bg-forge-50 dark:bg-forge-850 rounded-md  border border-forge-200 dark:border-forge-700 flex flex-col h-[600px]">
+      <div className="p-4 border-b border-forge-200 dark:border-forge-700">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="font-semibold text-gray-900 dark:text-white">{title}</h3>
+          <h3 className="font-semibold text-forge-800 dark:text-forge-100">{title}</h3>
           {metrics && (
-            <div className="flex gap-3 text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex gap-3 text-xs text-forge-400 dark:text-forge-500">
               <span>{metrics.tokens} tokens</span>
               <span>{metrics.timeMs}ms</span>
             </div>
@@ -89,7 +89,7 @@ function ChatPanel({
         <select
           value={model}
           onChange={(e) => onModelChange(e.target.value)}
-          className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 rounded border border-forge-200 dark:border-forge-700 bg-forge-50 dark:bg-forge-700 text-forge-800 dark:text-forge-100 text-sm focus:ring-2 focus:ring-accent-500 focus:border-transparent"
         >
           {MODELS.map((m) => (
             <option key={m.id} value={m.id}>
@@ -101,7 +101,7 @@ function ChatPanel({
 
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 && (
-          <div className="flex items-center justify-center h-full text-gray-400 dark:text-gray-500 text-sm">
+          <div className="flex items-center justify-center h-full text-forge-300 dark:text-forge-400 text-sm">
             Send a message to start testing
           </div>
         )}
@@ -111,10 +111,10 @@ function ChatPanel({
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[80%] px-4 py-2 rounded-xl text-sm whitespace-pre-wrap ${
+              className={`max-w-[80%] px-4 py-2 rounded-md text-sm whitespace-pre-wrap ${
                 msg.role === 'user'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                  ? 'bg-accent-500 text-forge-950'
+                  : 'bg-forge-200 dark:bg-forge-700 text-forge-800 dark:text-forge-100'
               }`}
             >
               {msg.content}
@@ -123,7 +123,7 @@ function ChatPanel({
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded-xl text-sm text-gray-500 dark:text-gray-400">
+            <div className="bg-forge-200 dark:bg-forge-700 px-4 py-2 rounded-md text-sm text-forge-400 dark:text-forge-500">
               <span className="inline-flex gap-1">
                 <span className="animate-bounce" style={{ animationDelay: '0ms' }}>.</span>
                 <span className="animate-bounce" style={{ animationDelay: '150ms' }}>.</span>
@@ -135,7 +135,7 @@ function ChatPanel({
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+      <div className="p-4 border-t border-forge-200 dark:border-forge-700">
         <div className="flex gap-2">
           <input
             type="text"
@@ -143,13 +143,13 @@ function ChatPanel({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Type a message..."
-            className="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 px-3 py-2 rounded border border-forge-200 dark:border-forge-700 bg-forge-50 dark:bg-forge-700 text-forge-800 dark:text-forge-100 text-sm focus:ring-2 focus:ring-accent-500 focus:border-transparent"
             disabled={isLoading}
           />
           <button
             onClick={handleSend}
             disabled={isLoading || !input.trim()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 bg-accent-500 text-forge-950 rounded text-sm font-medium hover:bg-accent-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Send
           </button>
@@ -216,18 +216,18 @@ export default function PlaygroundPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Agent Playground</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">
+        <h1 className="text-3xl font-bold text-forge-800 dark:text-forge-100">Agent Playground</h1>
+        <p className="text-forge-400 dark:text-forge-500 mt-1">
           Test and compare agent configurations side-by-side
         </p>
       </div>
 
       {/* Config bar */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-4 mb-6">
+      <div className="bg-forge-50 dark:bg-forge-850 rounded-md  border border-forge-200 dark:border-forge-700 p-4 mb-6">
         <div className="flex items-center justify-between mb-3">
           <button
             onClick={() => setShowSystemPrompt(!showSystemPrompt)}
-            className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+            className="flex items-center gap-2 text-sm font-medium text-forge-600 dark:text-forge-300 hover:text-forge-800 dark:hover:text-forge-950 transition-colors"
           >
             <svg
               className={`w-4 h-4 transition-transform ${showSystemPrompt ? 'rotate-90' : ''}`}
@@ -241,7 +241,7 @@ export default function PlaygroundPage() {
           </button>
           <button
             onClick={clearAll}
-            className="px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 border border-red-300 dark:border-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            className="px-3 py-1.5 text-xs font-medium text-red-500 dark:text-red-400 border border-red-300 dark:border-red-600 rounded hover:bg-red-500/5 dark:hover:bg-red-500/50/10 transition-colors"
           >
             Clear All
           </button>
@@ -252,14 +252,14 @@ export default function PlaygroundPage() {
             value={systemPrompt}
             onChange={(e) => setSystemPrompt(e.target.value)}
             rows={3}
-            className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y mb-4"
+            className="w-full px-3 py-2 rounded border border-forge-200 dark:border-forge-700 bg-forge-100 dark:bg-forge-900 text-forge-800 dark:text-forge-100 text-sm font-mono focus:ring-2 focus:ring-accent-500 focus:border-transparent resize-y mb-4"
             placeholder="Enter system prompt..."
           />
         )}
 
         <div className="flex flex-wrap gap-6 items-end">
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+            <label className="block text-xs font-medium text-forge-400 dark:text-forge-500 mb-1">
               Temperature: {temperature.toFixed(1)}
             </label>
             <input
@@ -271,14 +271,14 @@ export default function PlaygroundPage() {
               onChange={(e) => setTemperature(parseFloat(e.target.value))}
               className="w-full accent-blue-600"
             />
-            <div className="flex justify-between text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+            <div className="flex justify-between text-xs text-forge-300 dark:text-forge-400 mt-0.5">
               <span>0.0</span>
               <span>1.0</span>
               <span>2.0</span>
             </div>
           </div>
           <div className="min-w-[140px]">
-            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+            <label className="block text-xs font-medium text-forge-400 dark:text-forge-500 mb-1">
               Max Tokens
             </label>
             <input
@@ -287,7 +287,7 @@ export default function PlaygroundPage() {
               onChange={(e) => setMaxTokens(parseInt(e.target.value) || 256)}
               min={1}
               max={128000}
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 rounded border border-forge-200 dark:border-forge-700 bg-forge-50 dark:bg-forge-700 text-forge-800 dark:text-forge-100 text-sm focus:ring-2 focus:ring-accent-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -316,7 +316,7 @@ export default function PlaygroundPage() {
       </div>
 
       {/* Shared input */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-4">
+      <div className="bg-forge-50 dark:bg-forge-850 rounded-md  border border-forge-200 dark:border-forge-700 p-4">
         <div className="flex gap-3">
           <input
             type="text"
@@ -324,13 +324,13 @@ export default function PlaygroundPage() {
             onChange={(e) => setSharedInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && sendToBoth()}
             placeholder="Send the same message to both models..."
-            className="flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 px-4 py-3 rounded border border-forge-200 dark:border-forge-700 bg-forge-100 dark:bg-forge-900 text-forge-800 dark:text-forge-100 text-sm focus:ring-2 focus:ring-accent-500 focus:border-transparent"
             disabled={loadingA || loadingB}
           />
           <button
             onClick={sendToBoth}
             disabled={loadingA || loadingB || !sharedInput.trim()}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+            className="px-6 py-3 bg-accent-500 text-forge-950 rounded text-sm font-medium hover:bg-accent-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
           >
             Send to Both
           </button>

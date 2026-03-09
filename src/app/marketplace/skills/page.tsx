@@ -40,20 +40,20 @@ export default function SkillMarketplacePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Skill <span className="text-blue-600">Marketplace</span>
+        <h1 className="text-3xl font-bold text-forge-800">
+          Skill <span className="text-accent-600">Marketplace</span>
         </h1>
-        <p className="text-gray-500 mt-1">{mockSkills.length} skills available</p>
+        <p className="text-forge-400 mt-1">{mockSkills.length} skills available</p>
       </div>
 
       <div className="flex gap-8">
         <aside className="hidden md:block w-48 flex-shrink-0">
-          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Categories</h2>
+          <h2 className="text-sm font-semibold text-forge-300 uppercase tracking-wider mb-3">Categories</h2>
           <nav className="space-y-1">
             <button
               onClick={() => setActiveCategory(null)}
-              className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition ${
-                activeCategory === null ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'
+              className={`block w-full text-left px-3 py-2 rounded text-sm font-medium transition ${
+                activeCategory === null ? 'bg-accent-500/10 text-accent-600' : 'text-forge-500 hover:bg-forge-100'
               }`}
             >
               All Skills
@@ -62,8 +62,8 @@ export default function SkillMarketplacePage() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-                className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition ${
-                  activeCategory === cat ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'
+                className={`block w-full text-left px-3 py-2 rounded text-sm font-medium transition ${
+                  activeCategory === cat ? 'bg-accent-500/10 text-accent-600' : 'text-forge-500 hover:bg-forge-100'
                 }`}
               >
                 {cat}
@@ -78,7 +78,7 @@ export default function SkillMarketplacePage() {
             placeholder="Search skills..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full sm:w-80 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm mb-6"
+            className="w-full sm:w-80 px-4 py-2 rounded-md border border-forge-200 focus:outline-none focus:ring-2 focus:ring-accent-500 bg-forge-50  mb-6"
           />
 
           <div className="flex flex-wrap gap-2 mb-6 md:hidden">
@@ -88,8 +88,8 @@ export default function SkillMarketplacePage() {
                 onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
                 className={`px-3 py-1 rounded-full text-xs font-medium transition ${
                   activeCategory === cat
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-600 border border-gray-200'
+                    ? 'bg-accent-500 text-forge-950'
+                    : 'bg-forge-50 text-forge-500 border border-forge-200'
                 }`}
               >
                 {cat}
@@ -98,24 +98,24 @@ export default function SkillMarketplacePage() {
           </div>
 
           {filtered.length === 0 && (
-            <p className="text-center text-gray-400 py-12">No skills match your search.</p>
+            <p className="text-center text-forge-300 py-12">No skills match your search.</p>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {filtered.map((skill) => (
               <div
                 key={skill.id}
-                className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-lg transition-all flex flex-col"
+                className="bg-forge-50 rounded-md border border-forge-200 p-5 hover: transition-all flex flex-col"
               >
-                <span className="inline-block self-start px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 text-gray-600 mb-2">
+                <span className="inline-block self-start px-2 py-0.5 text-xs font-medium rounded-full bg-forge-200 text-forge-500 mb-2">
                   {skill.category}
                 </span>
-                <h3 className="text-lg font-semibold text-gray-900">{skill.name}</h3>
-                <p className="text-sm text-gray-500 mt-1 flex-1">{skill.description}</p>
+                <h3 className="text-lg font-semibold text-forge-800">{skill.name}</h3>
+                <p className="text-sm text-forge-400 mt-1 flex-1">{skill.description}</p>
                 <div className="mt-4 flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-gray-400">by {skill.author}</p>
-                    <p className="text-xs text-gray-400">{skill.installs.toLocaleString()} installs</p>
+                    <p className="text-xs text-forge-300">by {skill.author}</p>
+                    <p className="text-xs text-forge-300">{skill.installs.toLocaleString()} installs</p>
                   </div>
                   <button
                     onClick={() =>
@@ -126,10 +126,10 @@ export default function SkillMarketplacePage() {
                         return next
                       })
                     }
-                    className={`px-4 py-1.5 rounded-lg text-sm font-medium transition ${
+                    className={`px-4 py-1.5 rounded text-sm font-medium transition ${
                       added.has(skill.id)
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                        ? 'bg-accent-500/10 text-accent-600'
+                        : 'bg-accent-500 text-forge-950 hover:bg-accent-400'
                     }`}
                   >
                     {added.has(skill.id) ? 'Added' : 'Add to Agent'}

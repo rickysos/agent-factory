@@ -119,7 +119,7 @@ function Dropdown({ group }: { group: NavGroup }) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="text-forge-500 dark:text-forge-400 hover:text-amber-600 dark:hover:text-amber-400 px-2.5 py-1.5 text-xs font-mono font-medium uppercase tracking-wider transition inline-flex items-center gap-1"
+        className="text-forge-500 dark:text-forge-400 hover:text-accent-600 dark:hover:text-accent-400 px-2.5 py-1.5 text-xs font-mono font-medium uppercase tracking-wider transition inline-flex items-center gap-1"
       >
         {group.label}
         <svg className={`h-3 w-3 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -133,7 +133,7 @@ function Dropdown({ group }: { group: NavGroup }) {
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className="block px-4 py-1.5 text-sm text-forge-600 dark:text-forge-300 hover:bg-amber-50 dark:hover:bg-amber-900/10 hover:text-amber-700 dark:hover:text-amber-400 transition-colors"
+              className="block px-4 py-1.5 text-sm text-forge-600 dark:text-forge-300 hover:bg-accent-50 dark:hover:bg-accent-900/10 hover:text-accent-700 dark:hover:text-accent-400 transition-colors"
             >
               {item.name}
             </Link>
@@ -155,7 +155,7 @@ export function Header() {
         <div className="w-full py-3 flex items-center justify-between">
           <div className="flex items-center">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="h-8 w-8 bg-amber-500 dark:bg-amber-400 rounded flex items-center justify-center transition-all group-hover:glow-amber">
+              <div className="h-8 w-8 bg-accent-500 dark:bg-accent-400 rounded flex items-center justify-center transition-all group-hover:glow-accent">
                 <span className="text-forge-950 font-mono font-black text-sm">AF</span>
               </div>
               <div className="flex items-baseline gap-2">
@@ -177,7 +177,7 @@ export function Header() {
 
           <div className="flex items-center gap-3">
             <div className="hidden md:flex items-center gap-1.5" title={connected ? 'Connected' : 'Disconnected'}>
-              <div className={`h-1.5 w-1.5 rounded-full ${connected ? 'bg-amber-400 animate-pulse' : 'bg-forge-400'}`} />
+              <div className={`h-1.5 w-1.5 rounded-full ${connected ? 'bg-accent-400 animate-pulse' : 'bg-forge-400'}`} />
               <span className="text-[10px] font-mono uppercase tracking-wider text-forge-400 dark:text-forge-500">
                 {connected ? 'Live' : 'Off'}
               </span>
@@ -187,7 +187,7 @@ export function Header() {
 
             <Link
               href="/quick-start"
-              className="hidden md:inline-flex items-center px-3 py-1.5 text-xs font-mono font-medium uppercase tracking-wider rounded bg-amber-500 dark:bg-amber-400 text-forge-950 hover:bg-amber-400 dark:hover:bg-amber-300 transition-colors"
+              className="hidden md:inline-flex items-center px-3 py-1.5 text-xs font-mono font-medium uppercase tracking-wider rounded bg-accent-500 dark:bg-accent-400 text-forge-950 hover:bg-accent-400 dark:hover:bg-accent-300 transition-colors"
             >
               + New Agent
             </Link>
@@ -230,7 +230,7 @@ export function Header() {
                   {mobileExpanded === group.label && (
                     <div className="pl-4 space-y-0.5">
                       {group.items.map(item => (
-                        <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)} className="block px-3 py-1.5 rounded text-sm text-forge-500 dark:text-forge-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-forge-100 dark:hover:bg-forge-800">
+                        <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)} className="block px-3 py-1.5 rounded text-sm text-forge-500 dark:text-forge-400 hover:text-accent-600 dark:hover:text-accent-400 hover:bg-forge-100 dark:hover:bg-forge-800">
                           {item.name}
                         </Link>
                       ))}
@@ -238,7 +238,7 @@ export function Header() {
                   )}
                 </div>
               ))}
-              <Link href="/quick-start" onClick={() => setMobileMenuOpen(false)} className="block w-full mt-3 text-center px-4 py-2 text-xs font-mono font-medium uppercase tracking-wider rounded bg-amber-500 text-forge-950 hover:bg-amber-400">
+              <Link href="/quick-start" onClick={() => setMobileMenuOpen(false)} className="block w-full mt-3 text-center px-4 py-2 text-xs font-mono font-medium uppercase tracking-wider rounded bg-accent-500 text-forge-950 hover:bg-accent-400">
                 + New Agent
               </Link>
             </div>

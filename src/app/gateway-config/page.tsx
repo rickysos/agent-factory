@@ -45,21 +45,21 @@ export default function GatewayConfigPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-8">
+    <div className="min-h-screen bg-forge-950 text-forge-100 p-8">
       <h1 className="text-3xl font-bold mb-2">Gateway Token Preservation</h1>
-      <p className="text-gray-400 mb-8">Manage gateway authentication tokens and rotation</p>
+      <p className="text-forge-300 mb-8">Manage gateway authentication tokens and rotation</p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-6">
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+          <div className="bg-forge-900 border border-forge-800 rounded p-6">
             <h2 className="text-lg font-semibold mb-4">Current Gateway Token</h2>
-            <div className="bg-gray-800 rounded px-4 py-3 font-mono text-sm flex items-center justify-between mb-4">
-              <span className={showToken ? 'text-gray-300' : 'text-gray-500'}>
+            <div className="bg-forge-850 rounded px-4 py-3 font-mono text-sm flex items-center justify-between mb-4">
+              <span className={showToken ? 'text-forge-300' : 'text-forge-400'}>
                 {showToken ? 'gw_9f3a8c2d1e5f7b4a9c0d2e3f4a5b6c7d' : token}
               </span>
               <button
                 onClick={() => setShowToken(!showToken)}
-                className="text-xs text-blue-400 hover:text-blue-300 ml-4"
+                className="text-xs text-accent-400 hover:text-accent-400 ml-4"
               >
                 {showToken ? 'Hide' : 'Reveal'}
               </button>
@@ -68,20 +68,20 @@ export default function GatewayConfigPage() {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm font-medium">Preserve during reconfigure</p>
-                <p className="text-xs text-gray-500">Keep the same token when agent is reconfigured</p>
+                <p className="text-xs text-forge-400">Keep the same token when agent is reconfigured</p>
               </div>
               <button
                 onClick={() => setPreserveOnReconfig(!preserveOnReconfig)}
-                className={`w-12 h-6 rounded-full transition-colors relative ${preserveOnReconfig ? 'bg-green-600' : 'bg-gray-700'}`}
+                className={`w-12 h-6 rounded-full transition-colors relative ${preserveOnReconfig ? 'bg-accent-500' : 'bg-forge-700'}`}
               >
-                <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${preserveOnReconfig ? 'left-6' : 'left-0.5'}`} />
+                <span className={`absolute top-0.5 w-5 h-5 bg-forge-50 rounded-full transition-transform ${preserveOnReconfig ? 'left-6' : 'left-0.5'}`} />
               </button>
             </div>
 
             <div className={`rounded p-3 text-sm mb-4 ${
               preserveOnReconfig
-                ? 'bg-green-900/30 border border-green-800 text-green-300'
-                : 'bg-yellow-900/30 border border-yellow-800 text-yellow-300'
+                ? 'bg-accent-500/10 border border-green-800 text-green-300'
+                : 'bg-amber-500/10 border border-yellow-800 text-yellow-300'
             }`}>
               {preserveOnReconfig
                 ? 'Token will be preserved during agent reconfiguration. Connected clients will not need to re-authenticate.'
@@ -100,7 +100,7 @@ export default function GatewayConfigPage() {
                   </button>
                   <button
                     onClick={() => setConfirmRegenerate(false)}
-                    className="px-4 py-2 text-gray-400 hover:text-white text-sm"
+                    className="px-4 py-2 text-forge-300 hover:text-forge-950 text-sm"
                   >
                     Cancel
                   </button>
@@ -109,7 +109,7 @@ export default function GatewayConfigPage() {
                 <button
                   onClick={handleRegenerate}
                   className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
-                    regenerated ? 'bg-green-600' : 'bg-red-600 hover:bg-red-700'
+                    regenerated ? 'bg-accent-500' : 'bg-red-600 hover:bg-red-700'
                   }`}
                 >
                   {regenerated ? 'Token Regenerated' : 'Regenerate Token'}
@@ -118,42 +118,42 @@ export default function GatewayConfigPage() {
             </div>
           </div>
 
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+          <div className="bg-forge-900 border border-forge-800 rounded p-6">
             <h2 className="text-lg font-semibold mb-2">Token Status</h2>
             <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="bg-gray-800 rounded p-3">
-                <p className="text-gray-500 text-xs uppercase mb-1">Created</p>
+              <div className="bg-forge-850 rounded p-3">
+                <p className="text-forge-400 text-xs uppercase mb-1">Created</p>
                 <p className="font-mono">2026-03-09</p>
               </div>
-              <div className="bg-gray-800 rounded p-3">
-                <p className="text-gray-500 text-xs uppercase mb-1">Last Used</p>
+              <div className="bg-forge-850 rounded p-3">
+                <p className="text-forge-400 text-xs uppercase mb-1">Last Used</p>
                 <p className="font-mono">2 minutes ago</p>
               </div>
-              <div className="bg-gray-800 rounded p-3">
-                <p className="text-gray-500 text-xs uppercase mb-1">Reconfigs Survived</p>
+              <div className="bg-forge-850 rounded p-3">
+                <p className="text-forge-400 text-xs uppercase mb-1">Reconfigs Survived</p>
                 <p className="font-mono">3</p>
               </div>
-              <div className="bg-gray-800 rounded p-3">
-                <p className="text-gray-500 text-xs uppercase mb-1">Total Rotations</p>
+              <div className="bg-forge-850 rounded p-3">
+                <p className="text-forge-400 text-xs uppercase mb-1">Total Rotations</p>
                 <p className="font-mono">{history.filter(h => h.action.includes('regenerated') || h.action.includes('generated')).length}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+        <div className="bg-forge-900 border border-forge-800 rounded p-6">
           <h2 className="text-lg font-semibold mb-4">Token Rotation History</h2>
           <div className="space-y-3">
             {history.map(entry => (
-              <div key={entry.id} className="bg-gray-800 rounded p-4">
+              <div key={entry.id} className="bg-forge-850 rounded p-4">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm font-medium">{entry.action}</span>
-                  <span className="text-xs text-gray-500">{entry.date}</span>
+                  <span className="text-xs text-forge-400">{entry.date}</span>
                 </div>
                 <div className="flex items-center gap-3 text-xs">
-                  <span className="font-mono text-gray-400">{entry.tokenPrefix}****</span>
+                  <span className="font-mono text-forge-300">{entry.tokenPrefix}****</span>
                   {entry.preservedDuringReconfig && (
-                    <span className="px-2 py-0.5 bg-green-900 text-green-300 rounded">preserved</span>
+                    <span className="px-2 py-0.5 bg-accent-800 text-green-300 rounded">preserved</span>
                   )}
                 </div>
               </div>

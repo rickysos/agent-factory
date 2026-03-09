@@ -34,29 +34,29 @@ export default function ConfigDiffPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-8">
+    <div className="min-h-screen bg-forge-950 text-forge-100 p-8">
       <h1 className="text-3xl font-bold mb-2">Config Change Detection</h1>
-      <p className="text-gray-400 mb-8">Review configuration changes before deploying</p>
+      <p className="text-forge-300 mb-8">Review configuration changes before deploying</p>
 
       <div className="flex items-center justify-between mb-6">
-        <div className="text-sm text-gray-400">
+        <div className="text-sm text-forge-300">
           {changedCount} field{changedCount !== 1 ? 's' : ''} changed
         </div>
         <button
           onClick={handleDeploy}
           disabled={!hasChanges || deployed}
           className={`px-6 py-2 rounded font-medium text-sm transition-colors ${
-            deployed ? 'bg-green-600 text-white' :
-            hasChanges ? 'bg-blue-600 hover:bg-blue-700 text-white' :
-            'bg-gray-800 text-gray-600 cursor-not-allowed'
+            deployed ? 'bg-accent-500 text-forge-950' :
+            hasChanges ? 'bg-accent-500 hover:bg-accent-400 text-forge-950' :
+            'bg-forge-850 text-forge-500 cursor-not-allowed'
           }`}
         >
           {deployed ? 'Changes Deployed' : 'Deploy Changes'}
         </button>
       </div>
 
-      <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
-        <div className="grid grid-cols-[200px_1fr_1fr] text-xs text-gray-500 uppercase tracking-wide px-6 py-3 border-b border-gray-800">
+      <div className="bg-forge-900 border border-forge-800 rounded overflow-hidden">
+        <div className="grid grid-cols-[200px_1fr_1fr] text-xs text-forge-400 uppercase tracking-wide px-6 py-3 border-b border-forge-800">
           <div>Field</div>
           <div>Before</div>
           <div>After</div>
@@ -65,36 +65,36 @@ export default function ConfigDiffPage() {
         {diff.map(field => (
           <div
             key={field.key}
-            className={`grid grid-cols-[200px_1fr_1fr] px-6 py-3 border-b border-gray-800 text-sm ${
-              field.changed ? 'bg-yellow-900/20' : ''
+            className={`grid grid-cols-[200px_1fr_1fr] px-6 py-3 border-b border-forge-800 text-sm ${
+              field.changed ? 'bg-amber-500/10' : ''
             }`}
           >
             <div className="font-mono font-medium flex items-center gap-2">
               {field.key}
-              {field.changed && <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" />}
+              {field.changed && <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />}
             </div>
-            <div className={`font-mono ${field.changed ? 'text-red-400 line-through' : 'text-gray-400'}`}>
+            <div className={`font-mono ${field.changed ? 'text-red-400 line-through' : 'text-forge-300'}`}>
               {field.before}
             </div>
-            <div className={`font-mono ${field.changed ? 'text-green-400' : 'text-gray-400'}`}>
+            <div className={`font-mono ${field.changed ? 'text-accent-400' : 'text-forge-300'}`}>
               {field.after}
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-6 bg-gray-900 border border-gray-800 rounded-lg p-6">
+      <div className="mt-6 bg-forge-900 border border-forge-800 rounded p-6">
         <h2 className="text-lg font-semibold mb-3">Change Summary</h2>
         <ul className="space-y-2 text-sm">
           {diff.filter(f => f.changed).map(field => (
             <li key={field.key} className="flex items-start gap-2">
-              <span className="text-yellow-400 mt-0.5">*</span>
+              <span className="text-amber-400 mt-0.5">*</span>
               <span>
-                <span className="font-mono text-gray-300">{field.key}</span>
-                <span className="text-gray-500"> changed from </span>
+                <span className="font-mono text-forge-300">{field.key}</span>
+                <span className="text-forge-400"> changed from </span>
                 <span className="font-mono text-red-400">{field.before}</span>
-                <span className="text-gray-500"> to </span>
-                <span className="font-mono text-green-400">{field.after}</span>
+                <span className="text-forge-400"> to </span>
+                <span className="font-mono text-accent-400">{field.after}</span>
               </span>
             </li>
           ))}

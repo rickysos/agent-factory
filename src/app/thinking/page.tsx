@@ -27,16 +27,16 @@ export default function ThinkingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-8">
+    <div className="min-h-screen bg-forge-950 text-forge-100 p-8">
       <h1 className="text-3xl font-bold mb-2">Thinking Level Configuration</h1>
-      <p className="text-gray-400 mb-8">Control how deeply agents reason before responding</p>
+      <p className="text-forge-300 mb-8">Control how deeply agents reason before responding</p>
 
       <div className="mb-8">
-        <label className="block text-xs text-gray-500 uppercase mb-1">Agent</label>
+        <label className="block text-xs text-forge-400 uppercase mb-1">Agent</label>
         <select
           value={selectedAgent}
           onChange={e => setSelectedAgent(e.target.value)}
-          className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+          className="bg-forge-850 border border-forge-700 rounded px-3 py-2 text-sm"
         >
           {agents.map(a => (
             <option key={a.id} value={a.id}>{a.name}</option>
@@ -49,24 +49,24 @@ export default function ThinkingPage() {
           <button
             key={level.value}
             onClick={() => setThinking(level.value)}
-            className={`p-5 rounded-lg border text-left transition-colors ${
+            className={`p-5 rounded border text-left transition-colors ${
               currentAgent.thinking === level.value
-                ? 'bg-blue-900/40 border-blue-600'
-                : 'bg-gray-900 border-gray-800 hover:border-gray-600'
+                ? 'bg-accent-900/40 border-accent-500'
+                : 'bg-forge-900 border-forge-800 hover:border-forge-600'
             }`}
           >
             <h3 className="font-semibold mb-2">{level.label}</h3>
-            <p className="text-gray-400 text-sm mb-3">{level.description}</p>
-            <div className="text-xs text-gray-500 font-mono">Tokens: {level.tokens}</div>
+            <p className="text-forge-300 text-sm mb-3">{level.description}</p>
+            <div className="text-xs text-forge-400 font-mono">Tokens: {level.tokens}</div>
           </button>
         ))}
       </div>
 
-      <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+      <div className="bg-forge-900 border border-forge-800 rounded p-6">
         <h2 className="text-lg font-semibold mb-4">Current Settings</h2>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-gray-500 text-left text-xs uppercase">
+            <tr className="text-forge-400 text-left text-xs uppercase">
               <th className="pb-3">Agent</th>
               <th className="pb-3">Thinking Level</th>
               <th className="pb-3">Est. Tokens</th>
@@ -76,19 +76,19 @@ export default function ThinkingPage() {
             {agents.map(agent => {
               const level = thinkingLevels.find(l => l.value === agent.thinking)!
               return (
-                <tr key={agent.id} className="border-t border-gray-800">
+                <tr key={agent.id} className="border-t border-forge-800">
                   <td className="py-3 font-medium">{agent.name}</td>
                   <td className="py-3">
                     <span className={`px-2 py-0.5 rounded text-xs font-medium ${
                       agent.thinking === 'high' ? 'bg-red-900 text-red-300' :
-                      agent.thinking === 'medium' ? 'bg-yellow-900 text-yellow-300' :
-                      agent.thinking === 'low' ? 'bg-green-900 text-green-300' :
-                      'bg-blue-900 text-blue-300'
+                      agent.thinking === 'medium' ? 'bg-amber-800 text-yellow-300' :
+                      agent.thinking === 'low' ? 'bg-accent-800 text-green-300' :
+                      'bg-accent-900 text-accent-400'
                     }`}>
                       {level.label}
                     </span>
                   </td>
-                  <td className="py-3 text-gray-400 font-mono">{level.tokens}</td>
+                  <td className="py-3 text-forge-300 font-mono">{level.tokens}</td>
                 </tr>
               )
             })}

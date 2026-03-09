@@ -69,71 +69,71 @@ export default function MonitoringPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Monitoring Dashboard</h1>
-        <p className="text-gray-600 mt-2">Real-time metrics and performance data for all running agents.</p>
+        <h1 className="text-3xl font-bold text-forge-800">Monitoring Dashboard</h1>
+        <p className="text-forge-500 mt-2">Real-time metrics and performance data for all running agents.</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
         {statCards.map(card => (
-          <div key={card.label} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{card.label}</p>
-            <p className="text-2xl font-bold text-gray-900 mt-1">{card.value}</p>
-            <p className="text-xs text-gray-400 mt-1">{card.sub}</p>
+          <div key={card.label} className="bg-forge-50 rounded-md  border border-forge-200 p-4">
+            <p className="text-xs font-medium text-forge-400 uppercase tracking-wide">{card.label}</p>
+            <p className="text-2xl font-bold text-forge-800 mt-1">{card.value}</p>
+            <p className="text-xs text-forge-300 mt-1">{card.sub}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900">Per-Agent Metrics</h2>
+      <div className="bg-forge-50 rounded-md  border border-forge-200 overflow-hidden">
+        <div className="px-6 py-4 border-b border-forge-200">
+          <h2 className="text-lg font-bold text-forge-800">Per-Agent Metrics</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <th className="px-6 py-3 cursor-pointer hover:text-gray-700" onClick={() => handleSort('agentName')}>
+              <tr className="bg-forge-100 text-left text-xs font-medium text-forge-400 uppercase tracking-wider">
+                <th className="px-6 py-3 cursor-pointer hover:text-forge-600" onClick={() => handleSort('agentName')}>
                   Agent{sortIcon('agentName')}
                 </th>
                 <th className="px-6 py-3">Model</th>
-                <th className="px-6 py-3 cursor-pointer hover:text-gray-700 text-right" onClick={() => handleSort('totalTokens')}>
+                <th className="px-6 py-3 cursor-pointer hover:text-forge-600 text-right" onClick={() => handleSort('totalTokens')}>
                   Tokens{sortIcon('totalTokens')}
                 </th>
-                <th className="px-6 py-3 cursor-pointer hover:text-gray-700 text-right" onClick={() => handleSort('requests')}>
+                <th className="px-6 py-3 cursor-pointer hover:text-forge-600 text-right" onClick={() => handleSort('requests')}>
                   Requests{sortIcon('requests')}
                 </th>
                 <th className="px-6 py-3 text-right">Avg Latency</th>
-                <th className="px-6 py-3 cursor-pointer hover:text-gray-700 text-right" onClick={() => handleSort('errors')}>
+                <th className="px-6 py-3 cursor-pointer hover:text-forge-600 text-right" onClick={() => handleSort('errors')}>
                   Errors{sortIcon('errors')}
                 </th>
-                <th className="px-6 py-3 cursor-pointer hover:text-gray-700 text-right" onClick={() => handleSort('cost')}>
+                <th className="px-6 py-3 cursor-pointer hover:text-forge-600 text-right" onClick={() => handleSort('cost')}>
                   Cost{sortIcon('cost')}
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {sorted.map(m => (
-                <tr key={m.agentName} className="hover:bg-gray-50 transition">
-                  <td className="px-6 py-3 font-medium text-gray-900">{m.agentName}</td>
-                  <td className="px-6 py-3 text-gray-500 font-mono text-xs">{m.model}</td>
-                  <td className="px-6 py-3 text-right text-gray-700">{m.totalTokens.toLocaleString()}</td>
-                  <td className="px-6 py-3 text-right text-gray-700">{m.requests}</td>
-                  <td className="px-6 py-3 text-right text-gray-700">{m.avgLatencyMs}ms</td>
+                <tr key={m.agentName} className="hover:bg-forge-100 transition">
+                  <td className="px-6 py-3 font-medium text-forge-800">{m.agentName}</td>
+                  <td className="px-6 py-3 text-forge-400 font-mono text-xs">{m.model}</td>
+                  <td className="px-6 py-3 text-right text-forge-600">{m.totalTokens.toLocaleString()}</td>
+                  <td className="px-6 py-3 text-right text-forge-600">{m.requests}</td>
+                  <td className="px-6 py-3 text-right text-forge-600">{m.avgLatencyMs}ms</td>
                   <td className="px-6 py-3 text-right">
-                    <span className={m.errors > 5 ? 'text-red-600 font-medium' : 'text-gray-700'}>{m.errors}</span>
+                    <span className={m.errors > 5 ? 'text-red-600 font-medium' : 'text-forge-600'}>{m.errors}</span>
                   </td>
-                  <td className="px-6 py-3 text-right font-medium text-gray-900">${m.cost.toFixed(2)}</td>
+                  <td className="px-6 py-3 text-right font-medium text-forge-800">${m.cost.toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
-              <tr className="bg-gray-50 font-semibold text-sm">
-                <td className="px-6 py-3 text-gray-900">Total</td>
+              <tr className="bg-forge-100 font-semibold text-sm">
+                <td className="px-6 py-3 text-forge-800">Total</td>
                 <td className="px-6 py-3" />
-                <td className="px-6 py-3 text-right text-gray-900">{agentMetrics.reduce((s, m) => s + m.totalTokens, 0).toLocaleString()}</td>
-                <td className="px-6 py-3 text-right text-gray-900">{agentMetrics.reduce((s, m) => s + m.requests, 0)}</td>
-                <td className="px-6 py-3 text-right text-gray-900">{Math.round(agentMetrics.reduce((s, m) => s + m.avgLatencyMs, 0) / agentMetrics.length)}ms</td>
-                <td className="px-6 py-3 text-right text-gray-900">{agentMetrics.reduce((s, m) => s + m.errors, 0)}</td>
-                <td className="px-6 py-3 text-right text-gray-900">${agentMetrics.reduce((s, m) => s + m.cost, 0).toFixed(2)}</td>
+                <td className="px-6 py-3 text-right text-forge-800">{agentMetrics.reduce((s, m) => s + m.totalTokens, 0).toLocaleString()}</td>
+                <td className="px-6 py-3 text-right text-forge-800">{agentMetrics.reduce((s, m) => s + m.requests, 0)}</td>
+                <td className="px-6 py-3 text-right text-forge-800">{Math.round(agentMetrics.reduce((s, m) => s + m.avgLatencyMs, 0) / agentMetrics.length)}ms</td>
+                <td className="px-6 py-3 text-right text-forge-800">{agentMetrics.reduce((s, m) => s + m.errors, 0)}</td>
+                <td className="px-6 py-3 text-right text-forge-800">${agentMetrics.reduce((s, m) => s + m.cost, 0).toFixed(2)}</td>
               </tr>
             </tfoot>
           </table>

@@ -91,32 +91,32 @@ export default function DeployPage() {
     })
   }
 
-  const statusColors = { untested: 'bg-gray-100 text-gray-600', connected: 'bg-green-100 text-green-700', failed: 'bg-red-100 text-red-700' }
+  const statusColors = { untested: 'bg-forge-200 text-forge-500', connected: 'bg-accent-500/10 text-accent-600', failed: 'bg-red-500/50/10 text-red-500' }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
-          Remote <span className="text-blue-600">Deployment</span>
+        <h1 className="text-3xl font-bold text-forge-800 mb-2">
+          Remote <span className="text-accent-600">Deployment</span>
         </h1>
-        <p className="text-lg text-gray-600">Deploy agents to remote servers</p>
+        <p className="text-lg text-forge-500">Deploy agents to remote servers</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <div>
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Servers</h2>
+          <h2 className="text-xl font-bold text-forge-700 mb-4">Servers</h2>
           <div className="space-y-3 mb-4">
             {servers.map(server => (
-              <div key={server.id} className="bg-white rounded-xl shadow p-4 border border-gray-100 flex items-center justify-between">
+              <div key={server.id} className="bg-forge-50 rounded-md shadow p-4 border border-forge-200 flex items-center justify-between">
                 <div>
-                  <div className="font-medium text-gray-900">{server.user}@{server.host}:{server.port}</div>
+                  <div className="font-medium text-forge-800">{server.user}@{server.host}:{server.port}</div>
                   <span className={`inline-block mt-1 px-2 py-0.5 rounded text-xs font-semibold capitalize ${statusColors[server.status]}`}>
                     {server.status}
                   </span>
                 </div>
                 <button
                   onClick={() => testConnection(server.id)}
-                  className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition"
+                  className="px-3 py-1.5 bg-forge-200 text-forge-600 rounded text-sm font-medium hover:bg-forge-200 transition"
                 >
                   Test SSH
                 </button>
@@ -124,44 +124,44 @@ export default function DeployPage() {
             ))}
           </div>
 
-          <div className="bg-white rounded-xl shadow p-4 border border-gray-100">
-            <h3 className="font-medium text-gray-700 mb-3">Add Server</h3>
+          <div className="bg-forge-50 rounded-md shadow p-4 border border-forge-200">
+            <h3 className="font-medium text-forge-600 mb-3">Add Server</h3>
             <div className="grid grid-cols-3 gap-2 mb-3">
               <input
                 value={newHost}
                 onChange={e => setNewHost(e.target.value)}
                 placeholder="hostname"
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none"
+                className="px-3 py-2 border border-forge-200 rounded text-sm text-forge-800 focus:ring-2 focus:ring-accent-500 outline-none"
               />
               <input
                 value={newPort}
                 onChange={e => setNewPort(e.target.value)}
                 placeholder="port"
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none"
+                className="px-3 py-2 border border-forge-200 rounded text-sm text-forge-800 focus:ring-2 focus:ring-accent-500 outline-none"
               />
               <input
                 value={newUser}
                 onChange={e => setNewUser(e.target.value)}
                 placeholder="user"
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none"
+                className="px-3 py-2 border border-forge-200 rounded text-sm text-forge-800 focus:ring-2 focus:ring-accent-500 outline-none"
               />
             </div>
-            <button onClick={addServer} className="w-full py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition">
+            <button onClick={addServer} className="w-full py-2 bg-accent-500 text-forge-950 rounded text-sm font-medium hover:bg-accent-400 transition">
               Add Server
             </button>
           </div>
         </div>
 
         <div>
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Deploy Agent</h2>
+          <h2 className="text-xl font-bold text-forge-700 mb-4">Deploy Agent</h2>
           <div className="space-y-2 mb-4">
             {mockAgents.map(agent => (
-              <div key={agent} className="bg-white rounded-xl shadow p-4 border border-gray-100 flex items-center justify-between">
-                <span className="font-medium text-gray-900">{agent}</span>
+              <div key={agent} className="bg-forge-50 rounded-md shadow p-4 border border-forge-200 flex items-center justify-between">
+                <span className="font-medium text-forge-800">{agent}</span>
                 <button
                   onClick={() => handleDeploy(agent)}
                   disabled={deploying !== null}
-                  className="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50"
+                  className="px-4 py-1.5 bg-accent-500 text-forge-950 rounded text-sm font-medium hover:bg-accent-400 transition disabled:opacity-50"
                 >
                   {deploying === agent ? 'Deploying...' : 'Deploy'}
                 </button>
@@ -169,44 +169,44 @@ export default function DeployPage() {
             ))}
           </div>
 
-          <h3 className="font-medium text-gray-700 mb-2">Deployment Log</h3>
-          <div className="bg-gray-900 rounded-xl p-4 h-48 overflow-y-auto font-mono text-sm">
+          <h3 className="font-medium text-forge-600 mb-2">Deployment Log</h3>
+          <div className="bg-forge-900 rounded-md p-4 h-48 overflow-y-auto font-mono text-sm">
             {logs.length === 0 ? (
-              <span className="text-gray-500">No deployment logs yet.</span>
+              <span className="text-forge-400">No deployment logs yet.</span>
             ) : logs.map((line, i) => (
-              <div key={i} className="text-green-400">{line}</div>
+              <div key={i} className="text-accent-400">{line}</div>
             ))}
           </div>
         </div>
       </div>
 
       <div>
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Deployment History</h2>
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <h2 className="text-xl font-bold text-forge-700 mb-4">Deployment History</h2>
+        <div className="bg-forge-50 rounded-md  overflow-hidden">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-forge-100 border-b border-forge-200">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Agent</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Server</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Timestamp</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-forge-400 uppercase">Agent</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-forge-400 uppercase">Server</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-forge-400 uppercase">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-forge-400 uppercase">Timestamp</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {history.map(d => (
                 <tr key={d.id}>
-                  <td className="px-4 py-3 text-sm text-gray-900 font-medium">{d.agent}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600 font-mono">{d.server}</td>
+                  <td className="px-4 py-3 text-sm text-forge-800 font-medium">{d.agent}</td>
+                  <td className="px-4 py-3 text-sm text-forge-500 font-mono">{d.server}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-0.5 rounded text-xs font-semibold capitalize ${
-                      d.status === 'success' ? 'bg-green-100 text-green-700' :
-                      d.status === 'failed' ? 'bg-red-100 text-red-700' :
-                      'bg-yellow-100 text-yellow-700'
+                      d.status === 'success' ? 'bg-accent-500/10 text-accent-600' :
+                      d.status === 'failed' ? 'bg-red-500/50/10 text-red-500' :
+                      'bg-amber-500/10 text-amber-600'
                     }`}>
                       {d.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-500">{d.timestamp}</td>
+                  <td className="px-4 py-3 text-sm text-forge-400">{d.timestamp}</td>
                 </tr>
               ))}
             </tbody>

@@ -58,7 +58,7 @@ export default function CostsPage() {
   if (loading && !data) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <p className="text-gray-500 dark:text-gray-400">Loading usage data...</p>
+        <p className="text-forge-400 dark:text-forge-500">Loading usage data...</p>
       </div>
     )
   }
@@ -76,18 +76,18 @@ export default function CostsPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Cost Tracking</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">Monitor spend across agents and models.</p>
+          <h1 className="text-3xl font-bold text-forge-800 dark:text-forge-100">Cost Tracking</h1>
+          <p className="text-forge-500 dark:text-forge-400 mt-2">Monitor spend across agents and models.</p>
         </div>
         <div className="flex gap-2">
           {[1, 7, 30].map(d => (
             <button
               key={d}
               onClick={() => setDays(d)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-lg transition ${
+              className={`px-3 py-1.5 text-sm font-medium rounded transition ${
                 days === d
-                  ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  ? 'bg-forge-900 dark:bg-forge-100 text-forge-950 dark:text-forge-800'
+                  : 'bg-forge-200 dark:bg-forge-800 text-forge-500 dark:text-forge-300 hover:bg-forge-200 dark:hover:bg-forge-800'
               }`}
             >
               {d === 1 ? '24h' : `${d}d`}
@@ -98,36 +98,36 @@ export default function CostsPage() {
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total Spend</p>
-          <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">
+        <div className="bg-forge-50 dark:bg-forge-900 rounded-md  border border-forge-200 dark:border-forge-700 p-5">
+          <p className="text-xs font-medium text-forge-400 dark:text-forge-500 uppercase tracking-wide">Total Spend</p>
+          <p className="text-3xl font-bold text-forge-800 dark:text-forge-100 mt-1">
             {totalCost === 0 ? (
-              <span className="text-green-600 dark:text-green-400">Free</span>
+              <span className="text-accent-600 dark:text-accent-400">Free</span>
             ) : (
               `$${totalCost.toFixed(4)}`
             )}
           </p>
-          <p className="text-xs text-gray-400 mt-1">Last {days} day{days > 1 ? 's' : ''}</p>
+          <p className="text-xs text-forge-300 mt-1">Last {days} day{days > 1 ? 's' : ''}</p>
         </div>
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Tokens Used</p>
-          <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{totalTokens.toLocaleString()}</p>
-          <p className="text-xs text-gray-400 mt-1">Prompt + completion</p>
+        <div className="bg-forge-50 dark:bg-forge-900 rounded-md  border border-forge-200 dark:border-forge-700 p-5">
+          <p className="text-xs font-medium text-forge-400 dark:text-forge-500 uppercase tracking-wide">Tokens Used</p>
+          <p className="text-3xl font-bold text-forge-800 dark:text-forge-100 mt-1">{totalTokens.toLocaleString()}</p>
+          <p className="text-xs text-forge-300 mt-1">Prompt + completion</p>
         </div>
       </div>
 
       {/* Usage by Agent */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Usage by Agent</h2>
+      <div className="bg-forge-50 dark:bg-forge-900 rounded-md  border border-forge-200 dark:border-forge-700 overflow-hidden mb-8">
+        <div className="px-6 py-4 border-b border-forge-200 dark:border-forge-800">
+          <h2 className="text-lg font-bold text-forge-800 dark:text-forge-100">Usage by Agent</h2>
         </div>
         {byAgent.length === 0 ? (
-          <p className="px-6 py-8 text-gray-500 dark:text-gray-400 text-center">No usage recorded yet. Chat with an agent to see data here.</p>
+          <p className="px-6 py-8 text-forge-400 dark:text-forge-500 text-center">No usage recorded yet. Chat with an agent to see data here.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50 dark:bg-gray-800 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <tr className="bg-forge-100 dark:bg-forge-850 text-left text-xs font-medium text-forge-400 dark:text-forge-500 uppercase tracking-wider">
                   <th className="px-6 py-3">Agent</th>
                   <th className="px-6 py-3 text-right">Requests</th>
                   <th className="px-6 py-3 text-right">Tokens</th>
@@ -137,19 +137,19 @@ export default function CostsPage() {
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                 {byAgent.map(a => (
-                  <tr key={a.agentId} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-                    <td className="px-6 py-3 font-medium text-gray-900 dark:text-white">{a.agentName}</td>
-                    <td className="px-6 py-3 text-right text-gray-700 dark:text-gray-300">{a.requests}</td>
-                    <td className="px-6 py-3 text-right text-gray-700 dark:text-gray-300">{a.tokens.toLocaleString()}</td>
+                  <tr key={a.agentId} className="hover:bg-forge-100 dark:hover:bg-forge-850 transition">
+                    <td className="px-6 py-3 font-medium text-forge-800 dark:text-forge-100">{a.agentName}</td>
+                    <td className="px-6 py-3 text-right text-forge-600 dark:text-forge-300">{a.requests}</td>
+                    <td className="px-6 py-3 text-right text-forge-600 dark:text-forge-300">{a.tokens.toLocaleString()}</td>
                     <td className="px-6 py-3 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-                          <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: `${(a.cost / maxAgentCost) * 100}%` }} />
+                        <div className="w-16 bg-forge-200 dark:bg-forge-700 rounded-full h-1.5">
+                          <div className="bg-accent-500 h-1.5 rounded-full" style={{ width: `${(a.cost / maxAgentCost) * 100}%` }} />
                         </div>
-                        <span className="font-medium text-gray-900 dark:text-white">{a.cost === 0 ? 'Free' : `$${a.cost.toFixed(4)}`}</span>
+                        <span className="font-medium text-forge-800 dark:text-forge-100">{a.cost === 0 ? 'Free' : `$${a.cost.toFixed(4)}`}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-3 text-right text-xs text-gray-500 dark:text-gray-400">{new Date(a.lastUsed).toLocaleString()}</td>
+                    <td className="px-6 py-3 text-right text-xs text-forge-400 dark:text-forge-500">{new Date(a.lastUsed).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
@@ -159,17 +159,17 @@ export default function CostsPage() {
       </div>
 
       {/* Usage by Model */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Usage by Model</h2>
+      <div className="bg-forge-50 dark:bg-forge-900 rounded-md  border border-forge-200 dark:border-forge-700 overflow-hidden mb-8">
+        <div className="px-6 py-4 border-b border-forge-200 dark:border-forge-800">
+          <h2 className="text-lg font-bold text-forge-800 dark:text-forge-100">Usage by Model</h2>
         </div>
         {byModel.length === 0 ? (
-          <p className="px-6 py-8 text-gray-500 dark:text-gray-400 text-center">No model usage recorded yet.</p>
+          <p className="px-6 py-8 text-forge-400 dark:text-forge-500 text-center">No model usage recorded yet.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50 dark:bg-gray-800 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <tr className="bg-forge-100 dark:bg-forge-850 text-left text-xs font-medium text-forge-400 dark:text-forge-500 uppercase tracking-wider">
                   <th className="px-6 py-3">Model</th>
                   <th className="px-6 py-3 text-right">Requests</th>
                   <th className="px-6 py-3 text-right">Tokens</th>
@@ -178,16 +178,16 @@ export default function CostsPage() {
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                 {byModel.map(m => (
-                  <tr key={m.model} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-                    <td className="px-6 py-3 font-mono text-xs text-gray-900 dark:text-white">{m.model}</td>
-                    <td className="px-6 py-3 text-right text-gray-700 dark:text-gray-300">{m.requests}</td>
-                    <td className="px-6 py-3 text-right text-gray-700 dark:text-gray-300">{m.totalTokens.toLocaleString()}</td>
+                  <tr key={m.model} className="hover:bg-forge-100 dark:hover:bg-forge-850 transition">
+                    <td className="px-6 py-3 font-mono text-xs text-forge-800 dark:text-forge-100">{m.model}</td>
+                    <td className="px-6 py-3 text-right text-forge-600 dark:text-forge-300">{m.requests}</td>
+                    <td className="px-6 py-3 text-right text-forge-600 dark:text-forge-300">{m.totalTokens.toLocaleString()}</td>
                     <td className="px-6 py-3 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-                          <div className="bg-purple-600 h-1.5 rounded-full" style={{ width: `${(m.cost / maxModelCost) * 100}%` }} />
+                        <div className="w-16 bg-forge-200 dark:bg-forge-700 rounded-full h-1.5">
+                          <div className="bg-forge-600 h-1.5 rounded-full" style={{ width: `${(m.cost / maxModelCost) * 100}%` }} />
                         </div>
-                        <span className="font-medium text-gray-900 dark:text-white">{m.cost === 0 ? 'Free' : `$${m.cost.toFixed(4)}`}</span>
+                        <span className="font-medium text-forge-800 dark:text-forge-100">{m.cost === 0 ? 'Free' : `$${m.cost.toFixed(4)}`}</span>
                       </div>
                     </td>
                   </tr>
@@ -199,25 +199,25 @@ export default function CostsPage() {
       </div>
 
       {/* Daily Usage */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Daily Usage</h2>
+      <div className="bg-forge-50 dark:bg-forge-900 rounded-md  border border-forge-200 dark:border-forge-700 overflow-hidden">
+        <div className="px-6 py-4 border-b border-forge-200 dark:border-forge-800">
+          <h2 className="text-lg font-bold text-forge-800 dark:text-forge-100">Daily Usage</h2>
         </div>
         {daily.length === 0 ? (
-          <p className="px-6 py-8 text-gray-500 dark:text-gray-400 text-center">No daily usage data yet.</p>
+          <p className="px-6 py-8 text-forge-400 dark:text-forge-500 text-center">No daily usage data yet.</p>
         ) : (
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
             {daily.map(d => (
               <div key={d.date} className="px-6 py-3 flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-gray-900 dark:text-white">{d.date}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{d.requests} request{d.requests !== 1 ? 's' : ''} / {d.tokens.toLocaleString()} tokens</p>
+                  <p className="font-medium text-forge-800 dark:text-forge-100">{d.date}</p>
+                  <p className="text-xs text-forge-400 dark:text-forge-500">{d.requests} request{d.requests !== 1 ? 's' : ''} / {d.tokens.toLocaleString()} tokens</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(d.cost / maxDailyCost) * 100}%` }} />
+                  <div className="w-24 bg-forge-200 dark:bg-forge-700 rounded-full h-2">
+                    <div className="bg-accent-500 h-2 rounded-full" style={{ width: `${(d.cost / maxDailyCost) * 100}%` }} />
                   </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white w-16 text-right">{d.cost === 0 ? 'Free' : `$${d.cost.toFixed(4)}`}</span>
+                  <span className="text-sm font-medium text-forge-800 dark:text-forge-100 w-16 text-right">{d.cost === 0 ? 'Free' : `$${d.cost.toFixed(4)}`}</span>
                 </div>
               </div>
             ))}

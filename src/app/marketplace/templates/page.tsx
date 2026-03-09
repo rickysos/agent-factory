@@ -25,14 +25,14 @@ function StarRating({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((star) => (
         <svg
           key={star}
-          className={`w-4 h-4 ${star <= Math.round(rating) ? 'text-yellow-400' : 'text-gray-200'}`}
+          className={`w-4 h-4 ${star <= Math.round(rating) ? 'text-amber-400' : 'text-forge-200'}`}
           fill="currentColor"
           viewBox="0 0 20 20"
         >
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
         </svg>
       ))}
-      <span className="text-sm text-gray-500 ml-1">{rating}</span>
+      <span className="text-sm text-forge-400 ml-1">{rating}</span>
     </div>
   )
 }
@@ -57,17 +57,17 @@ export default function TemplateMarketplacePage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Template <span className="text-blue-600">Marketplace</span>
+          <h1 className="text-3xl font-bold text-forge-800">
+            Template <span className="text-accent-600">Marketplace</span>
           </h1>
-          <p className="text-gray-500 mt-1">{mockTemplates.length} templates available</p>
+          <p className="text-forge-400 mt-1">{mockTemplates.length} templates available</p>
         </div>
         <input
           type="text"
           placeholder="Search templates..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full sm:w-72 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
+          className="w-full sm:w-72 px-4 py-2 rounded-md border border-forge-200 focus:outline-none focus:ring-2 focus:ring-accent-500 bg-forge-50 "
         />
       </div>
 
@@ -76,8 +76,8 @@ export default function TemplateMarketplacePage() {
           onClick={() => setActiveCategory(null)}
           className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
             activeCategory === null
-              ? 'bg-blue-600 text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+              ? 'bg-accent-500 text-forge-950'
+              : 'bg-forge-50 text-forge-500 hover:bg-forge-200 border border-forge-200'
           }`}
         >
           All
@@ -88,8 +88,8 @@ export default function TemplateMarketplacePage() {
             onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
               activeCategory === cat
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                ? 'bg-accent-500 text-forge-950'
+                : 'bg-forge-50 text-forge-500 hover:bg-forge-200 border border-forge-200'
             }`}
           >
             {cat}
@@ -98,26 +98,26 @@ export default function TemplateMarketplacePage() {
       </div>
 
       {filtered.length === 0 && (
-        <p className="text-center text-gray-400 py-12">No templates match your search.</p>
+        <p className="text-center text-forge-300 py-12">No templates match your search.</p>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {filtered.map((template) => (
           <div
             key={template.id}
-            className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-lg transition-all flex flex-col"
+            className="bg-forge-50 rounded-md border border-forge-200 p-5 hover: transition-all flex flex-col"
           >
             <div className="flex items-start justify-between gap-2 mb-2">
-              <span className="inline-block px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 text-gray-600">
+              <span className="inline-block px-2 py-0.5 text-xs font-medium rounded-full bg-forge-200 text-forge-500">
                 {template.category}
               </span>
-              <span className="text-xs text-gray-400">{template.downloads.toLocaleString()} downloads</span>
+              <span className="text-xs text-forge-300">{template.downloads.toLocaleString()} downloads</span>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">{template.name}</h3>
-            <p className="text-sm text-gray-500 mt-1 flex-1">{template.description}</p>
+            <h3 className="text-lg font-semibold text-forge-800">{template.name}</h3>
+            <p className="text-sm text-forge-400 mt-1 flex-1">{template.description}</p>
             <div className="mt-3 flex items-center justify-between">
               <div>
-                <p className="text-xs text-gray-400">by {template.author}</p>
+                <p className="text-xs text-forge-300">by {template.author}</p>
                 <StarRating rating={template.rating} />
               </div>
               <button
@@ -129,10 +129,10 @@ export default function TemplateMarketplacePage() {
                     return next
                   })
                 }
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition ${
+                className={`px-4 py-1.5 rounded text-sm font-medium transition ${
                   installed.has(template.id)
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                    ? 'bg-accent-500/10 text-accent-600'
+                    : 'bg-accent-500 text-forge-950 hover:bg-accent-400'
                 }`}
               >
                 {installed.has(template.id) ? 'Installed' : 'Install'}

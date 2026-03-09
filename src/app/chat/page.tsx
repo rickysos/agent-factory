@@ -75,11 +75,11 @@ export default function ChatPage() {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48" />
-          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-96" />
+          <div className="h-8 bg-forge-200 dark:bg-forge-700 rounded w-48" />
+          <div className="h-4 bg-forge-200 dark:bg-forge-700 rounded w-96" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
-            <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-xl" />
-            <div className="lg:col-span-2 h-64 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+            <div className="h-64 bg-forge-200 dark:bg-forge-700 rounded-md" />
+            <div className="lg:col-span-2 h-64 bg-forge-200 dark:bg-forge-700 rounded-md" />
           </div>
         </div>
       </div>
@@ -89,8 +89,8 @@ export default function ChatPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Agent Chat</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
+        <h1 className="text-3xl font-bold text-forge-800 dark:text-forge-100">Agent Chat</h1>
+        <p className="text-forge-500 dark:text-forge-400 mt-2">
           Start conversations with your agents or resume previous sessions.
         </p>
       </div>
@@ -98,32 +98,32 @@ export default function ChatPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left: Agent list */}
         <div className="col-span-1">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Agents</h2>
+          <h2 className="text-lg font-semibold text-forge-800 dark:text-forge-100 mb-4">Agents</h2>
           <div className="space-y-3">
             {agents.map((agent) => (
               <div
                 key={agent.id}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4"
+                className="bg-forge-50 dark:bg-forge-850 rounded-md  border border-forge-200 dark:border-forge-700 p-4"
               >
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold text-gray-900 dark:text-white">{agent.name}</h3>
+                  <h3 className="font-semibold text-forge-800 dark:text-forge-100">{agent.name}</h3>
                   <span
                     className={`px-2 py-0.5 text-xs font-medium rounded-full ${
                       agent.status === 'active'
-                        ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-                        : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
+                        ? 'bg-accent-500/10 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400'
+                        : 'bg-forge-200 text-forge-500 dark:bg-forge-700 dark:text-forge-300'
                     }`}
                   >
                     {agent.status}
                   </span>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{agent.description}</p>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">{agent.model}</p>
+                <p className="text-sm text-forge-400 dark:text-forge-500 mb-2">{agent.description}</p>
+                <p className="text-xs text-forge-300 dark:text-forge-400 mb-3">{agent.model}</p>
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {agent.capabilities.map((cap) => (
                     <span
                       key={cap}
-                      className="px-2 py-0.5 text-xs bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 rounded"
+                      className="px-2 py-0.5 text-xs bg-accent-500/10 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400 rounded"
                     >
                       {cap}
                     </span>
@@ -131,7 +131,7 @@ export default function ChatPage() {
                 </div>
                 <Link
                   href={`/chat/${agent.id}`}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition w-full justify-center"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded bg-accent-500 text-forge-950 hover:bg-accent-400 transition w-full justify-center"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -145,14 +145,14 @@ export default function ChatPage() {
 
         {/* Right: Recent sessions */}
         <div className="lg:col-span-2">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Conversations</h2>
+          <h2 className="text-lg font-semibold text-forge-800 dark:text-forge-100 mb-4">Recent Conversations</h2>
           {sessions.length === 0 ? (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
-              <svg className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="bg-forge-50 dark:bg-forge-850 rounded-md  border border-forge-200 dark:border-forge-700 p-12 text-center">
+              <svg className="w-12 h-12 mx-auto text-forge-300 dark:text-forge-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">No conversations yet</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <h3 className="text-lg font-medium text-forge-800 dark:text-forge-100 mb-1">No conversations yet</h3>
+              <p className="text-sm text-forge-400 dark:text-forge-500">
                 Select an agent and start a new chat to get going.
               </p>
             </div>
@@ -160,7 +160,7 @@ export default function ChatPage() {
             <div className="space-y-6">
               {Object.entries(sessionsByAgent).map(([agentId, agentSessions]) => (
                 <div key={agentId}>
-                  <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">
+                  <h3 className="text-sm font-medium text-forge-400 dark:text-forge-500 mb-2 uppercase tracking-wide">
                     {agentSessions[0].agentName}
                   </h3>
                   <div className="space-y-2">
@@ -168,20 +168,20 @@ export default function ChatPage() {
                       <Link
                         key={session.id}
                         href={`/chat/${session.agentId}?session=${session.id}`}
-                        className="block bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-750 transition"
+                        className="block bg-forge-50 dark:bg-forge-850 rounded-md  border border-forge-200 dark:border-forge-700 px-5 py-4 hover:bg-forge-100 dark:hover:bg-forge-800 transition"
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium text-gray-900 dark:text-white">{session.title}</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                            <p className="font-medium text-forge-800 dark:text-forge-100">{session.title}</p>
+                            <p className="text-sm text-forge-400 dark:text-forge-500 mt-0.5">
                               {session.messageCount} messages
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm text-gray-400 dark:text-gray-500">
+                            <p className="text-sm text-forge-300 dark:text-forge-400">
                               {new Date(session.updatedAt).toLocaleDateString()}
                             </p>
-                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                            <p className="text-xs text-forge-300 dark:text-forge-400 mt-0.5">
                               {new Date(session.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </p>
                           </div>

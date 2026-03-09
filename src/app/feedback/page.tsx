@@ -40,10 +40,10 @@ const mockReviewed: ReviewedDecision[] = [
 ]
 
 const riskColors: Record<RiskLevel, string> = {
-  low: 'bg-green-100 text-green-700',
-  medium: 'bg-yellow-100 text-yellow-700',
-  high: 'bg-orange-100 text-orange-700',
-  critical: 'bg-red-100 text-red-700',
+  low: 'bg-accent-500/10 text-accent-600',
+  medium: 'bg-amber-500/10 text-amber-600',
+  high: 'bg-amber-500/10 text-amber-600',
+  critical: 'bg-red-500/50/10 text-red-500',
 }
 
 export default function FeedbackPage() {
@@ -74,10 +74,10 @@ export default function FeedbackPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
-          Human-in-the-Loop <span className="text-blue-600">Feedback</span>
+        <h1 className="text-3xl font-bold text-forge-800 mb-2">
+          Human-in-the-Loop <span className="text-accent-600">Feedback</span>
         </h1>
-        <p className="text-lg text-gray-600">
+        <p className="text-lg text-forge-500">
           Review and approve agent decisions before they execute.
         </p>
       </div>
@@ -85,16 +85,16 @@ export default function FeedbackPage() {
       <div className="flex gap-2 mb-6">
         <button
           onClick={() => setActiveTab('pending')}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-            activeTab === 'pending' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          className={`px-4 py-2 text-sm font-medium rounded transition-colors ${
+            activeTab === 'pending' ? 'bg-accent-500 text-forge-950' : 'bg-forge-200 text-forge-500 hover:bg-forge-200'
           }`}
         >
           Pending ({pending.length})
         </button>
         <button
           onClick={() => setActiveTab('history')}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-            activeTab === 'history' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          className={`px-4 py-2 text-sm font-medium rounded transition-colors ${
+            activeTab === 'history' ? 'bg-accent-500 text-forge-950' : 'bg-forge-200 text-forge-500 hover:bg-forge-200'
           }`}
         >
           History ({reviewed.length})
@@ -103,23 +103,23 @@ export default function FeedbackPage() {
 
       {activeTab === 'pending' ? (
         pending.length === 0 ? (
-          <div className="text-center py-20 text-gray-400">No pending decisions. All clear.</div>
+          <div className="text-center py-20 text-forge-300">No pending decisions. All clear.</div>
         ) : (
           <div className="space-y-4">
             {pending.map((item) => (
-              <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-5">
+              <div key={item.id} className="bg-forge-50 border border-forge-200 rounded-md p-5">
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold text-gray-900">{item.agentName}</span>
+                      <span className="font-semibold text-forge-800">{item.agentName}</span>
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${riskColors[item.risk]}`}>
                         {item.risk}
                       </span>
                     </div>
-                    <p className="text-gray-800">{item.action}</p>
-                    <p className="text-sm text-gray-500 mt-1">{item.context}</p>
+                    <p className="text-forge-700">{item.action}</p>
+                    <p className="text-sm text-forge-400 mt-1">{item.context}</p>
                   </div>
-                  <span className="text-xs text-gray-400 whitespace-nowrap">{new Date(item.timestamp).toLocaleString()}</span>
+                  <span className="text-xs text-forge-300 whitespace-nowrap">{new Date(item.timestamp).toLocaleString()}</span>
                 </div>
                 <div className="flex items-center gap-3 mt-4">
                   <input
@@ -127,17 +127,17 @@ export default function FeedbackPage() {
                     placeholder="Comment (optional)"
                     value={commentMap[item.id] || ''}
                     onChange={(e) => setCommentMap((prev) => ({ ...prev, [item.id]: e.target.value }))}
-                    className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 px-3 py-2 rounded border border-forge-200 text-sm text-forge-800 focus:outline-none focus:ring-2 focus:ring-accent-500"
                   />
                   <button
                     onClick={() => handleDecision(item.id, 'approved')}
-                    className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700"
+                    className="px-4 py-2 bg-accent-500 text-forge-950 text-sm font-medium rounded hover:bg-accent-600"
                   >
                     Approve
                   </button>
                   <button
                     onClick={() => handleDecision(item.id, 'rejected')}
-                    className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700"
+                    className="px-4 py-2 bg-red-600 text-forge-950 text-sm font-medium rounded hover:bg-red-700"
                   >
                     Reject
                   </button>
@@ -149,25 +149,25 @@ export default function FeedbackPage() {
       ) : (
         <div className="space-y-3">
           {reviewed.map((item) => (
-            <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between">
+            <div key={item.id} className="bg-forge-50 border border-forge-200 rounded-md p-4 flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-semibold text-gray-900">{item.agentName}</span>
+                  <span className="font-semibold text-forge-800">{item.agentName}</span>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${riskColors[item.risk]}`}>
                     {item.risk}
                   </span>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    item.decision === 'approved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                    item.decision === 'approved' ? 'bg-accent-500/10 text-accent-600' : 'bg-red-500/50/10 text-red-500'
                   }`}>
                     {item.decision}
                   </span>
                 </div>
-                <p className="text-sm text-gray-700">{item.action}</p>
-                {item.comment && <p className="text-xs text-gray-500 mt-1 italic">&quot;{item.comment}&quot;</p>}
+                <p className="text-sm text-forge-600">{item.action}</p>
+                {item.comment && <p className="text-xs text-forge-400 mt-1 italic">&quot;{item.comment}&quot;</p>}
               </div>
               <div className="text-right ml-4 shrink-0">
-                <p className="text-sm text-gray-600">{item.reviewer}</p>
-                <p className="text-xs text-gray-400">{new Date(item.reviewedAt).toLocaleString()}</p>
+                <p className="text-sm text-forge-500">{item.reviewer}</p>
+                <p className="text-xs text-forge-300">{new Date(item.reviewedAt).toLocaleString()}</p>
               </div>
             </div>
           ))}

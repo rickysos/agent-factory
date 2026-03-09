@@ -67,17 +67,17 @@ export default function ToolsPage() {
   const denied = Object.values(agentPerms).filter(v => !v).length
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-8">
+    <div className="min-h-screen bg-forge-950 text-forge-100 p-8">
       <h1 className="text-3xl font-bold mb-2">Tool Permission Management</h1>
-      <p className="text-gray-400 mb-8">Control which tools each agent can access</p>
+      <p className="text-forge-300 mb-8">Control which tools each agent can access</p>
 
       <div className="flex items-center gap-6 mb-8">
         <div>
-          <label className="block text-xs text-gray-500 uppercase mb-1">Agent</label>
+          <label className="block text-xs text-forge-400 uppercase mb-1">Agent</label>
           <select
             value={selectedAgent}
             onChange={e => setSelectedAgent(e.target.value)}
-            className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+            className="bg-forge-850 border border-forge-700 rounded px-3 py-2 text-sm"
           >
             {mockAgents.map(a => (
               <option key={a.id} value={a.id}>{a.name}</option>
@@ -86,43 +86,43 @@ export default function ToolsPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <label className="text-sm text-gray-400">Sandbox Mode</label>
+          <label className="text-sm text-forge-300">Sandbox Mode</label>
           <button
             onClick={() => setSandboxMode(!sandboxMode)}
-            className={`w-12 h-6 rounded-full transition-colors relative ${sandboxMode ? 'bg-yellow-600' : 'bg-gray-700'}`}
+            className={`w-12 h-6 rounded-full transition-colors relative ${sandboxMode ? 'bg-amber-500' : 'bg-forge-700'}`}
           >
-            <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${sandboxMode ? 'left-6' : 'left-0.5'}`} />
+            <span className={`absolute top-0.5 w-5 h-5 bg-forge-50 rounded-full transition-transform ${sandboxMode ? 'left-6' : 'left-0.5'}`} />
           </button>
         </div>
 
         <div className="ml-auto flex gap-4 text-sm">
-          <span className="text-green-400">{allowed} allowed</span>
+          <span className="text-accent-400">{allowed} allowed</span>
           <span className="text-red-400">{denied} denied</span>
         </div>
       </div>
 
       {sandboxMode && (
-        <div className="bg-yellow-900/30 border border-yellow-800 rounded-lg p-4 mb-6 text-sm text-yellow-300">
+        <div className="bg-amber-500/10 border border-yellow-800 rounded p-4 mb-6 text-sm text-yellow-300">
           Sandbox mode active -- all file and shell operations are isolated to a temporary directory.
         </div>
       )}
 
       <div className="space-y-6">
         {Object.entries(toolsByCategory).map(([category, tools]) => (
-          <div key={category} className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+          <div key={category} className="bg-forge-900 border border-forge-800 rounded p-6">
             <h2 className="text-lg font-semibold mb-4">{category}</h2>
             <div className="space-y-3">
               {tools.map(tool => (
-                <div key={tool.name} className="flex items-center justify-between bg-gray-800 rounded px-4 py-3">
+                <div key={tool.name} className="flex items-center justify-between bg-forge-850 rounded px-4 py-3">
                   <div>
                     <span className="font-medium font-mono">{tool.name}</span>
-                    <span className="text-gray-500 text-sm ml-3">{tool.description}</span>
+                    <span className="text-forge-400 text-sm ml-3">{tool.description}</span>
                   </div>
                   <button
                     onClick={() => toggleTool(tool.name)}
-                    className={`w-12 h-6 rounded-full transition-colors relative ${agentPerms[tool.name] ? 'bg-green-600' : 'bg-gray-700'}`}
+                    className={`w-12 h-6 rounded-full transition-colors relative ${agentPerms[tool.name] ? 'bg-accent-500' : 'bg-forge-700'}`}
                   >
-                    <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${agentPerms[tool.name] ? 'left-6' : 'left-0.5'}`} />
+                    <span className={`absolute top-0.5 w-5 h-5 bg-forge-50 rounded-full transition-transform ${agentPerms[tool.name] ? 'left-6' : 'left-0.5'}`} />
                   </button>
                 </div>
               ))}

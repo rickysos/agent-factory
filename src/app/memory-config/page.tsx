@@ -54,17 +54,17 @@ export default function MemoryConfigPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-8">
+    <div className="min-h-screen bg-forge-950 text-forge-100 p-8">
       <h1 className="text-3xl font-bold mb-2">Memory System Configuration</h1>
-      <p className="text-gray-400 mb-8">Manage agent memory storage and compaction</p>
+      <p className="text-forge-300 mb-8">Manage agent memory storage and compaction</p>
 
       <div className="flex items-center gap-6 mb-8">
         <div>
-          <label className="block text-xs text-gray-500 uppercase mb-1">Agent</label>
+          <label className="block text-xs text-forge-400 uppercase mb-1">Agent</label>
           <select
             value={selectedAgent}
             onChange={e => setSelectedAgent(e.target.value)}
-            className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+            className="bg-forge-850 border border-forge-700 rounded px-3 py-2 text-sm"
           >
             {mockAgents.map(a => (
               <option key={a.id} value={a.id}>{a.name}</option>
@@ -73,12 +73,12 @@ export default function MemoryConfigPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <label className="text-sm text-gray-400">Memory Enabled</label>
+          <label className="text-sm text-forge-300">Memory Enabled</label>
           <button
             onClick={() => setMemoryEnabled(prev => ({ ...prev, [selectedAgent]: !prev[selectedAgent] }))}
-            className={`w-12 h-6 rounded-full transition-colors relative ${memoryEnabled[selectedAgent] ? 'bg-green-600' : 'bg-gray-700'}`}
+            className={`w-12 h-6 rounded-full transition-colors relative ${memoryEnabled[selectedAgent] ? 'bg-accent-500' : 'bg-forge-700'}`}
           >
-            <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${memoryEnabled[selectedAgent] ? 'left-6' : 'left-0.5'}`} />
+            <span className={`absolute top-0.5 w-5 h-5 bg-forge-50 rounded-full transition-transform ${memoryEnabled[selectedAgent] ? 'left-6' : 'left-0.5'}`} />
           </button>
         </div>
       </div>
@@ -86,14 +86,14 @@ export default function MemoryConfigPage() {
       {memoryEnabled[selectedAgent] && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="space-y-6">
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+            <div className="bg-forge-900 border border-forge-800 rounded p-6">
               <h2 className="text-lg font-semibold mb-4">Daily Logs</h2>
-              <p className="text-gray-400 text-sm mb-4">Automatic daily session logs stored as YYYY-MM-DD.md</p>
+              <p className="text-forge-300 text-sm mb-4">Automatic daily session logs stored as YYYY-MM-DD.md</p>
               <div className="space-y-2">
                 {mockDailyLogs.map(log => (
-                  <div key={log.date} className="flex items-center justify-between bg-gray-800 rounded px-4 py-2 text-sm">
+                  <div key={log.date} className="flex items-center justify-between bg-forge-850 rounded px-4 py-2 text-sm">
                     <span className="font-mono">{log.date}.md</span>
-                    <div className="flex gap-4 text-gray-500">
+                    <div className="flex gap-4 text-forge-400">
                       <span>{log.entries} entries</span>
                       <span>{log.size}</span>
                     </div>
@@ -102,31 +102,31 @@ export default function MemoryConfigPage() {
               </div>
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+            <div className="bg-forge-900 border border-forge-800 rounded p-6">
               <h2 className="text-lg font-semibold mb-4">Flush / Compaction</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs text-gray-500 uppercase mb-1">Compact logs older than (days)</label>
+                  <label className="block text-xs text-forge-400 uppercase mb-1">Compact logs older than (days)</label>
                   <input
                     type="number"
                     value={flushDays}
                     onChange={e => setFlushDays(Number(e.target.value))}
                     min={1}
-                    className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm w-24"
+                    className="bg-forge-850 border border-forge-700 rounded px-3 py-2 text-sm w-24"
                   />
                 </div>
                 <div className="flex items-center gap-3">
-                  <label className="text-sm text-gray-400">Auto-compact</label>
+                  <label className="text-sm text-forge-300">Auto-compact</label>
                   <button
                     onClick={() => setCompactEnabled(!compactEnabled)}
-                    className={`w-12 h-6 rounded-full transition-colors relative ${compactEnabled ? 'bg-green-600' : 'bg-gray-700'}`}
+                    className={`w-12 h-6 rounded-full transition-colors relative ${compactEnabled ? 'bg-accent-500' : 'bg-forge-700'}`}
                   >
-                    <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${compactEnabled ? 'left-6' : 'left-0.5'}`} />
+                    <span className={`absolute top-0.5 w-5 h-5 bg-forge-50 rounded-full transition-transform ${compactEnabled ? 'left-6' : 'left-0.5'}`} />
                   </button>
                 </div>
                 <button
                   onClick={handleFlush}
-                  className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded text-sm font-medium transition-colors"
+                  className="px-4 py-2 bg-amber-500 hover:bg-amber-600 rounded text-sm font-medium transition-colors"
                 >
                   Flush Now
                 </button>
@@ -134,20 +134,20 @@ export default function MemoryConfigPage() {
             </div>
           </div>
 
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+          <div className="bg-forge-900 border border-forge-800 rounded p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">MEMORY.md</h2>
-              <span className="text-xs text-gray-500">Curated long-term memory</span>
+              <span className="text-xs text-forge-400">Curated long-term memory</span>
             </div>
             <textarea
               value={memoryContent}
               onChange={e => setMemoryContent(e.target.value)}
-              className="w-full h-80 bg-gray-800 border border-gray-700 rounded p-4 text-sm font-mono resize-none"
+              className="w-full h-80 bg-forge-850 border border-forge-700 rounded p-4 text-sm font-mono resize-none"
             />
             <button
               onClick={handleSave}
               className={`mt-4 px-4 py-2 rounded text-sm font-medium transition-colors ${
-                saved ? 'bg-green-600' : 'bg-blue-600 hover:bg-blue-700'
+                saved ? 'bg-accent-500' : 'bg-accent-500 hover:bg-accent-400'
               }`}
             >
               {saved ? 'Saved' : 'Save MEMORY.md'}
@@ -157,7 +157,7 @@ export default function MemoryConfigPage() {
       )}
 
       {!memoryEnabled[selectedAgent] && (
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-12 text-center text-gray-500">
+        <div className="bg-forge-900 border border-forge-800 rounded p-12 text-center text-forge-400">
           Memory is disabled for this agent. Enable it to configure storage and compaction settings.
         </div>
       )}

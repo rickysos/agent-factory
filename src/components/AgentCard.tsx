@@ -10,7 +10,7 @@ interface AgentCardProps {
 
 const statusConfig = {
   draft: { dot: 'bg-forge-400', label: 'Draft', border: 'border-forge-300 dark:border-forge-600' },
-  active: { dot: 'bg-amber-400 animate-pulse', label: 'Active', border: 'border-amber-500/30' },
+  active: { dot: 'bg-accent-400 animate-pulse', label: 'Active', border: 'border-accent-500/30' },
   inactive: { dot: 'bg-forge-500', label: 'Inactive', border: 'border-forge-300 dark:border-forge-700' },
   error: { dot: 'bg-red-500', label: 'Error', border: 'border-red-500/30' },
 }
@@ -38,7 +38,7 @@ export function AgentCard({ agent }: AgentCardProps) {
   const status = statusConfig[agent.status]
 
   return (
-    <div className={`bg-forge-50 dark:bg-forge-900 border ${status.border} rounded-md p-5 hover:border-amber-500/40 transition-colors group`}>
+    <div className={`bg-forge-50 dark:bg-forge-900 border ${status.border} rounded-md p-5 hover:border-accent-500/40 transition-colors group`}>
       <div className="flex justify-between items-start mb-3">
         <div className="min-w-0 flex-1">
           <h3 className="text-sm font-display font-semibold text-forge-800 dark:text-forge-100 truncate">{agent.name}</h3>
@@ -72,7 +72,7 @@ export function AgentCard({ agent }: AgentCardProps) {
           {agent.capabilities.map((capability) => (
             <span
               key={capability}
-              className="px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded"
+              className="px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider bg-accent-500/10 text-accent-600 dark:text-accent-400 border border-accent-500/20 rounded"
             >
               {capability}
             </span>
@@ -90,7 +90,7 @@ export function AgentCard({ agent }: AgentCardProps) {
             <button
               onClick={handleDeploy}
               disabled={isLoading || isDeploying}
-              className="px-3 py-1 text-xs font-mono font-medium uppercase tracking-wider bg-amber-500 text-forge-950 rounded hover:bg-amber-400 disabled:opacity-50 transition-colors"
+              className="px-3 py-1 text-xs font-mono font-medium uppercase tracking-wider bg-accent-500 text-forge-950 rounded hover:bg-accent-400 disabled:opacity-50 transition-colors"
             >
               {isDeploying ? 'Deploying...' : 'Deploy'}
             </button>

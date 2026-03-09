@@ -57,42 +57,42 @@ export default function AuditLoggingPage() {
   }
 
   const actionColors: Record<string, string> = {
-    'agent.create': 'bg-green-100 text-green-700',
-    'agent.update': 'bg-blue-100 text-blue-700',
-    'agent.delete': 'bg-red-100 text-red-700',
-    'user.login': 'bg-purple-100 text-purple-700',
-    'user.logout': 'bg-gray-100 text-gray-600',
-    'api_key.create': 'bg-green-100 text-green-700',
-    'api_key.revoke': 'bg-red-100 text-red-700',
-    'settings.update': 'bg-yellow-100 text-yellow-700',
-    'template.install': 'bg-indigo-100 text-indigo-700',
+    'agent.create': 'bg-accent-500/10 text-accent-600',
+    'agent.update': 'bg-accent-500/10 text-accent-600',
+    'agent.delete': 'bg-red-500/50/10 text-red-500',
+    'user.login': 'bg-forge-200 text-forge-600',
+    'user.logout': 'bg-forge-200 text-forge-500',
+    'api_key.create': 'bg-accent-500/10 text-accent-600',
+    'api_key.revoke': 'bg-red-500/50/10 text-red-500',
+    'settings.update': 'bg-amber-500/10 text-amber-600',
+    'template.install': 'bg-forge-200 text-forge-600',
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Audit <span className="text-blue-600">Log</span>
+          <h1 className="text-3xl font-bold text-forge-800">
+            Audit <span className="text-accent-600">Log</span>
           </h1>
-          <p className="text-gray-500 mt-1">{filtered.length} events</p>
+          <p className="text-forge-400 mt-1">{filtered.length} events</p>
         </div>
         <button
           onClick={handleExport}
-          className="px-5 py-2 bg-white text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition self-start"
+          className="px-5 py-2 bg-forge-50 text-forge-600 font-medium rounded border border-forge-200 hover:bg-forge-100 transition self-start"
         >
           Export CSV
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
+      <div className="bg-forge-50 rounded-md border border-forge-200 p-4 mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">User</label>
+            <label className="block text-xs font-medium text-forge-400 mb-1">User</label>
             <select
               value={filterUser}
               onChange={(e) => setFilterUser(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded border border-forge-200 bg-forge-50 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
             >
               <option value="">All users</option>
               {users.map((u) => (
@@ -101,11 +101,11 @@ export default function AuditLoggingPage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">Action</label>
+            <label className="block text-xs font-medium text-forge-400 mb-1">Action</label>
             <select
               value={filterAction}
               onChange={(e) => setFilterAction(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded border border-forge-200 bg-forge-50 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
             >
               <option value="">All actions</option>
               {actionTypes.map((a) => (
@@ -114,55 +114,55 @@ export default function AuditLoggingPage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">From</label>
+            <label className="block text-xs font-medium text-forge-400 mb-1">From</label>
             <input
               type="date"
               value={filterDateFrom}
               onChange={(e) => setFilterDateFrom(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded border border-forge-200 bg-forge-50 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">To</label>
+            <label className="block text-xs font-medium text-forge-400 mb-1">To</label>
             <input
               type="date"
               value={filterDateTo}
               onChange={(e) => setFilterDateTo(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded border border-forge-200 bg-forge-50 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-forge-50 rounded-md border border-forge-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Timestamp</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">User</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Action</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Resource</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">IP Address</th>
+              <tr className="border-b border-forge-200 bg-forge-100">
+                <th className="text-left px-4 py-3 font-medium text-forge-400">Timestamp</th>
+                <th className="text-left px-4 py-3 font-medium text-forge-400">User</th>
+                <th className="text-left px-4 py-3 font-medium text-forge-400">Action</th>
+                <th className="text-left px-4 py-3 font-medium text-forge-400">Resource</th>
+                <th className="text-left px-4 py-3 font-medium text-forge-400">IP Address</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((event) => (
-                <tr key={event.id} className="border-b border-gray-50 hover:bg-gray-50 transition">
-                  <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{formatTimestamp(event.timestamp)}</td>
-                  <td className="px-4 py-3 text-gray-900">{event.user}</td>
+                <tr key={event.id} className="border-b border-forge-200 hover:bg-forge-100 transition">
+                  <td className="px-4 py-3 text-forge-500 whitespace-nowrap">{formatTimestamp(event.timestamp)}</td>
+                  <td className="px-4 py-3 text-forge-800">{event.user}</td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${actionColors[event.action] || 'bg-gray-100 text-gray-600'}`}>
+                    <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${actionColors[event.action] || 'bg-forge-200 text-forge-500'}`}>
                       {event.action}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-600">{event.resource}</td>
-                  <td className="px-4 py-3 text-gray-400 font-mono text-xs">{event.ip}</td>
+                  <td className="px-4 py-3 text-forge-500">{event.resource}</td>
+                  <td className="px-4 py-3 text-forge-300 font-mono text-xs">{event.ip}</td>
                 </tr>
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-gray-400">
+                  <td colSpan={5} className="px-4 py-12 text-center text-forge-300">
                     No events match your filters.
                   </td>
                 </tr>

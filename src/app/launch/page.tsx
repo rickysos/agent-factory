@@ -16,11 +16,11 @@ interface AgentProcess {
 }
 
 const statusConfig: Record<ProcessStatus, { color: string; bg: string }> = {
-  idle: { color: 'text-gray-600', bg: 'bg-gray-100' },
-  starting: { color: 'text-yellow-700', bg: 'bg-yellow-100' },
-  running: { color: 'text-green-700', bg: 'bg-green-100' },
-  stopping: { color: 'text-orange-700', bg: 'bg-orange-100' },
-  errored: { color: 'text-red-700', bg: 'bg-red-100' },
+  idle: { color: 'text-forge-500', bg: 'bg-forge-200' },
+  starting: { color: 'text-yellow-700', bg: 'bg-amber-500/10' },
+  running: { color: 'text-accent-600', bg: 'bg-accent-500/10' },
+  stopping: { color: 'text-orange-700', bg: 'bg-amber-500/10' },
+  errored: { color: 'text-red-700', bg: 'bg-red-500/50/10' },
 }
 
 const mockProcesses: AgentProcess[] = [
@@ -99,38 +99,38 @@ export default function LaunchPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8 flex items-start justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Agent <span className="text-blue-600">Launcher</span>
+          <h1 className="text-3xl font-bold text-forge-800 mb-2">
+            Agent <span className="text-accent-600">Launcher</span>
           </h1>
-          <p className="text-lg text-gray-600">{runningCount} of {processes.length} agents running</p>
+          <p className="text-lg text-forge-500">{runningCount} of {processes.length} agents running</p>
         </div>
         <button
           onClick={handleLaunchAll}
           disabled={launchingAll}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50"
+          className="px-6 py-2 bg-accent-500 text-forge-950 rounded text-sm font-medium hover:bg-accent-400 transition disabled:opacity-50"
         >
           {launchingAll ? 'Launching...' : 'Launch All'}
         </button>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="bg-white rounded-xl shadow p-4 border border-gray-100 text-center">
-          <div className="text-2xl font-bold text-gray-900">{runningCount}/{processes.length}</div>
-          <div className="text-sm text-gray-500">Active Agents</div>
+        <div className="bg-forge-50 rounded-md shadow p-4 border border-forge-200 text-center">
+          <div className="text-2xl font-bold text-forge-800">{runningCount}/{processes.length}</div>
+          <div className="text-sm text-forge-400">Active Agents</div>
         </div>
-        <div className="bg-white rounded-xl shadow p-4 border border-gray-100 text-center">
-          <div className="text-2xl font-bold text-gray-900">{totalCpu}%</div>
-          <div className="text-sm text-gray-500">Total CPU</div>
+        <div className="bg-forge-50 rounded-md shadow p-4 border border-forge-200 text-center">
+          <div className="text-2xl font-bold text-forge-800">{totalCpu}%</div>
+          <div className="text-sm text-forge-400">Total CPU</div>
         </div>
-        <div className="bg-white rounded-xl shadow p-4 border border-gray-100 text-center">
-          <div className="text-2xl font-bold text-gray-900">{totalMem} MB</div>
-          <div className="text-sm text-gray-500">Total Memory</div>
+        <div className="bg-forge-50 rounded-md shadow p-4 border border-forge-200 text-center">
+          <div className="text-2xl font-bold text-forge-800">{totalMem} MB</div>
+          <div className="text-sm text-forge-400">Total Memory</div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Agents</h2>
+          <h2 className="text-xl font-bold text-forge-700 mb-4">Agents</h2>
           <div className="space-y-3">
             {processes.map(proc => {
               const cfg = statusConfig[proc.status]
@@ -138,26 +138,26 @@ export default function LaunchPage() {
                 <div
                   key={proc.id}
                   onClick={() => setSelectedProcess(proc.id)}
-                  className={`bg-white rounded-xl shadow p-4 border cursor-pointer transition ${
-                    selectedProcess === proc.id ? 'border-blue-300 ring-2 ring-blue-100' : 'border-gray-100 hover:border-gray-200'
+                  className={`bg-forge-50 rounded-md shadow p-4 border cursor-pointer transition ${
+                    selectedProcess === proc.id ? 'border-accent-500/30 ring-2 ring-blue-100' : 'border-forge-200 hover:border-forge-200'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <span className={`w-2.5 h-2.5 rounded-full ${
-                        proc.status === 'running' ? 'bg-green-500 animate-pulse' :
-                        proc.status === 'errored' ? 'bg-red-500' :
-                        proc.status === 'starting' || proc.status === 'stopping' ? 'bg-yellow-500 animate-pulse' :
-                        'bg-gray-400'
+                        proc.status === 'running' ? 'bg-accent-500 animate-pulse' :
+                        proc.status === 'errored' ? 'bg-red-500/50' :
+                        proc.status === 'starting' || proc.status === 'stopping' ? 'bg-amber-400 animate-pulse' :
+                        'bg-forge-400'
                       }`} />
-                      <span className="font-medium text-gray-900">{proc.name}</span>
+                      <span className="font-medium text-forge-800">{proc.name}</span>
                     </div>
                     <span className={`px-2 py-0.5 rounded text-xs font-semibold capitalize ${cfg.bg} ${cfg.color}`}>
                       {proc.status}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-forge-400">
                       {proc.status === 'running' ? (
                         <span>CPU: {proc.cpu}% | Mem: {proc.memory}MB | Up: {proc.uptime}</span>
                       ) : (
@@ -166,16 +166,16 @@ export default function LaunchPage() {
                     </div>
                     <div className="flex gap-1">
                       {(proc.status === 'idle' || proc.status === 'errored') && (
-                        <button onClick={e => { e.stopPropagation(); handleStart(proc.id) }} className="px-3 py-1 bg-green-600 text-white rounded text-xs font-medium hover:bg-green-700">Start</button>
+                        <button onClick={e => { e.stopPropagation(); handleStart(proc.id) }} className="px-3 py-1 bg-accent-500 text-forge-950 rounded text-xs font-medium hover:bg-accent-600">Start</button>
                       )}
                       {proc.status === 'running' && (
                         <>
-                          <button onClick={e => { e.stopPropagation(); handleStop(proc.id) }} className="px-3 py-1 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700">Stop</button>
-                          <button onClick={e => { e.stopPropagation(); handleRestart(proc.id) }} className="px-3 py-1 bg-yellow-600 text-white rounded text-xs font-medium hover:bg-yellow-700">Restart</button>
+                          <button onClick={e => { e.stopPropagation(); handleStop(proc.id) }} className="px-3 py-1 bg-red-600 text-forge-950 rounded text-xs font-medium hover:bg-red-700">Stop</button>
+                          <button onClick={e => { e.stopPropagation(); handleRestart(proc.id) }} className="px-3 py-1 bg-amber-500 text-forge-950 rounded text-xs font-medium hover:bg-amber-600">Restart</button>
                         </>
                       )}
                       {(proc.status === 'starting' || proc.status === 'stopping') && (
-                        <span className="px-3 py-1 bg-gray-100 text-gray-500 rounded text-xs font-medium">Wait...</span>
+                        <span className="px-3 py-1 bg-forge-200 text-forge-400 rounded text-xs font-medium">Wait...</span>
                       )}
                     </div>
                   </div>
@@ -186,17 +186,17 @@ export default function LaunchPage() {
         </div>
 
         <div>
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
-            Live Logs {selectedProcess && <span className="text-base font-normal text-gray-500">- {processes.find(p => p.id === selectedProcess)?.name}</span>}
+          <h2 className="text-xl font-bold text-forge-700 mb-4">
+            Live Logs {selectedProcess && <span className="text-base font-normal text-forge-400">- {processes.find(p => p.id === selectedProcess)?.name}</span>}
           </h2>
-          <div className="bg-gray-900 rounded-xl p-4 h-[500px] overflow-y-auto font-mono text-sm">
+          <div className="bg-forge-900 rounded-md p-4 h-[500px] overflow-y-auto font-mono text-sm">
             {selectedLogs.length === 0 ? (
-              <span className="text-gray-500">No logs. Select a running agent to view logs.</span>
+              <span className="text-forge-400">No logs. Select a running agent to view logs.</span>
             ) : selectedLogs.map((line, i) => (
               <div key={i} className={
                 line.includes('[ERROR]') ? 'text-red-400' :
-                line.includes('[WARN]') ? 'text-yellow-400' :
-                'text-green-400'
+                line.includes('[WARN]') ? 'text-amber-400' :
+                'text-accent-400'
               }>
                 {line}
               </div>

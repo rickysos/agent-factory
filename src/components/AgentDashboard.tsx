@@ -14,10 +14,10 @@ export function AgentDashboard() {
   }
 
   const statItems = [
-    { label: 'Total', value: stats.total, color: 'text-amber-400' },
-    { label: 'Active', value: stats.active, color: 'text-green-400' },
+    { label: 'Total', value: stats.total, color: 'text-accent-500' },
+    { label: 'Active', value: stats.active, color: 'text-lime-500' },
     { label: 'Draft', value: stats.draft, color: 'text-forge-400' },
-    { label: 'Deploys', value: stats.deployments, color: 'text-copper-400' },
+    { label: 'Deploys', value: stats.deployments, color: 'text-teal-500' },
   ]
 
   return (
@@ -34,10 +34,10 @@ export function AgentDashboard() {
       <div className="mb-4 flex justify-between items-center">
         <h3 className="text-xs font-mono font-medium text-forge-500 dark:text-forge-400 uppercase tracking-wider">Fleet</h3>
         <div className="flex gap-2">
-          <button className="px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-forge-500 dark:text-forge-400 border border-forge-200 dark:border-forge-700 rounded hover:border-amber-500/50 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+          <button className="px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-forge-500 dark:text-forge-400 border border-forge-200 dark:border-forge-700 rounded hover:border-accent-500/50 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
             Filter
           </button>
-          <button className="px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-forge-500 dark:text-forge-400 border border-forge-200 dark:border-forge-700 rounded hover:border-amber-500/50 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+          <button className="px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-forge-500 dark:text-forge-400 border border-forge-200 dark:border-forge-700 rounded hover:border-accent-500/50 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
             Sort
           </button>
         </div>
@@ -52,7 +52,7 @@ export function AgentDashboard() {
           </div>
           <h3 className="text-sm font-mono font-medium text-forge-600 dark:text-forge-300 mb-1 uppercase tracking-wider">No agents forged</h3>
           <p className="text-sm text-forge-400 dark:text-forge-500 mb-5">Create your first agent to begin</p>
-          <button className="px-5 py-2 text-xs font-mono font-medium uppercase tracking-wider bg-amber-500 text-forge-950 rounded hover:bg-amber-400 transition-colors">
+          <button className="px-5 py-2 text-xs font-mono font-medium uppercase tracking-wider bg-accent-500 text-forge-950 rounded hover:bg-accent-400 transition-colors">
             Forge Agent
           </button>
         </div>

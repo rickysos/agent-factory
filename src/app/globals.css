@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --background: #fafaf8;
-  --foreground: #12110f;
+  --background: #f5f7f2;
+  --foreground: #12150f;
   --dot-color: rgba(0, 0, 0, 0.06);
 }
 
 .dark {
-  --background: #0a0a08;
-  --foreground: #e0ded3;
-  --dot-color: rgba(255, 255, 255, 0.04);
+  --background: #0a0c08;
+  --foreground: #eaefe4;
+  --dot-color: rgba(34, 197, 94, 0.04);
 }
 
 body {
@@ -33,12 +33,12 @@ body {
 }
 
 /* Forge glow effect for accent elements */
-.glow-amber {
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.15), 0 0 60px rgba(245, 158, 11, 0.05);
+.glow-accent {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.15), 0 0 60px rgba(34, 197, 94, 0.05);
 }
 
-.dark .glow-amber {
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2), 0 0 60px rgba(245, 158, 11, 0.08);
+.dark .glow-accent {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.2), 0 0 60px rgba(34, 197, 94, 0.08);
 }
 
 /* Hairline border utility */
@@ -51,17 +51,17 @@ body {
   --status-success: #16a34a;
   --status-warning: #d97706;
   --status-error: #dc2626;
-  --status-info: #f59e0b;
-  --status-active: #f59e0b;
-  --status-draft: #9a9684;
-  --status-inactive: #706c5c;
+  --status-info: #22c55e;
+  --status-active: #22c55e;
+  --status-draft: #8e9c82;
+  --status-inactive: #6a7660;
 }
 
 [data-color-vision="protanopia"] {
   --status-success: #0284c7;
   --status-warning: #ea580c;
   --status-error: #c026d3;
-  --status-info: #f59e0b;
+  --status-info: #22c55e;
   --status-active: #0284c7;
   --status-draft: #ea580c;
 }
@@ -70,7 +70,7 @@ body {
   --status-success: #0284c7;
   --status-warning: #ea580c;
   --status-error: #c026d3;
-  --status-info: #f59e0b;
+  --status-info: #22c55e;
   --status-active: #0284c7;
   --status-draft: #ea580c;
 }
@@ -106,7 +106,7 @@ body {
 /* Scrollbar styling */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(154, 150, 132, 0.3); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(154, 150, 132, 0.5); }
-.dark ::-webkit-scrollbar-thumb { background: rgba(154, 150, 132, 0.15); }
-.dark ::-webkit-scrollbar-thumb:hover { background: rgba(154, 150, 132, 0.3); }
+::-webkit-scrollbar-thumb { background: rgba(142, 156, 130, 0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(142, 156, 130, 0.5); }
+.dark ::-webkit-scrollbar-thumb { background: rgba(142, 156, 130, 0.15); }
+.dark ::-webkit-scrollbar-thumb:hover { background: rgba(142, 156, 130, 0.3); }

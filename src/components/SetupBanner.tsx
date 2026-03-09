@@ -16,7 +16,7 @@ export function SetupBanner() {
   if (!show) return null
 
   return (
-    <div className="mb-8 px-5 py-4 bg-amber-500/5 border border-amber-500/20 rounded-md flex items-center justify-between">
+    <div className="mb-8 px-5 py-4 bg-accent-500/5 border border-accent-500/20 rounded-md flex items-center justify-between">
       <div>
         <h3 className="text-sm font-display font-semibold text-forge-800 dark:text-forge-100">New to the Factory?</h3>
         <p className="text-xs font-mono text-forge-400 dark:text-forge-500 mt-0.5">Complete setup to configure providers and forge your first agent.</p>
@@ -33,7 +33,7 @@ export function SetupBanner() {
         </button>
         <Link
           href="/setup"
-          className="px-4 py-1.5 text-xs font-mono font-medium uppercase tracking-wider bg-amber-500 text-forge-950 rounded hover:bg-amber-400 transition-colors"
+          className="px-4 py-1.5 text-xs font-mono font-medium uppercase tracking-wider bg-accent-500 text-forge-950 rounded hover:bg-accent-400 transition-colors"
         >
           Setup
         </Link>

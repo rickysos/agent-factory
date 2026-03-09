@@ -83,14 +83,14 @@ export default function McpPage() {
   }
 
   const statusDotColor = {
-    connected: 'bg-green-500',
-    disconnected: 'bg-gray-400',
-    error: 'bg-red-500',
+    connected: 'bg-accent-500',
+    disconnected: 'bg-forge-400',
+    error: 'bg-red-500/50',
   }
 
   const transportBadge = {
-    stdio: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
-    sse: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300',
+    stdio: 'bg-accent-500/10 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400',
+    sse: 'bg-forge-200 text-forge-600 dark:bg-forge-800 dark:text-forge-300',
   }
 
   const agentsUsingServer = (serverId: string) =>
@@ -100,56 +100,56 @@ export default function McpPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">MCP Servers</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <h1 className="text-3xl font-bold text-forge-800 dark:text-forge-100">MCP Servers</h1>
+          <p className="text-forge-500 dark:text-forge-400 mt-2">
             Model Context Protocol servers provide tools for your agents.
           </p>
         </div>
         <button
           onClick={() => setShowAdd(!showAdd)}
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
+          className="px-4 py-2 text-sm font-medium text-forge-950 bg-accent-500 rounded hover:bg-accent-400 transition"
         >
           {showAdd ? 'Cancel' : 'Add Server'}
         </button>
       </div>
 
       {showAdd && (
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Add MCP Server</h2>
+        <div className="bg-forge-50 dark:bg-forge-900 rounded-md  border border-forge-200 dark:border-forge-700 p-6 mb-8">
+          <h2 className="text-lg font-semibold text-forge-800 dark:text-forge-100 mb-4">Add MCP Server</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+              <label className="block text-sm font-medium text-forge-600 dark:text-forge-300 mb-1">Name</label>
               <input
                 value={newName}
                 onChange={e => setNewName(e.target.value)}
                 placeholder="e.g., My Custom Tools"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                className="w-full px-3 py-2 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-850 text-forge-800 dark:text-forge-100"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL</label>
+              <label className="block text-sm font-medium text-forge-600 dark:text-forge-300 mb-1">URL</label>
               <input
                 value={newUrl}
                 onChange={e => setNewUrl(e.target.value)}
                 placeholder="stdio://mcp-server or http://localhost:3100/sse"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                className="w-full px-3 py-2 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-850 text-forge-800 dark:text-forge-100"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+              <label className="block text-sm font-medium text-forge-600 dark:text-forge-300 mb-1">Description</label>
               <input
                 value={newDescription}
                 onChange={e => setNewDescription(e.target.value)}
                 placeholder="What does this server provide?"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                className="w-full px-3 py-2 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-850 text-forge-800 dark:text-forge-100"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Transport</label>
+              <label className="block text-sm font-medium text-forge-600 dark:text-forge-300 mb-1">Transport</label>
               <select
                 value={newTransport}
                 onChange={e => setNewTransport(e.target.value as 'stdio' | 'sse')}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                className="w-full px-3 py-2 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-850 text-forge-800 dark:text-forge-100"
               >
                 <option value="stdio">stdio</option>
                 <option value="sse">sse</option>
@@ -159,7 +159,7 @@ export default function McpPage() {
           <button
             onClick={addServer}
             disabled={!newName}
-            className="mt-4 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition"
+            className="mt-4 px-4 py-2 text-sm font-medium text-forge-950 bg-accent-500 rounded hover:bg-accent-400 disabled:opacity-50 transition"
           >
             Add Server
           </button>
@@ -170,27 +170,27 @@ export default function McpPage() {
         {servers.map(server => (
           <div
             key={server.id}
-            className={`bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 border-l-4 ${statusBorderColor[server.status]} overflow-hidden`}
+            className={`bg-forge-50 dark:bg-forge-900 rounded-md  border border-forge-200 dark:border-forge-700 border-l-4 ${statusBorderColor[server.status]} overflow-hidden`}
           >
             <div className="p-6">
               <div className="flex justify-between items-start mb-2">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">{server.name}</h3>
+                <h3 className="text-lg font-bold text-forge-800 dark:text-forge-100">{server.name}</h3>
                 <div className="flex items-center gap-2">
                   <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${transportBadge[server.transport]}`}>
                     {server.transport}
                   </span>
                   <div className="flex items-center gap-1">
                     <div className={`h-2 w-2 rounded-full ${statusDotColor[server.status]}`} />
-                    <span className="text-xs text-gray-500 dark:text-gray-400">{server.status}</span>
+                    <span className="text-xs text-forge-400 dark:text-forge-500">{server.status}</span>
                   </div>
                 </div>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{server.description}</p>
-              <p className="text-xs font-mono text-gray-400 dark:text-gray-500 mb-4">{server.url}</p>
+              <p className="text-sm text-forge-500 dark:text-forge-400 mb-3">{server.description}</p>
+              <p className="text-xs font-mono text-forge-300 dark:text-forge-400 mb-4">{server.url}</p>
 
               <button
                 onClick={() => setExpandedServer(expandedServer === server.id ? null : server.id)}
-                className="text-sm text-blue-600 dark:text-blue-400 hover:underline mb-3"
+                className="text-sm text-accent-600 dark:text-accent-400 hover:underline mb-3"
               >
                 {server.tools.length} tool{server.tools.length !== 1 ? 's' : ''}{' '}
                 {expandedServer === server.id ? '(hide)' : '(show)'}
@@ -199,9 +199,9 @@ export default function McpPage() {
               {expandedServer === server.id && server.tools.length > 0 && (
                 <div className="mt-2 space-y-2">
                   {server.tools.map(tool => (
-                    <div key={tool.name} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
-                      <p className="text-sm font-mono font-semibold text-gray-900 dark:text-white">{tool.name}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{tool.description}</p>
+                    <div key={tool.name} className="bg-forge-100 dark:bg-forge-850 rounded p-3">
+                      <p className="text-sm font-mono font-semibold text-forge-800 dark:text-forge-100">{tool.name}</p>
+                      <p className="text-xs text-forge-400 dark:text-forge-500">{tool.description}</p>
                     </div>
                   ))}
                 </div>
@@ -210,7 +210,7 @@ export default function McpPage() {
               <div className="mt-4 flex justify-end">
                 <button
                   onClick={() => removeServer(server.id)}
-                  className="px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition"
+                  className="px-3 py-1.5 text-sm font-medium text-red-500 dark:text-red-400 bg-red-500/5 dark:bg-red-500/50/10 rounded hover:bg-red-500/50/10 dark:hover:bg-red-500/50/10 transition"
                 >
                   Remove
                 </button>
@@ -220,29 +220,29 @@ export default function McpPage() {
         ))}
       </div>
 
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Agent - Server Assignments</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+      <div className="bg-forge-50 dark:bg-forge-900 rounded-md  border border-forge-200 dark:border-forge-700 p-6">
+        <h2 className="text-xl font-bold text-forge-800 dark:text-forge-100 mb-4">Agent - Server Assignments</h2>
+        <p className="text-sm text-forge-400 dark:text-forge-500 mb-4">
           Shows which agents are configured to use which MCP servers.
         </p>
         {servers.length === 0 ? (
-          <p className="text-sm text-gray-400 dark:text-gray-500">No servers configured yet.</p>
+          <p className="text-sm text-forge-300 dark:text-forge-400">No servers configured yet.</p>
         ) : (
           <div className="space-y-3">
             {servers.map(server => {
               const assigned = agentsUsingServer(server.id)
               return (
-                <div key={server.id} className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-800 last:border-0">
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">{server.name}</span>
+                <div key={server.id} className="flex items-center justify-between py-2 border-b border-forge-200 dark:border-forge-800 last:border-0">
+                  <span className="text-sm font-medium text-forge-800 dark:text-forge-100">{server.name}</span>
                   <div className="flex gap-2">
                     {assigned.length > 0 ? (
                       assigned.map(a => (
-                        <span key={a.id} className="px-2 py-0.5 text-xs bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-full">
+                        <span key={a.id} className="px-2 py-0.5 text-xs bg-accent-500/5 dark:bg-accent-500/10 text-accent-600 dark:text-accent-400 rounded-full">
                           {a.name}
                         </span>
                       ))
                     ) : (
-                      <span className="text-xs text-gray-400 dark:text-gray-500">No agents assigned</span>
+                      <span className="text-xs text-forge-300 dark:text-forge-400">No agents assigned</span>
                     )}
                   </div>
                 </div>

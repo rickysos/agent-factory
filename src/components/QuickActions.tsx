@@ -16,9 +16,9 @@ export function QuickActions() {
         <Link
           key={action.name}
           href={action.href}
-          className="flex items-center justify-between px-3 py-2.5 rounded border border-forge-200 dark:border-forge-700 hover:border-amber-500/40 transition-colors group"
+          className="flex items-center justify-between px-3 py-2.5 rounded border border-forge-200 dark:border-forge-700 hover:border-accent-500/40 transition-colors group"
         >
-          <span className="text-xs font-mono text-forge-600 dark:text-forge-300 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+          <span className="text-xs font-mono text-forge-600 dark:text-forge-300 group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors">
             {action.name}
           </span>
           <span className="text-[10px] font-mono text-forge-300 dark:text-forge-600 uppercase">

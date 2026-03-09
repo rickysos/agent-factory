@@ -39,23 +39,23 @@ export default function MessagingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-8">
+    <div className="min-h-screen bg-forge-950 text-forge-100 p-8">
       <h1 className="text-3xl font-bold mb-2">Messaging Channel Integration</h1>
-      <p className="text-gray-400 mb-8">Configure messaging platforms for agent communication</p>
+      <p className="text-forge-300 mb-8">Configure messaging platforms for agent communication</p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {channels.map(channel => (
-          <div key={channel.id} className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+          <div key={channel.id} className="bg-forge-900 border border-forge-800 rounded p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold">{channel.name}</h2>
               <div className="flex items-center gap-2">
                 <span className={`w-2 h-2 rounded-full ${
-                  channel.status === 'connected' ? 'bg-green-400' :
-                  channel.status === 'error' ? 'bg-red-400' : 'bg-gray-600'
+                  channel.status === 'connected' ? 'bg-accent-400' :
+                  channel.status === 'error' ? 'bg-red-400' : 'bg-forge-600'
                 }`} />
                 <span className={`text-xs ${
-                  channel.status === 'connected' ? 'text-green-400' :
-                  channel.status === 'error' ? 'text-red-400' : 'text-gray-500'
+                  channel.status === 'connected' ? 'text-accent-400' :
+                  channel.status === 'error' ? 'text-red-400' : 'text-forge-400'
                 }`}>
                   {channel.status}
                 </span>
@@ -64,33 +64,33 @@ export default function MessagingPage() {
 
             <div className="space-y-3">
               <div>
-                <label className="block text-xs text-gray-500 uppercase mb-1">Bot Token / API Key</label>
+                <label className="block text-xs text-forge-400 uppercase mb-1">Bot Token / API Key</label>
                 <input
                   type="password"
                   value={channel.botToken}
                   onChange={e => updateChannel(channel.id, { botToken: e.target.value })}
                   placeholder="Enter token..."
-                  className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm font-mono"
+                  className="w-full bg-forge-850 border border-forge-700 rounded px-3 py-2 text-sm font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-gray-500 uppercase mb-1">User Allowlist</label>
+                <label className="block text-xs text-forge-400 uppercase mb-1">User Allowlist</label>
                 <input
                   type="text"
                   value={channel.allowlist}
                   onChange={e => updateChannel(channel.id, { allowlist: e.target.value })}
                   placeholder="@user1, @user2"
-                  className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+                  className="w-full bg-forge-850 border border-forge-700 rounded px-3 py-2 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-gray-500 uppercase mb-1">DM Policy</label>
+                <label className="block text-xs text-forge-400 uppercase mb-1">DM Policy</label>
                 <select
                   value={channel.dmPolicy}
                   onChange={e => updateChannel(channel.id, { dmPolicy: e.target.value as Channel['dmPolicy'] })}
-                  className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+                  className="w-full bg-forge-850 border border-forge-700 rounded px-3 py-2 text-sm"
                 >
                   <option value="open">Open (anyone can DM)</option>
                   <option value="allowlist">Allowlist Only</option>
@@ -105,7 +105,7 @@ export default function MessagingPage() {
                 className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
                   channel.status === 'connected'
                     ? 'bg-red-600 hover:bg-red-700'
-                    : 'bg-green-600 hover:bg-green-700'
+                    : 'bg-accent-500 hover:bg-accent-600'
                 }`}
               >
                 {channel.status === 'connected' ? 'Disconnect' : 'Connect'}
@@ -113,7 +113,7 @@ export default function MessagingPage() {
               <button
                 onClick={() => sendTest(channel.id)}
                 disabled={channel.status !== 'connected'}
-                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-600 rounded text-sm font-medium transition-colors"
+                className="px-4 py-2 bg-forge-700 hover:bg-forge-600 disabled:bg-forge-850 disabled:text-forge-500 rounded text-sm font-medium transition-colors"
               >
                 {testSent === channel.id ? 'Sent' : 'Test Message'}
               </button>

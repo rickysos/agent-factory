@@ -130,51 +130,51 @@ export default function SetupPage() {
 
   const renderEnvironment = () => (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+      <h2 className="text-2xl font-bold text-forge-800 dark:text-forge-100 mb-2">
         Welcome to Agent Factory
       </h2>
-      <p className="text-gray-600 dark:text-gray-400 mb-6">
+      <p className="text-forge-500 dark:text-forge-400 mb-6">
         This wizard will help you get set up. First, let&apos;s check that everything is running.
       </p>
 
       <div className="space-y-3">
-        <div className="flex items-center gap-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-3 p-4 rounded bg-forge-100 dark:bg-forge-850 border border-forge-200 dark:border-forge-700">
           {healthLoading ? (
-            <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
           ) : healthError ? (
             <svg className="w-5 h-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           ) : (
-            <svg className="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-accent-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           )}
           <div>
-            <div className="font-medium text-gray-900 dark:text-white">Next.js Server</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="font-medium text-forge-800 dark:text-forge-100">Next.js Server</div>
+            <div className="text-sm text-forge-400 dark:text-forge-500">
               {healthLoading ? 'Checking...' : healthError ? healthError : `Running (uptime: ${Math.round(health?.uptime || 0)}s)`}
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-          <svg className="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="flex items-center gap-3 p-4 rounded bg-forge-100 dark:bg-forge-850 border border-forge-200 dark:border-forge-700">
+          <svg className="w-5 h-5 text-accent-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
           <div>
-            <div className="font-medium text-gray-900 dark:text-white">Agent Store</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">In-memory store ready</div>
+            <div className="font-medium text-forge-800 dark:text-forge-100">Agent Store</div>
+            <div className="text-sm text-forge-400 dark:text-forge-500">In-memory store ready</div>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-          <svg className="w-5 h-5 text-yellow-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="flex items-center gap-3 p-4 rounded bg-forge-100 dark:bg-forge-850 border border-forge-200 dark:border-forge-700">
+          <svg className="w-5 h-5 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.072 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
           <div>
-            <div className="font-medium text-gray-900 dark:text-white">Database</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">Optional - using in-memory storage for now</div>
+            <div className="font-medium text-forge-800 dark:text-forge-100">Database</div>
+            <div className="text-sm text-forge-400 dark:text-forge-500">Optional - using in-memory storage for now</div>
           </div>
         </div>
       </div>
@@ -183,8 +183,8 @@ export default function SetupPage() {
 
   const renderProviders = () => (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">AI Providers</h2>
-      <p className="text-gray-600 dark:text-gray-400 mb-6">
+      <h2 className="text-2xl font-bold text-forge-800 dark:text-forge-100 mb-2">AI Providers</h2>
+      <p className="text-forge-500 dark:text-forge-400 mb-6">
         These providers power your agents. Configure them via environment variables.
       </p>
 
@@ -192,32 +192,32 @@ export default function SetupPage() {
         {providers.map(p => (
           <div
             key={p.id}
-            className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800"
+            className="p-4 rounded border border-forge-200 dark:border-forge-700 bg-forge-100 dark:bg-forge-850"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="font-semibold text-gray-900 dark:text-white">{p.name}</div>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+              <div className="font-semibold text-forge-800 dark:text-forge-100">{p.name}</div>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-forge-200 dark:bg-forge-700 text-forge-500 dark:text-forge-400">
                 Not configured
               </span>
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-              Set <code className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-xs font-mono">{p.envVar}</code> in your <code className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-xs font-mono">.env.local</code> file.
+            <div className="text-sm text-forge-500 dark:text-forge-400 mb-2">
+              Set <code className="px-1.5 py-0.5 bg-forge-200 dark:bg-forge-700 rounded text-xs font-mono">{p.envVar}</code> in your <code className="px-1.5 py-0.5 bg-forge-200 dark:bg-forge-700 rounded text-xs font-mono">.env.local</code> file.
             </div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">{p.instructions}</div>
+            <div className="text-sm text-forge-400 dark:text-forge-500">{p.instructions}</div>
             {p.freeModels && (
               <div className="mt-2 text-sm">
-                <span className="text-green-600 dark:text-green-400 font-medium">Free models available: </span>
-                <span className="text-gray-600 dark:text-gray-400">{p.freeModels.join(', ')}</span>
+                <span className="text-accent-600 dark:text-accent-400 font-medium">Free models available: </span>
+                <span className="text-forge-500 dark:text-forge-400">{p.freeModels.join(', ')}</span>
               </div>
             )}
-            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            <div className="mt-2 text-xs text-forge-400 dark:text-forge-500">
               Models: {p.models.join(', ')}
             </div>
           </div>
         ))}
       </div>
 
-      <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+      <p className="mt-4 text-sm text-forge-400 dark:text-forge-500">
         You can configure providers later. The wizard will let you create an agent with any model name.
       </p>
     </div>
@@ -225,36 +225,36 @@ export default function SetupPage() {
 
   const renderCreateAgent = () => (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Create Your First Agent</h2>
-      <p className="text-gray-600 dark:text-gray-400 mb-6">
+      <h2 className="text-2xl font-bold text-forge-800 dark:text-forge-100 mb-2">Create Your First Agent</h2>
+      <p className="text-forge-500 dark:text-forge-400 mb-6">
         Set up a simple agent to get started. You can customize it later.
       </p>
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Agent Name</label>
+          <label className="block text-sm font-medium text-forge-600 dark:text-forge-300 mb-1">Agent Name</label>
           <input
             type="text"
             value={agentName}
             onChange={e => setAgentName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            className="w-full px-4 py-2 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-850 text-forge-800 dark:text-forge-100 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+          <label className="block text-sm font-medium text-forge-600 dark:text-forge-300 mb-1">Description</label>
           <textarea
             value={agentDescription}
             onChange={e => setAgentDescription(e.target.value)}
             rows={2}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
+            className="w-full px-4 py-2 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-850 text-forge-800 dark:text-forge-100 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none resize-none"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Model</label>
+          <label className="block text-sm font-medium text-forge-600 dark:text-forge-300 mb-1">Model</label>
           <select
             value={agentModel}
             onChange={e => setAgentModel(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            className="w-full px-4 py-2 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-850 text-forge-800 dark:text-forge-100 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
           >
             {allModels.map(m => (
               <option key={m} value={m}>{m}</option>
@@ -262,7 +262,7 @@ export default function SetupPage() {
           </select>
         </div>
         {createError && (
-          <p className="text-sm text-red-600 dark:text-red-400">{createError}</p>
+          <p className="text-sm text-red-500 dark:text-red-400">{createError}</p>
         )}
       </div>
     </div>
@@ -270,27 +270,27 @@ export default function SetupPage() {
 
   const renderComplete = () => (
     <div className="text-center py-8">
-      <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-        <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="w-16 h-16 bg-accent-500/10 dark:bg-accent-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+        <svg className="w-8 h-8 text-accent-600 dark:text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
       </div>
-      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Setup Complete!</h2>
+      <h2 className="text-3xl font-bold text-forge-800 dark:text-forge-100 mb-4">Setup Complete!</h2>
       {createdAgent ? (
         <div className="mb-8">
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            Your agent <strong className="text-gray-900 dark:text-white">{createdAgent.name}</strong> has been created.
+          <p className="text-forge-500 dark:text-forge-400 mb-4">
+            Your agent <strong className="text-forge-800 dark:text-forge-100">{createdAgent.name}</strong> has been created.
           </p>
-          <div className="inline-block text-left bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              <div><span className="font-medium text-gray-900 dark:text-white">Name:</span> {createdAgent.name}</div>
-              <div><span className="font-medium text-gray-900 dark:text-white">Model:</span> {createdAgent.model}</div>
-              <div><span className="font-medium text-gray-900 dark:text-white">Description:</span> {createdAgent.description}</div>
+          <div className="inline-block text-left bg-forge-100 dark:bg-forge-850 rounded p-4 border border-forge-200 dark:border-forge-700">
+            <div className="text-sm text-forge-500 dark:text-forge-400">
+              <div><span className="font-medium text-forge-800 dark:text-forge-100">Name:</span> {createdAgent.name}</div>
+              <div><span className="font-medium text-forge-800 dark:text-forge-100">Model:</span> {createdAgent.model}</div>
+              <div><span className="font-medium text-forge-800 dark:text-forge-100">Description:</span> {createdAgent.description}</div>
             </div>
           </div>
         </div>
       ) : (
-        <p className="text-gray-600 dark:text-gray-400 mb-8">
+        <p className="text-forge-500 dark:text-forge-400 mb-8">
           You&apos;re all set to start using Agent Factory.
         </p>
       )}
@@ -299,14 +299,14 @@ export default function SetupPage() {
         {createdAgent && (
           <Link
             href={`/chat/${createdAgent.id}`}
-            className="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
+            className="px-6 py-2.5 bg-accent-500 text-forge-950 font-medium rounded hover:bg-accent-400 transition"
           >
             Start Chatting
           </Link>
         )}
         <Link
           href="/"
-          className="px-6 py-2.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition border border-gray-200 dark:border-gray-700"
+          className="px-6 py-2.5 bg-forge-200 dark:bg-forge-800 text-forge-600 dark:text-forge-300 font-medium rounded hover:bg-forge-200 dark:hover:bg-forge-800 transition border border-forge-200 dark:border-forge-700"
         >
           Go to Dashboard
         </Link>
@@ -318,7 +318,7 @@ export default function SetupPage() {
             setAgentModel('gpt-4o')
             setStepIndex(2)
           }}
-          className="px-6 py-2.5 text-blue-600 dark:text-blue-400 font-medium rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition"
+          className="px-6 py-2.5 text-accent-600 dark:text-accent-400 font-medium rounded hover:bg-accent-500/5 dark:hover:bg-accent-500/5 transition"
         >
           Create Another Agent
         </button>
@@ -338,8 +338,8 @@ export default function SetupPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Setup <span className="text-blue-600 dark:text-blue-400">Wizard</span>
+        <h1 className="text-3xl font-bold text-forge-800 dark:text-forge-100">
+          Setup <span className="text-accent-600 dark:text-accent-400">Wizard</span>
         </h1>
       </div>
 
@@ -349,9 +349,9 @@ export default function SetupPage() {
           {steps.map((step, i) => (
             <div key={step} className="flex items-center flex-1">
               <div className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold shrink-0 ${
-                i < stepIndex ? 'bg-blue-600 text-white' :
-                i === stepIndex ? 'bg-blue-600 text-white ring-4 ring-blue-100 dark:ring-blue-900' :
-                'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
+                i < stepIndex ? 'bg-accent-500 text-forge-950' :
+                i === stepIndex ? 'bg-accent-500 text-forge-950 ring-4 ring-accent-500/20 dark:ring-accent-500/20' :
+                'bg-forge-200 dark:bg-forge-700 text-forge-400 dark:text-forge-500'
               }`}>
                 {i < stepIndex ? (
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -360,14 +360,14 @@ export default function SetupPage() {
                 ) : i + 1}
               </div>
               {i < steps.length - 1 && (
-                <div className={`flex-1 h-1 mx-1 rounded ${i < stepIndex ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`} />
+                <div className={`flex-1 h-1 mx-1 rounded ${i < stepIndex ? 'bg-accent-500' : 'bg-forge-200 dark:bg-forge-700'}`} />
               )}
             </div>
           ))}
         </div>
         <div className="flex justify-between mt-2">
           {steps.map((step, i) => (
-            <span key={step} className={`text-xs ${i === stepIndex ? 'text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-400 dark:text-gray-500'}`}>
+            <span key={step} className={`text-xs ${i === stepIndex ? 'text-accent-600 dark:text-accent-400 font-medium' : 'text-forge-300 dark:text-forge-400'}`}>
               {step}
             </span>
           ))}
@@ -375,7 +375,7 @@ export default function SetupPage() {
       </div>
 
       {/* Step content */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg dark:shadow-gray-950/50 p-8 mb-6 border border-gray-100 dark:border-gray-800">
+      <div className="bg-forge-50 dark:bg-forge-900 rounded-md border border-forge-200 dark:border-forge-800 p-8 mb-6 border border-forge-200 dark:border-forge-800">
         {renderStep()}
       </div>
 
@@ -385,7 +385,7 @@ export default function SetupPage() {
           <button
             onClick={back}
             disabled={stepIndex === 0}
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 text-sm font-medium text-forge-600 dark:text-forge-300 bg-forge-200 dark:bg-forge-800 rounded hover:bg-forge-200 dark:hover:bg-forge-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Back
           </button>
@@ -393,7 +393,7 @@ export default function SetupPage() {
             {currentStep === 'Create Agent' && (
               <button
                 onClick={skipToComplete}
-                className="px-4 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition"
+                className="px-4 py-2 text-sm font-medium text-forge-400 dark:text-forge-500 hover:text-forge-600 dark:hover:text-forge-200 transition"
               >
                 Skip
               </button>
@@ -402,14 +402,14 @@ export default function SetupPage() {
               <button
                 onClick={createAgent}
                 disabled={creating || !agentName || !agentModel}
-                className="px-6 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 text-sm font-medium bg-accent-500 text-forge-950 rounded hover:bg-accent-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {creating ? 'Creating...' : 'Create Agent'}
               </button>
             ) : (
               <button
                 onClick={next}
-                className="px-6 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                className="px-6 py-2 text-sm font-medium bg-accent-500 text-forge-950 rounded hover:bg-accent-400 transition"
               >
                 Continue
               </button>

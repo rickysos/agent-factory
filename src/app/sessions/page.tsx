@@ -106,8 +106,8 @@ export default function SessionsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Sessions</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">View chat sessions and message history for all agents.</p>
+        <h1 className="text-3xl font-bold text-forge-800 dark:text-forge-100">Sessions</h1>
+        <p className="text-forge-500 dark:text-forge-400 mt-2">View chat sessions and message history for all agents.</p>
       </div>
 
       {!selectedSession ? (
@@ -118,12 +118,12 @@ export default function SessionsPage() {
               placeholder="Search sessions..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 w-64"
+              className="px-3 py-1.5 text-sm rounded border border-forge-200 dark:border-forge-700 bg-forge-50 dark:bg-forge-850 text-forge-600 dark:text-forge-200 w-64"
             />
             <select
               value={agentFilter}
               onChange={e => setAgentFilter(e.target.value)}
-              className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
+              className="px-3 py-1.5 text-sm font-medium rounded border border-forge-200 dark:border-forge-700 bg-forge-50 dark:bg-forge-850 text-forge-600 dark:text-forge-200"
             >
               <option value="all">All Agents</option>
               {uniqueAgents.map(a => (
@@ -133,26 +133,26 @@ export default function SessionsPage() {
           </div>
 
           {filtered.length === 0 ? (
-            <div className="text-center py-16 text-gray-500 dark:text-gray-400">No sessions found.</div>
+            <div className="text-center py-16 text-forge-400 dark:text-forge-500">No sessions found.</div>
           ) : (
             <div className="space-y-3">
               {filtered.map(session => (
                 <button
                   key={session.id}
                   onClick={() => setSelectedSession(session)}
-                  className="w-full bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 transition"
+                  className="w-full bg-forge-50 dark:bg-forge-900 rounded-md  border border-forge-200 dark:border-forge-700 px-6 py-4 flex items-center justify-between text-left hover:bg-forge-100 dark:hover:bg-forge-850/50 transition"
                 >
                   <div>
-                    <p className="font-semibold text-gray-900 dark:text-white">{session.title}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                    <p className="font-semibold text-forge-800 dark:text-forge-100">{session.title}</p>
+                    <p className="text-sm text-forge-400 dark:text-forge-500 mt-0.5">
                       {session.agentName} -- {session.messages.length} message{session.messages.length !== 1 ? 's' : ''}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-forge-500 dark:text-forge-400">
                       {new Date(session.createdAt).toLocaleString()}
                     </p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                    <p className="text-xs text-forge-300 dark:text-forge-400 mt-0.5">
                       Updated {new Date(session.updatedAt).toLocaleTimeString()}
                     </p>
                   </div>
@@ -166,7 +166,7 @@ export default function SessionsPage() {
           <div className="flex items-center justify-between mb-6">
             <button
               onClick={() => setSelectedSession(null)}
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 flex items-center gap-1 transition"
+              className="text-sm text-forge-400 dark:text-forge-500 hover:text-forge-600 dark:hover:text-forge-200 flex items-center gap-1 transition"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -175,18 +175,18 @@ export default function SessionsPage() {
             </button>
             <Link
               href={`/chat/${selectedSession.agentId}`}
-              className="px-3 py-1.5 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+              className="px-3 py-1.5 text-sm font-medium rounded bg-accent-500 text-forge-950 hover:bg-accent-400 transition"
             >
               Open in Chat
             </Link>
           </div>
 
-          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <div className="bg-forge-50 dark:bg-forge-900 rounded-md  border border-forge-200 dark:border-forge-700 p-6 mb-6">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">{selectedSession.title}</h2>
-              <span className="text-sm text-gray-500 dark:text-gray-400">{selectedSession.id}</span>
+              <h2 className="text-lg font-bold text-forge-800 dark:text-forge-100">{selectedSession.title}</h2>
+              <span className="text-sm text-forge-400 dark:text-forge-500">{selectedSession.id}</span>
             </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-forge-400 dark:text-forge-500">
               {selectedSession.agentName} -- {new Date(selectedSession.createdAt).toLocaleString()} - {new Date(selectedSession.updatedAt).toLocaleTimeString()}
             </p>
           </div>
@@ -195,27 +195,27 @@ export default function SessionsPage() {
             {selectedSession.messages.map((msg, i) => (
               <div
                 key={i}
-                className={`rounded-xl p-4 ${
+                className={`rounded-md p-4 ${
                   msg.role === 'user'
-                    ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
+                    ? 'bg-accent-500/10 dark:bg-accent-900/20 border border-accent-500/20'
                     : msg.role === 'system'
-                    ? 'bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
-                    : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700'
+                    ? 'bg-forge-100 dark:bg-forge-850 border border-forge-200 dark:border-forge-700'
+                    : 'bg-forge-50 dark:bg-forge-900 border border-forge-200 dark:border-forge-700'
                 }`}
               >
                 <div className="flex items-center gap-2 mb-2">
                   <span className={`px-2 py-0.5 text-xs font-medium rounded ${
                     msg.role === 'user'
-                      ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
+                      ? 'bg-accent-500/10 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400'
                       : msg.role === 'system'
-                      ? 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
-                      : 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
+                      ? 'bg-forge-200 text-forge-500 dark:bg-forge-700 dark:text-forge-300'
+                      : 'bg-accent-500/10 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400'
                   }`}>
                     {msg.role}
                   </span>
-                  <span className="text-xs text-gray-400 dark:text-gray-500">{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                  <span className="text-xs text-forge-300 dark:text-forge-400">{new Date(msg.timestamp).toLocaleTimeString()}</span>
                 </div>
-                <pre className="whitespace-pre-wrap text-sm text-gray-800 dark:text-gray-200 font-sans leading-relaxed">{msg.content}</pre>
+                <pre className="whitespace-pre-wrap text-sm text-forge-700 dark:text-forge-200 font-sans leading-relaxed">{msg.content}</pre>
               </div>
             ))}
           </div>

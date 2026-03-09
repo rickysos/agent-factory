@@ -58,10 +58,10 @@ export default function SSOPage() {
   }
 
   const statusColors: Record<string, string> = {
-    not_configured: 'bg-gray-100 text-gray-600',
-    configured: 'bg-green-100 text-green-700',
-    testing: 'bg-yellow-100 text-yellow-700',
-    error: 'bg-red-100 text-red-700',
+    not_configured: 'bg-forge-200 text-forge-500',
+    configured: 'bg-accent-500/10 text-accent-600',
+    testing: 'bg-amber-500/10 text-amber-600',
+    error: 'bg-red-500/50/10 text-red-500',
   }
 
   const statusLabels: Record<string, string> = {
@@ -74,10 +74,10 @@ export default function SSOPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
-          SSO <span className="text-blue-600">Integration</span>
+        <h1 className="text-3xl font-bold text-forge-800">
+          SSO <span className="text-accent-600">Integration</span>
         </h1>
-        <p className="text-gray-500 mt-1">Configure single sign-on for your organization.</p>
+        <p className="text-forge-400 mt-1">Configure single sign-on for your organization.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -85,14 +85,14 @@ export default function SSOPage() {
           <button
             key={p.id}
             onClick={() => setSelectedProvider(p.id)}
-            className={`p-4 rounded-xl border-2 text-left transition ${
+            className={`p-4 rounded-md border-2 text-left transition ${
               selectedProvider === p.id
-                ? 'border-blue-600 bg-blue-50'
-                : 'border-gray-200 bg-white hover:border-gray-300'
+                ? 'border-accent-500 bg-accent-500/10'
+                : 'border-forge-200 bg-forge-50 hover:border-forge-200'
             }`}
           >
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-gray-900">{p.name}</h3>
+              <h3 className="font-semibold text-forge-800">{p.name}</h3>
               <span
                 className={`px-2 py-0.5 text-xs font-medium rounded-full ${statusColors[configs[p.id].status]}`}
               >
@@ -103,34 +103,34 @@ export default function SSOPage() {
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">{provider.name} Configuration</h2>
+      <div className="bg-forge-50 rounded-md border border-forge-200 p-6">
+        <h2 className="text-xl font-semibold text-forge-800 mb-6">{provider.name} Configuration</h2>
 
         <div className="space-y-4">
           {provider.fields.map((field) => (
             <div key={field}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{field}</label>
+              <label className="block text-sm font-medium text-forge-600 mb-1">{field}</label>
               <input
                 type={field.toLowerCase().includes('secret') ? 'password' : 'text'}
                 value={config.values[field] || ''}
                 onChange={(e) => updateField(field, e.target.value)}
                 placeholder={`Enter ${field.toLowerCase()}`}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                className="w-full px-4 py-2 rounded border border-forge-200 focus:outline-none focus:ring-2 focus:ring-accent-500 bg-forge-50"
               />
             </div>
           ))}
         </div>
 
-        <div className="flex items-center gap-3 mt-6 pt-6 border-t border-gray-100">
+        <div className="flex items-center gap-3 mt-6 pt-6 border-t border-forge-200">
           <button
             onClick={handleSave}
-            className="px-5 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
+            className="px-5 py-2 bg-accent-500 text-forge-950 font-medium rounded hover:bg-accent-400 transition"
           >
             Save Configuration
           </button>
           <button
             onClick={handleTest}
-            className="px-5 py-2 bg-white text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition"
+            className="px-5 py-2 bg-forge-50 text-forge-600 font-medium rounded border border-forge-200 hover:bg-forge-100 transition"
           >
             Test Connection
           </button>

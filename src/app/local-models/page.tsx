@@ -68,36 +68,36 @@ export default function LocalModelsPage() {
     .flatMap(s => (mockModels[s.name] || []))
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-8">
+    <div className="min-h-screen bg-forge-950 text-forge-100 p-8">
       <h1 className="text-3xl font-bold mb-2">Local Model Auto-Detection</h1>
-      <p className="text-gray-400 mb-8">Detect and manage locally running model servers</p>
+      <p className="text-forge-300 mb-8">Detect and manage locally running model servers</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {servers.map((server, i) => (
-          <div key={i} className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+          <div key={i} className="bg-forge-900 border border-forge-800 rounded p-6">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-xl font-semibold">{server.name}</h2>
               <span className={`px-2 py-1 rounded text-xs font-medium ${
-                server.status === 'online' ? 'bg-green-900 text-green-300' :
+                server.status === 'online' ? 'bg-accent-800 text-green-300' :
                 server.status === 'offline' ? 'bg-red-900 text-red-300' :
-                'bg-gray-800 text-gray-400'
+                'bg-forge-850 text-forge-300'
               }`}>
                 {server.status}
               </span>
             </div>
-            <p className="text-gray-400 text-sm mb-4 font-mono">{server.endpoint}</p>
+            <p className="text-forge-300 text-sm mb-4 font-mono">{server.endpoint}</p>
             <button
               onClick={() => checkServer(i)}
               disabled={checking === server.name}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 rounded text-sm font-medium transition-colors"
+              className="px-4 py-2 bg-accent-500 hover:bg-accent-400 disabled:bg-forge-700 rounded text-sm font-medium transition-colors"
             >
               {checking === server.name ? 'Detecting...' : 'Check Status'}
             </button>
             {server.status === 'online' && server.models.length > 0 && (
               <div className="mt-4 space-y-1">
-                <p className="text-xs text-gray-500 uppercase tracking-wide">Models found:</p>
+                <p className="text-xs text-forge-400 uppercase tracking-wide">Models found:</p>
                 {server.models.map(m => (
-                  <p key={m} className="text-sm text-gray-300">{m}</p>
+                  <p key={m} className="text-sm text-forge-300">{m}</p>
                 ))}
               </div>
             )}
@@ -105,7 +105,7 @@ export default function LocalModelsPage() {
         ))}
       </div>
 
-      <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 mb-8">
+      <div className="bg-forge-900 border border-forge-800 rounded p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">Add Custom OpenAI-Compatible Server</h2>
         <div className="flex gap-4">
           <input
@@ -113,18 +113,18 @@ export default function LocalModelsPage() {
             placeholder="Server name"
             value={customName}
             onChange={e => setCustomName(e.target.value)}
-            className="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+            className="flex-1 bg-forge-850 border border-forge-700 rounded px-3 py-2 text-sm"
           />
           <input
             type="text"
             placeholder="http://localhost:8080"
             value={customEndpoint}
             onChange={e => setCustomEndpoint(e.target.value)}
-            className="flex-[2] bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm font-mono"
+            className="flex-[2] bg-forge-850 border border-forge-700 rounded px-3 py-2 text-sm font-mono"
           />
           <button
             onClick={addCustomServer}
-            className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded text-sm font-medium transition-colors"
+            className="px-4 py-2 bg-accent-500 hover:bg-accent-600 rounded text-sm font-medium transition-colors"
           >
             Add Server
           </button>
@@ -132,18 +132,18 @@ export default function LocalModelsPage() {
       </div>
 
       {allModels.length > 0 && (
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+        <div className="bg-forge-900 border border-forge-800 rounded p-6">
           <h2 className="text-xl font-semibold mb-4">Discovered Models</h2>
           <div className="space-y-3">
             {allModels.map((model, i) => (
-              <div key={i} className="flex items-center justify-between bg-gray-800 rounded px-4 py-3">
+              <div key={i} className="flex items-center justify-between bg-forge-850 rounded px-4 py-3">
                 <div>
                   <span className="font-medium">{model.name}</span>
-                  <span className="text-gray-400 text-sm ml-3">{model.server}</span>
+                  <span className="text-forge-300 text-sm ml-3">{model.server}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-gray-500 text-sm">{model.size}</span>
-                  <span className="px-2 py-0.5 bg-purple-900 text-purple-300 rounded text-xs font-medium">Local</span>
+                  <span className="text-forge-400 text-sm">{model.size}</span>
+                  <span className="px-2 py-0.5 bg-forge-800 text-forge-300 rounded text-xs font-medium">Local</span>
                 </div>
               </div>
             ))}

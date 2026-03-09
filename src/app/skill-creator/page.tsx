@@ -89,47 +89,47 @@ export default function SkillCreatorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-8">
+    <div className="min-h-screen bg-forge-950 text-forge-100 p-8">
       <h1 className="text-3xl font-bold mb-2">Custom Skill Creator</h1>
-      <p className="text-gray-400 mb-8">Create and manage SKILL.md files for agents</p>
+      <p className="text-forge-300 mb-8">Create and manage SKILL.md files for agents</p>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
           <div>
-            <label className="block text-xs text-gray-500 uppercase mb-1">Skill Name</label>
+            <label className="block text-xs text-forge-400 uppercase mb-1">Skill Name</label>
             <input
               type="text"
               value={skillName}
               onChange={e => setSkillName(e.target.value)}
               placeholder="e.g. Code Review Checklist"
-              className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+              className="w-full bg-forge-850 border border-forge-700 rounded px-3 py-2 text-sm"
             />
           </div>
 
           <div className="flex gap-2 mb-2">
             <button
               onClick={() => setShowPreview(false)}
-              className={`px-3 py-1 rounded text-sm ${!showPreview ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'}`}
+              className={`px-3 py-1 rounded text-sm ${!showPreview ? 'bg-forge-700 text-forge-950' : 'text-forge-300 hover:text-forge-950'}`}
             >
               Editor
             </button>
             <button
               onClick={() => setShowPreview(true)}
-              className={`px-3 py-1 rounded text-sm ${showPreview ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'}`}
+              className={`px-3 py-1 rounded text-sm ${showPreview ? 'bg-forge-700 text-forge-950' : 'text-forge-300 hover:text-forge-950'}`}
             >
               Preview
             </button>
           </div>
 
           {showPreview ? (
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 min-h-[400px]">
-              <pre className="whitespace-pre-wrap text-sm text-gray-300 font-mono">{content}</pre>
+            <div className="bg-forge-900 border border-forge-800 rounded p-6 min-h-[400px]">
+              <pre className="whitespace-pre-wrap text-sm text-forge-300 font-mono">{content}</pre>
             </div>
           ) : (
             <textarea
               value={content}
               onChange={e => setContent(e.target.value)}
-              className="w-full h-[400px] bg-gray-900 border border-gray-800 rounded-lg p-4 text-sm font-mono resize-none"
+              className="w-full h-[400px] bg-forge-900 border border-forge-800 rounded p-4 text-sm font-mono resize-none"
             />
           )}
 
@@ -138,23 +138,23 @@ export default function SkillCreatorPage() {
               onClick={handleSave}
               disabled={!skillName.trim()}
               className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
-                saved ? 'bg-green-600' :
-                skillName.trim() ? 'bg-blue-600 hover:bg-blue-700' :
-                'bg-gray-800 text-gray-600 cursor-not-allowed'
+                saved ? 'bg-accent-500' :
+                skillName.trim() ? 'bg-accent-500 hover:bg-accent-400' :
+                'bg-forge-850 text-forge-500 cursor-not-allowed'
               }`}
             >
               {saved ? 'Saved' : editing ? 'Update Skill' : 'Save Skill'}
             </button>
             <button
               onClick={handleExport}
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded text-sm font-medium transition-colors"
+              className="px-4 py-2 bg-forge-700 hover:bg-forge-600 rounded text-sm font-medium transition-colors"
             >
               Export .md
             </button>
             {editing && (
               <button
                 onClick={() => { setEditing(null); setSkillName(''); setContent(defaultContent) }}
-                className="px-4 py-2 text-gray-400 hover:text-white text-sm"
+                className="px-4 py-2 text-forge-300 hover:text-forge-950 text-sm"
               >
                 Cancel
               </button>
@@ -162,21 +162,21 @@ export default function SkillCreatorPage() {
           </div>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+        <div className="bg-forge-900 border border-forge-800 rounded p-6">
           <h2 className="text-lg font-semibold mb-4">Created Skills</h2>
           {skills.length === 0 ? (
-            <p className="text-gray-500 text-sm">No custom skills yet.</p>
+            <p className="text-forge-400 text-sm">No custom skills yet.</p>
           ) : (
             <div className="space-y-3">
               {skills.map(skill => (
-                <div key={skill.id} className="bg-gray-800 rounded p-4">
+                <div key={skill.id} className="bg-forge-850 rounded p-4">
                   <div className="flex items-center justify-between mb-1">
                     <h3 className="font-medium text-sm">{skill.name}</h3>
-                    <span className="text-xs text-gray-500">{skill.createdAt}</span>
+                    <span className="text-xs text-forge-400">{skill.createdAt}</span>
                   </div>
-                  <p className="text-xs text-gray-500 font-mono mb-3 truncate">{skill.name.toLowerCase().replace(/\s+/g, '-')}.md</p>
+                  <p className="text-xs text-forge-400 font-mono mb-3 truncate">{skill.name.toLowerCase().replace(/\s+/g, '-')}.md</p>
                   <div className="flex gap-2">
-                    <button onClick={() => editSkill(skill)} className="text-xs text-blue-400 hover:text-blue-300">Edit</button>
+                    <button onClick={() => editSkill(skill)} className="text-xs text-accent-400 hover:text-accent-400">Edit</button>
                     <button onClick={() => deleteSkill(skill.id)} className="text-xs text-red-400 hover:text-red-300">Delete</button>
                   </div>
                 </div>

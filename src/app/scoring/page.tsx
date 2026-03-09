@@ -52,9 +52,9 @@ interface TestCaseForm {
 }
 
 function ScoreBadge({ score }: { score: number }) {
-  const color = score >= 80 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-    : score >= 50 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+  const color = score >= 80 ? 'bg-accent-500/10 text-accent-600 dark:bg-accent-800 dark:text-green-200'
+    : score >= 50 ? 'bg-amber-500/10 text-amber-600 dark:bg-amber-800 dark:text-yellow-200'
+    : 'bg-red-500/50/10 text-red-500 dark:bg-red-900 dark:text-red-200'
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-semibold ${color}`}>
       {score}%
@@ -64,8 +64,8 @@ function ScoreBadge({ score }: { score: number }) {
 
 function PassFailBadge({ passed }: { passed: boolean }) {
   return passed
-    ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">PASS</span>
-    : <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">FAIL</span>
+    ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-accent-500/10 text-accent-600 dark:bg-accent-800 dark:text-green-200">PASS</span>
+    : <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-500/50/10 text-red-500 dark:bg-red-900 dark:text-red-200">FAIL</span>
 }
 
 export default function ScoringPage() {
@@ -192,10 +192,10 @@ export default function ScoringPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-          Agent <span className="text-blue-600">Evaluation</span>
+        <h1 className="text-3xl font-bold text-forge-800 dark:text-forge-100 mb-2">
+          Agent <span className="text-accent-600">Evaluation</span>
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400">
+        <p className="text-lg text-forge-500 dark:text-forge-400">
           Test suites for evaluating agent responses and scoring performance.
         </p>
       </div>
@@ -204,43 +204,43 @@ export default function ScoringPage() {
         {/* Eval Suites Section */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Eval Suites</h2>
+            <h2 className="text-xl font-bold text-forge-800 dark:text-forge-100">Eval Suites</h2>
             <button
               onClick={() => setShowCreateForm(!showCreateForm)}
-              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-accent-500 text-forge-950 text-sm font-medium rounded hover:bg-accent-400 transition-colors"
             >
               {showCreateForm ? 'Cancel' : 'New Suite'}
             </button>
           </div>
 
           {showCreateForm && (
-            <form onSubmit={handleCreateSuite} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 mb-4 space-y-4">
+            <form onSubmit={handleCreateSuite} className="bg-forge-50 dark:bg-forge-850 border border-forge-200 dark:border-forge-700 rounded-md p-5 mb-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                <label className="block text-sm font-medium text-forge-600 dark:text-forge-300 mb-1">Name</label>
                 <input
                   type="text"
                   value={formName}
                   onChange={e => setFormName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-700 text-forge-800 dark:text-forge-100 text-sm focus:ring-2 focus:ring-accent-500 focus:border-transparent"
                   placeholder="Suite name"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+                <label className="block text-sm font-medium text-forge-600 dark:text-forge-300 mb-1">Description</label>
                 <input
                   type="text"
                   value={formDescription}
                   onChange={e => setFormDescription(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-700 text-forge-800 dark:text-forge-100 text-sm focus:ring-2 focus:ring-accent-500 focus:border-transparent"
                   placeholder="Optional description"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Agent</label>
+                <label className="block text-sm font-medium text-forge-600 dark:text-forge-300 mb-1">Agent</label>
                 <select
                   value={formAgentId}
                   onChange={e => setFormAgentId(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-700 text-forge-800 dark:text-forge-100 text-sm focus:ring-2 focus:ring-accent-500 focus:border-transparent"
                 >
                   <option value="">Select an agent</option>
                   {agents.map(a => (
@@ -251,16 +251,16 @@ export default function ScoringPage() {
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Test Cases</label>
-                  <button type="button" onClick={addTestCase} className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                  <label className="block text-sm font-medium text-forge-600 dark:text-forge-300">Test Cases</label>
+                  <button type="button" onClick={addTestCase} className="text-sm text-accent-600 hover:text-accent-600 font-medium">
                     + Add Test Case
                   </button>
                 </div>
                 <div className="space-y-3">
                   {formTestCases.map((tc, i) => (
-                    <div key={i} className="border border-gray-200 dark:border-gray-600 rounded-lg p-3 space-y-2">
+                    <div key={i} className="border border-forge-200 dark:border-forge-700 rounded p-3 space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Test Case {i + 1}</span>
+                        <span className="text-xs font-semibold text-forge-400 dark:text-forge-500 uppercase">Test Case {i + 1}</span>
                         {formTestCases.length > 1 && (
                           <button type="button" onClick={() => removeTestCase(i)} className="text-xs text-red-500 hover:text-red-600 font-medium">
                             Remove
@@ -271,32 +271,32 @@ export default function ScoringPage() {
                         type="text"
                         value={tc.input}
                         onChange={e => updateTestCase(i, 'input', e.target.value)}
-                        className="w-full px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                        className="w-full px-3 py-1.5 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-700 text-forge-800 dark:text-forge-100 text-sm"
                         placeholder="Input prompt"
                       />
                       <input
                         type="text"
                         value={tc.expectedOutput}
                         onChange={e => updateTestCase(i, 'expectedOutput', e.target.value)}
-                        className="w-full px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                        className="w-full px-3 py-1.5 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-700 text-forge-800 dark:text-forge-100 text-sm"
                         placeholder="Expected output (keywords)"
                       />
                       <input
                         type="text"
                         value={tc.criteria}
                         onChange={e => updateTestCase(i, 'criteria', e.target.value)}
-                        className="w-full px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                        className="w-full px-3 py-1.5 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-700 text-forge-800 dark:text-forge-100 text-sm"
                         placeholder="Evaluation criteria"
                       />
                       <div className="flex items-center gap-2">
-                        <label className="text-xs text-gray-500 dark:text-gray-400">Weight:</label>
+                        <label className="text-xs text-forge-400 dark:text-forge-500">Weight:</label>
                         <input
                           type="number"
                           min={1}
                           max={10}
                           value={tc.weight}
                           onChange={e => updateTestCase(i, 'weight', parseInt(e.target.value) || 1)}
-                          className="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                          className="w-20 px-2 py-1 border border-forge-200 dark:border-forge-700 rounded bg-forge-50 dark:bg-forge-700 text-forge-800 dark:text-forge-100 text-sm"
                         />
                       </div>
                     </div>
@@ -306,7 +306,7 @@ export default function ScoringPage() {
 
               <button
                 type="submit"
-                className="w-full px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                className="w-full px-4 py-2 bg-accent-500 text-forge-950 text-sm font-medium rounded hover:bg-accent-400 transition-colors"
               >
                 Create Suite
               </button>
@@ -315,7 +315,7 @@ export default function ScoringPage() {
 
           <div className="space-y-3">
             {suites.length === 0 && !showCreateForm && (
-              <p className="text-sm text-gray-500 dark:text-gray-400">No eval suites yet. Create one to get started.</p>
+              <p className="text-sm text-forge-400 dark:text-forge-500">No eval suites yet. Create one to get started.</p>
             )}
             {suites.map(suite => {
               const lastScore = getLastRunScore(suite.id)
@@ -323,21 +323,21 @@ export default function ScoringPage() {
                 <div
                   key={suite.id}
                   onClick={() => setSelectedSuiteId(suite.id)}
-                  className={`bg-white dark:bg-gray-800 border rounded-xl p-4 cursor-pointer transition-colors ${
+                  className={`bg-forge-50 dark:bg-forge-850 border rounded-md p-4 cursor-pointer transition-colors ${
                     selectedSuiteId === suite.id
-                      ? 'border-blue-500 ring-2 ring-blue-200 dark:ring-blue-800'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                      ? 'border-accent-500 ring-2 ring-blue-200 dark:ring-blue-800'
+                      : 'border-forge-200 dark:border-forge-700 hover:border-forge-200 dark:hover:border-forge-600'
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white">{suite.name}</h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{suite.description}</p>
+                      <h3 className="font-semibold text-forge-800 dark:text-forge-100">{suite.name}</h3>
+                      <p className="text-sm text-forge-400 dark:text-forge-500 mt-0.5">{suite.description}</p>
                       <div className="flex items-center gap-3 mt-2">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          Agent: <span className="font-medium text-gray-700 dark:text-gray-300">{getAgentName(suite.agentId)}</span>
+                        <span className="text-xs text-forge-400 dark:text-forge-500">
+                          Agent: <span className="font-medium text-forge-600 dark:text-forge-300">{getAgentName(suite.agentId)}</span>
                         </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-forge-400 dark:text-forge-500">
                           {suite.testCases.length} test case{suite.testCases.length !== 1 ? 's' : ''}
                         </span>
                         {lastScore !== null && <ScoreBadge score={lastScore} />}
@@ -345,7 +345,7 @@ export default function ScoringPage() {
                     </div>
                     <button
                       onClick={e => { e.stopPropagation(); handleDeleteSuite(suite.id) }}
-                      className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                      className="text-forge-300 hover:text-red-500 transition-colors p-1"
                       title="Delete suite"
                     >
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -362,14 +362,14 @@ export default function ScoringPage() {
         {/* Run Results Section */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-xl font-bold text-forge-800 dark:text-forge-100">
               {selectedSuite ? `Runs: ${selectedSuite.name}` : 'Run Results'}
             </h2>
             {selectedSuiteId && (
               <button
                 onClick={() => handleRunEval(selectedSuiteId)}
                 disabled={running}
-                className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-4 py-2 bg-accent-500 text-forge-950 text-sm font-medium rounded hover:bg-accent-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {running && (
                   <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
@@ -383,39 +383,39 @@ export default function ScoringPage() {
           </div>
 
           {!selectedSuiteId && (
-            <p className="text-sm text-gray-500 dark:text-gray-400">Select a suite to view its runs.</p>
+            <p className="text-sm text-forge-400 dark:text-forge-500">Select a suite to view its runs.</p>
           )}
 
           {selectedSuiteId && runs.length === 0 && (
-            <p className="text-sm text-gray-500 dark:text-gray-400">No runs yet. Click &quot;Run Evaluation&quot; to start.</p>
+            <p className="text-sm text-forge-400 dark:text-forge-500">No runs yet. Click &quot;Run Evaluation&quot; to start.</p>
           )}
 
           <div className="space-y-3">
             {runs.map(run => (
-              <div key={run.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+              <div key={run.id} className="bg-forge-50 dark:bg-forge-850 border border-forge-200 dark:border-forge-700 rounded-md overflow-hidden">
                 <div
                   onClick={() => setExpandedRunId(expandedRunId === run.id ? null : run.id)}
-                  className="p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+                  className="p-4 cursor-pointer hover:bg-forge-100 dark:hover:bg-forge-800 transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <ScoreBadge score={run.score} />
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        run.status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-                          : run.status === 'running' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
-                          : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+                        run.status === 'completed' ? 'bg-accent-500/10 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400'
+                          : run.status === 'running' ? 'bg-amber-500/10 text-amber-600 dark:bg-amber-800 dark:text-yellow-300'
+                          : 'bg-forge-200 text-forge-600 dark:bg-forge-700 dark:text-forge-300'
                       }`}>
                         {run.status}
                       </span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                      <span className="text-xs text-forge-400 dark:text-forge-500">
                         {run.results.filter(r => r.passed).length}/{run.results.length} passed
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-forge-300">
                         {new Date(run.startedAt).toLocaleString()}
                       </span>
-                      <svg className={`h-4 w-4 text-gray-400 transition-transform ${expandedRunId === run.id ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className={`h-4 w-4 text-forge-300 transition-transform ${expandedRunId === run.id ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </div>
@@ -423,27 +423,27 @@ export default function ScoringPage() {
                 </div>
 
                 {expandedRunId === run.id && (
-                  <div className="border-t border-gray-200 dark:border-gray-700">
+                  <div className="border-t border-forge-200 dark:border-forge-700">
                     {run.results.map((result, i) => (
-                      <div key={result.testCaseId} className={`p-4 ${i > 0 ? 'border-t border-gray-100 dark:border-gray-700' : ''}`}>
+                      <div key={result.testCaseId} className={`p-4 ${i > 0 ? 'border-t border-forge-200 dark:border-forge-700' : ''}`}>
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex items-center gap-2">
                             <PassFailBadge passed={result.passed} />
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Score: {result.score}/100</span>
+                            <span className="text-sm font-medium text-forge-600 dark:text-forge-300">Score: {result.score}/100</span>
                           </div>
                         </div>
                         <div className="space-y-2">
                           <div>
-                            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Input</span>
-                            <p className="text-sm text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 rounded px-3 py-2 mt-0.5">{result.input}</p>
+                            <span className="text-xs font-semibold text-forge-400 dark:text-forge-500 uppercase">Input</span>
+                            <p className="text-sm text-forge-700 dark:text-forge-200 bg-forge-100 dark:bg-forge-900 rounded px-3 py-2 mt-0.5">{result.input}</p>
                           </div>
                           <div>
-                            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Output</span>
-                            <p className="text-sm text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 rounded px-3 py-2 mt-0.5">{result.output}</p>
+                            <span className="text-xs font-semibold text-forge-400 dark:text-forge-500 uppercase">Output</span>
+                            <p className="text-sm text-forge-700 dark:text-forge-200 bg-forge-100 dark:bg-forge-900 rounded px-3 py-2 mt-0.5">{result.output}</p>
                           </div>
                           <div>
-                            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Reasoning</span>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">{result.reasoning}</p>
+                            <span className="text-xs font-semibold text-forge-400 dark:text-forge-500 uppercase">Reasoning</span>
+                            <p className="text-sm text-forge-500 dark:text-forge-400 mt-0.5">{result.reasoning}</p>
                           </div>
                         </div>
                       </div>

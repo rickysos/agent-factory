@@ -16,14 +16,14 @@ interface ApprovalRequest {
 }
 
 const riskStyles = {
-  low: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-  medium: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
-  high: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+  low: 'bg-accent-500/10 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400',
+  medium: 'bg-amber-500/10 text-amber-600 dark:bg-amber-800 dark:text-yellow-300',
+  high: 'bg-red-500/50/10 text-red-500 dark:bg-red-900 dark:text-red-300',
 }
 
 const statusStyles = {
-  approved: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-  rejected: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+  approved: 'bg-accent-500/10 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400',
+  rejected: 'bg-red-500/50/10 text-red-500 dark:bg-red-900 dark:text-red-300',
 }
 
 export default function ApprovalsPage() {
@@ -98,35 +98,35 @@ export default function ApprovalsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Approval Queue</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">Review and approve or reject agent actions requiring human oversight.</p>
+        <h1 className="text-3xl font-bold text-forge-800 dark:text-forge-100">Approval Queue</h1>
+        <p className="text-forge-500 dark:text-forge-400 mt-2">Review and approve or reject agent actions requiring human oversight.</p>
       </div>
 
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Pending Approvals</h2>
+      <div className="bg-forge-50 dark:bg-forge-900 rounded-md  border border-forge-200 dark:border-forge-700 overflow-hidden mb-8">
+        <div className="px-6 py-4 border-b border-forge-200 dark:border-forge-800">
+          <h2 className="text-lg font-bold text-forge-800 dark:text-forge-100">Pending Approvals</h2>
         </div>
 
         {loading ? (
-          <div className="px-6 py-12 text-center text-gray-400">Loading...</div>
+          <div className="px-6 py-12 text-center text-forge-300">Loading...</div>
         ) : pending.length === 0 ? (
-          <div className="px-6 py-12 text-center text-gray-400 dark:text-gray-500">
+          <div className="px-6 py-12 text-center text-forge-300 dark:text-forge-400">
             No pending approvals
           </div>
         ) : (
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
             {pending.map(approval => (
-              <div key={approval.id} className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+              <div key={approval.id} className="px-6 py-4 hover:bg-forge-100 dark:hover:bg-forge-850 transition">
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-1">
-                      <span className="text-sm font-semibold text-gray-900 dark:text-white">{approval.action}</span>
+                      <span className="text-sm font-semibold text-forge-800 dark:text-forge-100">{approval.action}</span>
                       <span className={`px-2 py-0.5 text-xs font-medium rounded ${riskStyles[approval.risk]}`}>
                         {approval.risk} risk
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{approval.description}</p>
-                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
+                    <p className="text-sm text-forge-500 dark:text-forge-400">{approval.description}</p>
+                    <div className="flex items-center gap-4 mt-2 text-xs text-forge-300">
                       <span>Agent: {approval.agentId}</span>
                       {approval.sessionId && <span>Session: {approval.sessionId}</span>}
                       <span>{new Date(approval.createdAt).toLocaleString()}</span>
@@ -135,13 +135,13 @@ export default function ApprovalsPage() {
                   <div className="flex items-center gap-2 ml-4">
                     <button
                       onClick={() => resolve(approval.id, 'approved')}
-                      className="px-3 py-1.5 text-sm font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 transition"
+                      className="px-3 py-1.5 text-sm font-medium rounded bg-accent-500 text-forge-950 hover:bg-accent-600 transition"
                     >
                       Approve
                     </button>
                     <button
                       onClick={() => resolve(approval.id, 'rejected')}
-                      className="px-3 py-1.5 text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+                      className="px-3 py-1.5 text-sm font-medium rounded bg-red-600 text-forge-950 hover:bg-red-700 transition"
                     >
                       Reject
                     </button>
@@ -153,20 +153,20 @@ export default function ApprovalsPage() {
         )}
       </div>
 
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="bg-forge-50 dark:bg-forge-900 rounded-md  border border-forge-200 dark:border-forge-700 overflow-hidden">
         <button
           onClick={() => setShowHistory(!showHistory)}
-          className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+          className="w-full px-6 py-4 flex items-center justify-between hover:bg-forge-100 dark:hover:bg-forge-850 transition"
         >
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white">History</h2>
-          <svg className={`h-5 w-5 text-gray-400 transition-transform ${showHistory ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <h2 className="text-lg font-bold text-forge-800 dark:text-forge-100">History</h2>
+          <svg className={`h-5 w-5 text-forge-300 transition-transform ${showHistory ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </button>
         {showHistory && (
-          <div className="border-t border-gray-100 dark:border-gray-800">
+          <div className="border-t border-forge-200 dark:border-forge-800">
             {history.length === 0 ? (
-              <div className="px-6 py-8 text-center text-gray-400 dark:text-gray-500">
+              <div className="px-6 py-8 text-center text-forge-300 dark:text-forge-400">
                 No resolved approvals yet
               </div>
             ) : (
@@ -176,7 +176,7 @@ export default function ApprovalsPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-1">
-                          <span className="text-sm font-semibold text-gray-900 dark:text-white">{approval.action}</span>
+                          <span className="text-sm font-semibold text-forge-800 dark:text-forge-100">{approval.action}</span>
                           <span className={`px-2 py-0.5 text-xs font-medium rounded ${riskStyles[approval.risk]}`}>
                             {approval.risk} risk
                           </span>
@@ -184,8 +184,8 @@ export default function ApprovalsPage() {
                             {approval.status}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{approval.description}</p>
-                        <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
+                        <p className="text-sm text-forge-500 dark:text-forge-400">{approval.description}</p>
+                        <div className="flex items-center gap-4 mt-2 text-xs text-forge-300">
                           <span>Agent: {approval.agentId}</span>
                           {approval.resolvedAt && <span>Resolved: {new Date(approval.resolvedAt).toLocaleString()}</span>}
                           {approval.resolvedBy && <span>By: {approval.resolvedBy}</span>}

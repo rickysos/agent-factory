@@ -16,10 +16,10 @@ const mockAgents = [
 ]
 
 const operations = [
-  { id: 'reconfigure', label: 'Reconfigure', description: 'Rebuild agent configuration from source files', color: 'bg-blue-600 hover:bg-blue-700' },
-  { id: 'doctor', label: 'Doctor Repair', description: 'Diagnose and fix common configuration issues', color: 'bg-green-600 hover:bg-green-700' },
-  { id: 'security', label: 'Security Audit', description: 'Check for permission leaks and unsafe tool access', color: 'bg-yellow-600 hover:bg-yellow-700' },
-  { id: 'update', label: 'Update', description: 'Pull latest model and skill definitions', color: 'bg-purple-600 hover:bg-purple-700' },
+  { id: 'reconfigure', label: 'Reconfigure', description: 'Rebuild agent configuration from source files', color: 'bg-accent-500 hover:bg-accent-400' },
+  { id: 'doctor', label: 'Doctor Repair', description: 'Diagnose and fix common configuration issues', color: 'bg-accent-500 hover:bg-accent-600' },
+  { id: 'security', label: 'Security Audit', description: 'Check for permission leaks and unsafe tool access', color: 'bg-amber-500 hover:bg-amber-600' },
+  { id: 'update', label: 'Update', description: 'Pull latest model and skill definitions', color: 'bg-forge-600 hover:bg-forge-700' },
   { id: 'uninstall', label: 'Uninstall', description: 'Remove agent and all associated data', color: 'bg-red-600 hover:bg-red-700' },
 ]
 
@@ -79,16 +79,16 @@ export default function MaintenancePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-8">
+    <div className="min-h-screen bg-forge-950 text-forge-100 p-8">
       <h1 className="text-3xl font-bold mb-2">Agent Maintenance Operations</h1>
-      <p className="text-gray-400 mb-8">Manage, repair, and update agents</p>
+      <p className="text-forge-300 mb-8">Manage, repair, and update agents</p>
 
       <div className="mb-8">
-        <label className="block text-xs text-gray-500 uppercase mb-1">Agent</label>
+        <label className="block text-xs text-forge-400 uppercase mb-1">Agent</label>
         <select
           value={selectedAgent}
           onChange={e => { setSelectedAgent(e.target.value); setLogs([]); setCompletedOps(new Set()) }}
-          className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+          className="bg-forge-850 border border-forge-700 rounded px-3 py-2 text-sm"
         >
           {mockAgents.map(a => (
             <option key={a.id} value={a.id}>{a.name}</option>
@@ -99,14 +99,14 @@ export default function MaintenancePage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-3">
           {operations.map(op => (
-            <div key={op.id} className="bg-gray-900 border border-gray-800 rounded-lg p-4 flex items-center justify-between">
+            <div key={op.id} className="bg-forge-900 border border-forge-800 rounded p-4 flex items-center justify-between">
               <div>
                 <h3 className="font-medium">{op.label}</h3>
-                <p className="text-sm text-gray-500">{op.description}</p>
+                <p className="text-sm text-forge-400">{op.description}</p>
               </div>
               <div className="flex items-center gap-3">
                 {completedOps.has(op.id) && (
-                  <span className="text-xs text-green-400">done</span>
+                  <span className="text-xs text-accent-400">done</span>
                 )}
                 <button
                   onClick={() => runOperation(op.id)}
@@ -120,23 +120,23 @@ export default function MaintenancePage() {
           ))}
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+        <div className="bg-forge-900 border border-forge-800 rounded p-6">
           <h2 className="text-lg font-semibold mb-4">Operation Log</h2>
           {logs.length === 0 ? (
-            <p className="text-gray-500 text-sm">Run an operation to see results here.</p>
+            <p className="text-forge-400 text-sm">Run an operation to see results here.</p>
           ) : (
             <div className="space-y-2 font-mono text-sm">
               {logs.map((entry, i) => (
                 <div key={i} className="flex items-start gap-3">
-                  <span className="text-gray-600 shrink-0">{entry.timestamp}</span>
+                  <span className="text-forge-500 shrink-0">{entry.timestamp}</span>
                   <span className={`shrink-0 ${
-                    entry.status === 'success' ? 'text-green-400' :
+                    entry.status === 'success' ? 'text-accent-400' :
                     entry.status === 'error' ? 'text-red-400' :
-                    'text-yellow-400'
+                    'text-amber-400'
                   }`}>
                     [{entry.status}]
                   </span>
-                  <span className="text-gray-300">{entry.message}</span>
+                  <span className="text-forge-300">{entry.message}</span>
                 </div>
               ))}
             </div>
