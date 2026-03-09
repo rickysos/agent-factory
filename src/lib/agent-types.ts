@@ -9,4 +9,5 @@ export interface Agent {
   lastDeployed?: Date
   deployments: number
   maxConcurrentTasks?: number
+  knowledgeBases?: string[]
 }
