@@ -1,0 +1,57 @@
+{
+  "name": "agent-factory",
+  "version": "0.1.0",
+  "description": "AI Agent Development Platform - Create, deploy, and manage AI agents",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "test": "jest",
+    "agents:deploy": "node scripts/deploy-agents.js",
+    "agents:list": "node scripts/list-agents.js",
+    "agents:create": "node scripts/create-agent.js"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "automation",
+    "openclaw",
+    "llm",
+    "workflow"
+  ],
+  "author": "Ricky Brandes",
+  "license": "MIT",
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "openai": "^4.0.0",
+    "@anthropic-ai/sdk": "^0.25.0",
+    "zod": "^3.22.0",
+    "axios": "^1.6.0",
+    "express": "^4.18.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "winston": "^3.11.0",
+    "pino": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "15.0.0",
+    "jest": "^29.0.0",
+    "typescript": "^5.0.0",
+    "tailwindcss": "^3.3.0",
+    "autoprefixer": "^10.0.0",
+    "postcss": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
