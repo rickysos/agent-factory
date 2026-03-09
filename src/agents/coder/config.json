@@ -1,0 +1,26 @@
+{
+  "name": "coder",
+  "description": "Senior developer agent - handles all coding, deployments, GitHub operations",
+  "model": "deepseek-v3.2",
+  "tools": ["read", "write", "exec", "web.fetch", "web.search"],
+  "capabilities": [
+    "nextjs_development",
+    "vercel_deployments",
+    "github_pr_management",
+    "sentry_error_fixing",
+    "supabase_migrations",
+    "api_integrations",
+    "bug_fixes",
+    "feature_development"
+  ],
+  "specialties": [
+    "TypeScript/React",
+    "Node.js APIs", 
+    "Database migrations",
+    "CI/CD automation",
+    "Performance optimization"
+  ],
+  "max_issues_per_run": 2,
+  "timeout_minutes": 60,
+  "auto_deploy": false
+}

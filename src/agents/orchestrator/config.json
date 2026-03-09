@@ -1,0 +1,22 @@
+{
+  "name": "orchestrator",
+  "description": "Top-level agent coordinator - delegates tasks to specialists",
+  "model": "deepseek-v3.2",
+  "tools": ["read", "write", "exec", "agent.delegate", "web.fetch", "web.search"],
+  "capabilities": [
+    "task_classification",
+    "agent_delegation", 
+    "result_synthesis",
+    "priority_management",
+    "escalation_handling"
+  ],
+  "delegation_rules": {
+    "coding": "coder",
+    "security": "security",
+    "marketing": "marketing", 
+    "monitoring": "vigil",
+    "general": "coder"
+  },
+  "max_concurrent_delegations": 8,
+  "escalation_threshold": "30_minutes"
+}
