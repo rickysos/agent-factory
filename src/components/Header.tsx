@@ -2,9 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useAgents } from '@/lib/agent-context'
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { connected } = useAgents()
 
   const navigation = [
     { name: 'Dashboard', href: '/' },
@@ -47,6 +49,11 @@ export function Header() {
           </div>
 
           <div className="flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-1.5" title={connected ? 'Connected' : 'Disconnected'}>
+              <div className={`h-2 w-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-400'}`} />
+              <span className="text-xs text-gray-400">{connected ? 'Live' : 'Offline'}</span>
+            </div>
+
             <button className="hidden md:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
               Create Agent
             </button>

@@ -1,4 +1,5 @@
 import { Agent } from './agent-types'
+import { eventBus } from './event-bus'
 
 const initialAgents: Agent[] = [
   {
@@ -55,6 +56,7 @@ export const agentStore = {
       deployments: 0,
     }
     agents.push(agent)
+    eventBus.emit('agent:created', agent)
     return agent
   },
 
@@ -62,13 +64,16 @@ export const agentStore = {
     const index = agents.findIndex(a => a.id === id)
     if (index === -1) return null
     agents[index] = { ...agents[index], ...updates, id }
+    eventBus.emit('agent:updated', agents[index])
     return agents[index]
   },
 
   delete(id: string): boolean {
     const len = agents.length
     agents = agents.filter(a => a.id !== id)
-    return agents.length < len
+    const deleted = agents.length < len
+    if (deleted) eventBus.emit('agent:deleted', { id })
+    return deleted
   },
 
   deploy(id: string): Agent | null {
@@ -77,6 +82,7 @@ export const agentStore = {
     agent.status = 'active'
     agent.lastDeployed = new Date()
     agent.deployments += 1
+    eventBus.emit('agent:deployed', agent)
     return agent
   },
 }
