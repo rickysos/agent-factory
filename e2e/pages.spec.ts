@@ -5,6 +5,8 @@ const pages = [
   { url: '/library', title: 'Agent Library' },
   { url: '/agent-editor', title: 'Agent Definition' },
   { url: '/presets', title: 'Agent Type Presets' },
+  { url: '/chat', title: 'Agent Chat' },
+  { url: '/playground', title: 'Playground' },
   { url: '/launch', title: 'Agent Launcher' },
   { url: '/maintenance', title: 'Maintenance' },
   { url: '/scoring', title: 'Performance' },
@@ -55,8 +57,7 @@ test.describe('All Pages Load', () => {
     test(`${url} loads and contains "${title}"`, async ({ page }) => {
       const res = await page.goto(url)
       expect(res?.status()).toBeLessThan(400)
-      const content = await page.textContent('body')
-      expect(content?.toLowerCase()).toContain(title.toLowerCase())
+      await expect(page.locator('body')).toContainText(title, { ignoreCase: true, timeout: 10000 })
     })
   }
 })

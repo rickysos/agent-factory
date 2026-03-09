@@ -18,6 +18,8 @@ const navGroups: NavGroup[] = [
       { name: 'Agent Library', href: '/library' },
       { name: 'Agent Editor', href: '/agent-editor' },
       { name: 'Presets', href: '/presets' },
+      { name: 'Chat', href: '/chat' },
+      { name: 'Playground', href: '/playground' },
       { name: 'Launch & Run', href: '/launch' },
       { name: 'Maintenance', href: '/maintenance' },
       { name: 'Scoring', href: '/scoring' },

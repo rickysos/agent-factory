@@ -3,6 +3,8 @@ import { test, expect } from '@playwright/test'
 const navPages = [
   { menu: 'Agents', item: 'Agent Library', url: '/library', heading: 'Agent Library' },
   { menu: 'Agents', item: 'Presets', url: '/presets', heading: 'Agent Type Presets' },
+  { menu: 'Agents', item: /^Chat$/, url: '/chat', heading: 'Agent Chat' },
+  { menu: 'Agents', item: /^Playground$/, url: '/playground', heading: 'Playground' },
   { menu: 'Agents', item: 'Launch & Run', url: '/launch', heading: 'Agent Launcher' },
   { menu: 'Agents', item: 'Scoring', url: '/scoring', heading: 'Agent Scoring' },
   { menu: 'Build', item: 'Stacks', url: '/stacks', heading: 'Agent Stack Templates' },
