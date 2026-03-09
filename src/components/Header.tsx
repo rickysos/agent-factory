@@ -32,6 +32,7 @@ const navGroups: NavGroup[] = [
       { name: 'Templates', href: '/templates' },
       { name: 'Team Templates', href: '/templates/teams' },
       { name: 'Persona Templates', href: '/templates' },
+      { name: 'Sandbox', href: '/sandbox' },
       { name: 'Skill Creator', href: '/skill-creator' },
       { name: 'Workflows', href: '/workflows' },
       { name: 'Agent Routing', href: '/agent-routing' },

@@ -27,7 +27,6 @@
     "agents:create": "node scripts/create-agent.js",
     "queue:stats": "node scripts/queue-stats.js",
     "queue:monitor": "node scripts/queue-monitor.js",
-    "prepare": "husky",
     "prepare": "husky"
   },
   "keywords": [
@@ -51,7 +50,7 @@
     "ioredis": "^5.10.0",
     "next": "^15.0.0",
     "next-auth": "^5.0.0-beta.30",
-    "openai": "^4.0.0",
+    "openai": "^4.104.0",
     "pino": "^9.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -1,5 +1,13 @@
 import { chatStore } from '@/lib/chat-store'
 import { agentStore } from '@/lib/agent-store'
+import OpenAI from 'openai'
+
+const openai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.OPENROUTER_API_KEY || '',
+})
+
+const DEFAULT_MODEL = 'arcee-ai/trinity-large-preview:free'
 
 export async function POST(req: Request) {
   const body = await req.json()
@@ -12,6 +20,10 @@ export async function POST(req: Request) {
   const agent = agentStore.getById(agentId)
   if (!agent) {
     return Response.json({ error: 'Agent not found' }, { status: 404 })
+  }
+
+  if (!process.env.OPENROUTER_API_KEY) {
+    return Response.json({ error: 'OPENROUTER_API_KEY not configured' }, { status: 500 })
   }
 
   // Create or use existing session
@@ -28,55 +40,66 @@ export async function POST(req: Request) {
     content: message,
   })
 
-  // Generate mock streaming response
+  // Build conversation history
+  const history = chatStore.getMessages(session.id)
+  const systemPrompt = buildSystemPrompt(agent.name, agent.description, agent.capabilities || [])
+  const messages: OpenAI.ChatCompletionMessageParam[] = [
+    { role: 'system', content: systemPrompt },
+    ...history.map(m => ({
+      role: m.role as 'user' | 'assistant',
+      content: m.content,
+    })),
+  ]
+
   const encoder = new TextEncoder()
-  const thinkingText = generateThinking(message, agent.name)
-  const responseText = generateResponse(message, agent.name, agent.capabilities || [])
-  const toolCalls = generateToolCalls(message)
 
   const stream = new ReadableStream({
     async start(controller) {
-      // Send session info
-      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'session', sessionId: session!.id })}\n\n`))
-
-      // Send thinking phase
-      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'thinking-start' })}\n\n`))
-      await delay(300)
-      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'thinking', content: thinkingText })}\n\n`))
-      await delay(500)
-      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'thinking-end' })}\n\n`))
-
-      // Send tool calls if applicable
-      for (const tool of toolCalls) {
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'tool-start', tool: { id: tool.id, name: tool.name, input: tool.input } })}\n\n`))
-        await delay(400)
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'tool-end', tool: { id: tool.id, output: tool.output, status: 'completed' } })}\n\n`))
-        await delay(200)
+      const send = (data: Record<string, unknown>) => {
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`))
       }
 
-      // Stream response tokens
-      const words = responseText.split(' ')
-      for (let i = 0; i < words.length; i++) {
-        const token = (i === 0 ? '' : ' ') + words[i]
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'token', content: token })}\n\n`))
-        await delay(30 + Math.random() * 50)
+      send({ type: 'session', sessionId: session!.id })
+
+      let fullResponse = ''
+      let totalTokens = 0
+
+      try {
+        const completion = await openai.chat.completions.create({
+          model: DEFAULT_MODEL,
+          messages,
+          stream: true,
+        })
+
+        for await (const chunk of completion) {
+          const delta = chunk.choices[0]?.delta
+          if (delta?.content) {
+            send({ type: 'token', content: delta.content })
+            fullResponse += delta.content
+          }
+          if (chunk.usage) {
+            totalTokens = chunk.usage.total_tokens || 0
+          }
+        }
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : 'Unknown error'
+        send({ type: 'token', content: `Error: ${errMsg}` })
+        fullResponse = `Error: ${errMsg}`
       }
 
-      // Store the complete assistant message
+      // Store assistant message
       chatStore.addMessage({
         sessionId: session!.id,
         agentId,
         role: 'assistant',
-        content: responseText,
+        content: fullResponse,
         metadata: {
-          model: agent.model,
-          tokens: words.length * 2,
-          toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
-          thinking: thinkingText,
+          model: DEFAULT_MODEL,
+          tokens: totalTokens || estimateTokens(fullResponse),
         },
       })
 
-      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'done', tokens: words.length * 2 })}\n\n`))
+      send({ type: 'done', tokens: totalTokens || estimateTokens(fullResponse) })
       controller.close()
     },
   })
@@ -104,50 +127,13 @@ export async function GET(req: Request) {
   return Response.json({ success: true, data: sessions })
 }
 
-function delay(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms))
+function buildSystemPrompt(name: string, description: string, capabilities: string[]): string {
+  const caps = capabilities.length > 0
+    ? `Your capabilities include: ${capabilities.join(', ')}.`
+    : ''
+  return `You are ${name}, an AI agent. ${description} ${caps} Be helpful, concise, and direct.`
 }
 
-function generateThinking(message: string, agentName: string): string {
-  const topics = ['analyzing the request', 'considering available tools', 'planning my response approach', 'reviewing relevant context']
-  const selected = topics.slice(0, 2 + Math.floor(Math.random() * 2))
-  return `As ${agentName}, I need to process this request. Let me start by ${selected.join(', then ')}. The user is asking about "${message.slice(0, 40)}..." — I'll provide a comprehensive response.`
-}
-
-function generateResponse(message: string, agentName: string, capabilities: string[]): string {
-  const lower = message.toLowerCase()
-  if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-    return `Hello! I'm **${agentName}**, ready to help. My capabilities include ${capabilities.length > 0 ? capabilities.join(', ') : 'general assistance'}. What would you like me to help you with today?`
-  }
-  if (lower.includes('code') || lower.includes('function') || lower.includes('implement')) {
-    return `I'll help with that. Here's my approach:\n\n1. **Analyze the requirements** — Understanding what you need\n2. **Design the solution** — Planning the implementation\n3. **Write the code** — Implementing with best practices\n\n\`\`\`typescript\n// Example implementation\nexport function processRequest(input: string): Result {\n  const validated = validate(input)\n  const processed = transform(validated)\n  return { success: true, data: processed }\n}\n\`\`\`\n\nWould you like me to elaborate on any part of this?`
-  }
-  if (lower.includes('help') || lower.includes('what can')) {
-    return `I'm **${agentName}** and I can help you with:\n\n${capabilities.map((c, i) => `${i + 1}. **${c}** — Ready to assist`).join('\n')}\n\nJust describe what you need and I'll get started!`
-  }
-  return `I've analyzed your request. Here's what I found:\n\n**Summary:** Your message has been processed and I've considered multiple approaches.\n\n**Key Points:**\n- I reviewed the context of your request\n- Considered ${capabilities.length || 3} different strategies\n- Selected the optimal approach based on the requirements\n\nWould you like me to go deeper on any specific aspect?`
-}
-
-function generateToolCalls(message: string): { id: string; name: string; input: Record<string, unknown>; output: string; status: 'completed' }[] {
-  const lower = message.toLowerCase()
-  const calls: { id: string; name: string; input: Record<string, unknown>; output: string; status: 'completed' }[] = []
-  if (lower.includes('search') || lower.includes('find') || lower.includes('look')) {
-    calls.push({
-      id: 'tc_' + Date.now(),
-      name: 'search',
-      input: { query: message.slice(0, 50) },
-      output: 'Found 3 relevant results matching the query.',
-      status: 'completed',
-    })
-  }
-  if (lower.includes('file') || lower.includes('read') || lower.includes('code')) {
-    calls.push({
-      id: 'tc_' + (Date.now() + 1),
-      name: 'read_file',
-      input: { path: 'src/example.ts' },
-      output: 'File contents loaded successfully (42 lines).',
-      status: 'completed',
-    })
-  }
-  return calls
+function estimateTokens(text: string): number {
+  return Math.ceil(text.length / 4)
 }

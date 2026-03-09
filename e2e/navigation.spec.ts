@@ -8,6 +8,7 @@ const navPages = [
   { menu: 'Agents', item: 'Launch & Run', url: '/launch', heading: 'Agent Launcher' },
   { menu: 'Agents', item: 'Scoring', url: '/scoring', heading: 'Agent Scoring' },
   { menu: 'Build', item: 'Stacks', url: '/stacks', heading: 'Agent Stack Templates' },
+  { menu: 'Build', item: /^Sandbox$/, url: '/sandbox', heading: 'Code Sandbox' },
   { menu: 'Build', item: 'Skill Creator', url: '/skill-creator', heading: 'Skill Creator' },
   { menu: 'Build', item: 'Workflows', url: '/workflows', heading: 'Workflow Editor' },
   { menu: 'Configure', item: /^Models$/, url: '/models', heading: 'Model' },

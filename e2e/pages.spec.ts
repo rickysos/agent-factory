@@ -13,6 +13,7 @@ const pages = [
   { url: '/stacks', title: 'Stack Templates' },
   { url: '/templates', title: 'Persona' },
   { url: '/templates/teams', title: 'Team' },
+  { url: '/sandbox', title: 'Code Sandbox' },
   { url: '/skill-creator', title: 'Skill Creator' },
   { url: '/workflows', title: 'Workflow' },
   { url: '/agent-routing', title: 'Routing' },
