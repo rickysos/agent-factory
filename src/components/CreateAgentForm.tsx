@@ -47,10 +47,7 @@ export function CreateAgentForm() {
     setIsSubmitting(true)
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500))
-
-      addAgent({
+      await addAgent({
         name,
         description,
         model: selectedModel,
