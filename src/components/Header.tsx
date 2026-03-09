@@ -89,6 +89,7 @@ const navGroups: NavGroup[] = [
       { name: 'Audit Log', href: '/settings/audit' },
       { name: 'Tenants', href: '/settings/tenants' },
       { name: 'Billing & Keys', href: '/settings/billing' },
+      { name: 'System Status', href: '/status' },
       { name: 'Setup Wizard', href: '/setup' },
       { name: 'Quick Start', href: '/quick-start' },
     ],
