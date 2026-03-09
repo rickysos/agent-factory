@@ -1,13 +1,7 @@
 import { chatStore } from '@/lib/chat-store'
 import { agentStore } from '@/lib/agent-store'
+import { resolveModelAndProvider } from '@/lib/provider-registry'
 import OpenAI from 'openai'
-
-const openai = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY || '',
-})
-
-const DEFAULT_MODEL = 'arcee-ai/trinity-large-preview:free'
 
 export async function POST(req: Request) {
   const body = await req.json()
@@ -22,9 +16,18 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Agent not found' }, { status: 404 })
   }
 
-  if (!process.env.OPENROUTER_API_KEY) {
-    return Response.json({ error: 'OPENROUTER_API_KEY not configured' }, { status: 500 })
+  // Resolve model and provider dynamically
+  const { modelId, provider } = resolveModelAndProvider(agent.model)
+  const apiKey = process.env[provider.envVar]
+
+  if (!apiKey) {
+    return Response.json({ error: `No API key configured. Set ${provider.envVar} in .env.local` }, { status: 500 })
   }
+
+  const openai = new OpenAI({
+    baseURL: provider.baseURL,
+    apiKey,
+  })
 
   // Create or use existing session
   let session = sessionId ? chatStore.getSession(sessionId) : null
@@ -66,7 +69,7 @@ export async function POST(req: Request) {
 
       try {
         const completion = await openai.chat.completions.create({
-          model: DEFAULT_MODEL,
+          model: modelId,
           messages,
           stream: true,
         })
@@ -94,7 +97,7 @@ export async function POST(req: Request) {
         role: 'assistant',
         content: fullResponse,
         metadata: {
-          model: DEFAULT_MODEL,
+          model: modelId,
           tokens: totalTokens || estimateTokens(fullResponse),
         },
       })

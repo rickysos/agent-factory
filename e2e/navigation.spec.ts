@@ -35,9 +35,13 @@ test.describe('Navigation', () => {
   for (const { menu, item, url, heading } of navPages) {
     const label = typeof item === 'string' ? item : item.source
     test(`navigates to ${menu} > ${label}`, async ({ page }) => {
-      await page.goto('/')
-      await page.locator('header button', { hasText: menu }).click()
-      await page.locator('header a', { hasText: item }).click()
+      await page.goto('/', { waitUntil: 'networkidle' })
+      const menuBtn = page.locator('header button', { hasText: menu })
+      await menuBtn.waitFor({ state: 'visible', timeout: 15000 })
+      await menuBtn.click()
+      const link = page.locator('header a', { hasText: item })
+      await link.waitFor({ state: 'visible', timeout: 5000 })
+      await link.click()
       await expect(page).toHaveURL(url)
       await expect(page.locator('main h1').first()).toContainText(heading, { ignoreCase: true })
     })
