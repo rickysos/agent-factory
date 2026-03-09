@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/Header'
 import { AgentProvider } from '@/lib/agent-context'
+import { ThemeProvider } from '@/lib/theme-context'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,19 +18,21 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <AgentProvider>
-          <Header />
-          <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-            {children}
-          </main>
-          <footer className="bg-gray-800 text-white p-8">
-            <div className="max-w-7xl mx-auto">
-              <p className="text-center">Agent Factory © 2026 - AI Agent Development Platform</p>
-            </div>
-          </footer>
-        </AgentProvider>
+        <ThemeProvider>
+          <AgentProvider>
+            <Header />
+            <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-950 dark:to-gray-900">
+              {children}
+            </main>
+            <footer className="bg-gray-800 dark:bg-gray-950 text-white p-8 border-t border-gray-700">
+              <div className="max-w-7xl mx-auto">
+                <p className="text-center text-gray-400">Agent Factory &copy; 2026 - AI Agent Development Platform</p>
+              </div>
+            </footer>
+          </AgentProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

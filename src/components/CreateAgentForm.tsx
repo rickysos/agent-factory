@@ -55,7 +55,6 @@ export function CreateAgentForm() {
         capabilities: selectedCapabilities,
       })
 
-      // Reset form
       setName('')
       setDescription('')
       setSelectedModel(models[0])
@@ -81,7 +80,7 @@ export function CreateAgentForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Agent Name
         </label>
         <input
@@ -89,14 +88,14 @@ export function CreateAgentForm() {
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           placeholder="e.g., Customer Support Bot"
           required
         />
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Description
         </label>
         <textarea
@@ -104,21 +103,21 @@ export function CreateAgentForm() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           placeholder="Describe what this agent does..."
           required
         />
       </div>
 
       <div>
-        <label htmlFor="model" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="model" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           AI Model
         </label>
         <select
           id="model"
           value={selectedModel}
           onChange={(e) => setSelectedModel(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
           {models.map((model) => (
             <option key={model} value={model}>
@@ -129,7 +128,7 @@ export function CreateAgentForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Capabilities
         </label>
         <div className="grid grid-cols-2 gap-2">
@@ -138,8 +137,8 @@ export function CreateAgentForm() {
               key={capability}
               className={`flex items-center p-2 border rounded-lg cursor-pointer transition ${
                 selectedCapabilities.includes(capability)
-                  ? 'bg-blue-50 border-blue-500'
-                  : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                  ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-500 dark:border-blue-600'
+                  : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
             >
               <input
@@ -148,11 +147,11 @@ export function CreateAgentForm() {
                 onChange={() => toggleCapability(capability)}
                 className="mr-2"
               />
-              <span className="text-sm">{capability}</span>
+              <span className="text-sm text-gray-900 dark:text-gray-100">{capability}</span>
             </label>
           ))}
         </div>
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           Selected: {selectedCapabilities.length} capability{selectedCapabilities.length !== 1 ? 'ies' : ''}
         </p>
       </div>

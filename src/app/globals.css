@@ -7,17 +7,14 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #0f1117;
+  --foreground: #ededed;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 @layer utilities {
@@ -25,3 +22,65 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Colorblind-safe palettes — remap status colors via CSS custom properties */
+:root {
+  --status-success: #16a34a;
+  --status-warning: #ca8a04;
+  --status-error: #dc2626;
+  --status-info: #2563eb;
+  --status-active: #16a34a;
+  --status-draft: #ca8a04;
+  --status-inactive: #6b7280;
+}
+
+/* Protanopia (red-blind) — replace red/green with blue/orange */
+[data-color-vision="protanopia"] {
+  --status-success: #0284c7;
+  --status-warning: #ea580c;
+  --status-error: #c026d3;
+  --status-info: #2563eb;
+  --status-active: #0284c7;
+  --status-draft: #ea580c;
+}
+
+/* Deuteranopia (green-blind) — replace green with blue, red with orange */
+[data-color-vision="deuteranopia"] {
+  --status-success: #0284c7;
+  --status-warning: #ea580c;
+  --status-error: #c026d3;
+  --status-info: #2563eb;
+  --status-active: #0284c7;
+  --status-draft: #ea580c;
+}
+
+/* Tritanopia (blue-blind) — replace blue with teal, yellow with pink */
+[data-color-vision="tritanopia"] {
+  --status-success: #16a34a;
+  --status-warning: #e11d48;
+  --status-error: #dc2626;
+  --status-info: #0d9488;
+  --status-active: #16a34a;
+  --status-draft: #e11d48;
+}
+
+/* Achromatopsia (total color blindness) — use shapes/patterns + high contrast grays */
+[data-color-vision="achromatopsia"] {
+  --status-success: #171717;
+  --status-warning: #737373;
+  --status-error: #404040;
+  --status-info: #525252;
+  --status-active: #171717;
+  --status-draft: #737373;
+  --status-inactive: #a3a3a3;
+}
+
+/* Utility classes using the status color variables */
+.status-success { color: var(--status-success); }
+.status-warning { color: var(--status-warning); }
+.status-error { color: var(--status-error); }
+.status-info { color: var(--status-info); }
+.bg-status-success { background-color: var(--status-success); }
+.bg-status-warning { background-color: var(--status-warning); }
+.bg-status-error { background-color: var(--status-error); }
+.bg-status-info { background-color: var(--status-info); }

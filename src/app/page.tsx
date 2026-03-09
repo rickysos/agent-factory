@@ -6,31 +6,31 @@ export default function Home() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Welcome to <span className="text-blue-600">Agent Factory</span>
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          Welcome to <span className="text-blue-600 dark:text-blue-400">Agent Factory</span>
         </h1>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
           Create, deploy, and manage AI agents with our intuitive platform.
-          No coding required - just define your agent's capabilities and let us handle the rest.
+          No coding required - just define your agent&apos;s capabilities and let us handle the rest.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Agents</h2>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg dark:shadow-gray-950/50 p-6">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Your Agents</h2>
             <AgentDashboard />
           </div>
         </div>
-        
+
         <div className="space-y-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Create New Agent</h2>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg dark:shadow-gray-950/50 p-6">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Create New Agent</h2>
             <CreateAgentForm />
           </div>
-          
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Quick Actions</h2>
+
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg dark:shadow-gray-950/50 p-6">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Quick Actions</h2>
             <QuickActions />
           </div>
         </div>

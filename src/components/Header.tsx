@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useAgents } from '@/lib/agent-context'
+import { ThemeMenu } from './ThemeMenu'
 
 interface NavGroup {
   label: string
@@ -110,7 +111,7 @@ function Dropdown({ group }: { group: NavGroup }) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition inline-flex items-center gap-1"
+        className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition inline-flex items-center gap-1"
       >
         {group.label}
         <svg className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -118,13 +119,13 @@ function Dropdown({ group }: { group: NavGroup }) {
         </svg>
       </button>
       {open && (
-        <div className="absolute left-0 mt-1 w-52 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+        <div className="absolute left-0 mt-1 w-52 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
           {group.items.map(item => (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+              className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-600 dark:hover:text-blue-400"
             >
               {item.name}
             </Link>
@@ -141,7 +142,7 @@ export function Header() {
   const { connected } = useAgents()
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-800">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="w-full py-4 flex items-center justify-between">
           <div className="flex items-center">
@@ -152,7 +153,7 @@ export function Header() {
                 </div>
               </div>
               <div className="ml-4">
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                   <Link href="/">Agent Factory</Link>
                 </h1>
               </div>
@@ -171,6 +172,8 @@ export function Header() {
               <span className="text-xs text-gray-400">{connected ? 'Live' : 'Offline'}</span>
             </div>
 
+            <ThemeMenu />
+
             <Link
               href="/quick-start"
               className="hidden md:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -180,15 +183,15 @@ export function Header() {
 
             <div className="relative hidden md:block">
               <div className="flex items-center space-x-2 cursor-pointer">
-                <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
-                  <span className="text-gray-700 font-medium text-sm">RB</span>
+                <div className="h-8 w-8 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                  <span className="text-gray-700 dark:text-gray-200 font-medium text-sm">RB</span>
                 </div>
               </div>
             </div>
 
             <button
               type="button"
-              className="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+              className="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <span className="sr-only">Open main menu</span>
@@ -206,13 +209,13 @@ export function Header() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-gray-200 py-4 max-h-[70vh] overflow-y-auto">
+          <div className="lg:hidden border-t border-gray-200 dark:border-gray-700 py-4 max-h-[70vh] overflow-y-auto">
             <div className="px-2 space-y-1">
               {navGroups.map(group => (
                 <div key={group.label}>
                   <button
                     onClick={() => setMobileExpanded(mobileExpanded === group.label ? null : group.label)}
-                    className="w-full flex justify-between items-center px-3 py-2 text-base font-medium text-gray-900 rounded-md hover:bg-gray-50"
+                    className="w-full flex justify-between items-center px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-100 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800"
                   >
                     {group.label}
                     <svg className={`h-4 w-4 transition-transform ${mobileExpanded === group.label ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -226,7 +229,7 @@ export function Header() {
                           key={item.href}
                           href={item.href}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="block px-3 py-2 rounded-md text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                          className="block px-3 py-2 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800"
                         >
                           {item.name}
                         </Link>
