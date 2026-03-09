@@ -12,4 +12,5 @@ export interface Agent {
   lastDeployed?: Date
   deployments: number
   maxConcurrentTasks?: number
+  mcpServers?: string[]
 }
