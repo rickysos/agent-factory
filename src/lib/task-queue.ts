@@ -19,41 +19,60 @@ export interface Worker {
   capabilities: string[]
 }
 
-export class TaskQueue {
+interface EnqueueOptions {
+  priority?: number
+  scheduledFor?: Date
+  maxRetries?: number
+  timeoutMs?: number
+}
+
+interface QueueStats {
+  totalTasks: number
+  pending: number
+  inProgress: number
+  completed: number
+  failed: number
+  totalWorkers: number
+  idleWorkers: number
+  workingWorkers: number
+}
+
+interface ITaskQueue {
+  enqueueTask(task: Task, options?: EnqueueOptions): Promise<string>
+  completeTask(taskId: string, result: unknown): void
+  failTask(taskId: string, error: string): void
+  registerWorker(worker: Omit<Worker, 'id' | 'status' | 'lastHeartbeat'>): string
+  updateWorkerHeartbeat(workerId: string): void
+  pauseWorker(workerId: string): void
+  resumeWorker(workerId: string): void
+  getQueueStats(): QueueStats
+  getWorkerStats(workerId: string): Worker | undefined
+  getTaskStats(taskId: string): QueuedTask | undefined
+}
+
+class InMemoryTaskQueue implements ITaskQueue {
   private tasks: Map<string, QueuedTask> = new Map()
   private workers: Map<string, Worker> = new Map()
-  private taskCounter: number = 0
+  private taskCounter = 0
 
-  constructor() {
-    // Start heartbeat monitoring
-    setInterval(() => this.monitorWorkers(), 30000) // Every 30 seconds
-  }
-
-  // Task Management
-  public async enqueueTask(task: Task, options: {
-    priority?: number
-    scheduledFor?: Date
-    maxRetries?: number
-    timeoutMs?: number
-  } = {}): Promise<string> {
+  async enqueueTask(task: Task, options: EnqueueOptions = {}): Promise<string> {
     const taskId = `task_${Date.now()}_${++this.taskCounter}`
-    
+    const priority = options.priority || this.getPriority(task)
+
     const queuedTask: QueuedTask = {
       ...task,
       id: taskId,
-      queuePosition: this.calculateQueuePosition(task, options.priority),
+      queuePosition: (1000 - priority * 100) + (Date.now() % 1000),
       retryCount: 0,
       maxRetries: options.maxRetries || 3,
-      timeoutMs: options.timeoutMs || 300000, // 5 minutes default
+      timeoutMs: options.timeoutMs || 300000,
       createdAt: new Date(),
       scheduledFor: options.scheduledFor,
-      status: 'pending'
+      status: 'pending',
     }
 
     this.tasks.set(taskId, queuedTask)
-    console.log(`Task "${task.title}" enqueued with ID: ${taskId}`)
-    
-    // Try to assign immediately if scheduled for now
+
     if (!options.scheduledFor || options.scheduledFor <= new Date()) {
       this.assignTasks()
     }
@@ -61,16 +80,7 @@ export class TaskQueue {
     return taskId
   }
 
-  private calculateQueuePosition(task: Task, priority?: number): number {
-    // Higher priority = lower queue position (processed first)
-    const basePriority = priority || this.getPriorityFromTask(task)
-    const timestamp = Date.now()
-    
-    // Combine priority and timestamp
-    return (1000 - basePriority * 100) + (timestamp % 1000)
-  }
-
-  private getPriorityFromTask(task: Task): number {
+  private getPriority(task: Task): number {
     switch (task.priority) {
       case 'critical': return 5
       case 'high': return 4
@@ -80,260 +90,303 @@ export class TaskQueue {
     }
   }
 
-  // Worker Management
-  public registerWorker(worker: Omit<Worker, 'id' | 'status' | 'lastHeartbeat'>): string {
+  registerWorker(worker: Omit<Worker, 'id' | 'status' | 'lastHeartbeat'>): string {
     const workerId = `worker_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
-    const newWorker: Worker = {
-      ...worker,
-      id: workerId,
-      status: 'idle',
-      lastHeartbeat: new Date()
-    }
-
-    this.workers.set(workerId, newWorker)
-    console.log(`Worker ${workerId} (${worker.agentId}) registered`)
-    
-    // Try to assign tasks to new worker
+    this.workers.set(workerId, { ...worker, id: workerId, status: 'idle', lastHeartbeat: new Date() })
     this.assignTasks()
-
     return workerId
   }
 
-  public updateWorkerHeartbeat(workerId: string): void {
-    const worker = this.workers.get(workerId)
-    if (worker) {
-      worker.lastHeartbeat = new Date()
-    }
+  updateWorkerHeartbeat(workerId: string): void {
+    const w = this.workers.get(workerId)
+    if (w) w.lastHeartbeat = new Date()
   }
 
-  public pauseWorker(workerId: string): void {
-    const worker = this.workers.get(workerId)
-    if (worker) {
-      worker.status = 'paused'
-      console.log(`Worker ${workerId} paused`)
-    }
+  pauseWorker(workerId: string): void {
+    const w = this.workers.get(workerId)
+    if (w) w.status = 'paused'
   }
 
-  public resumeWorker(workerId: string): void {
-    const worker = this.workers.get(workerId)
-    if (worker && worker.status === 'paused') {
-      worker.status = 'idle'
-      console.log(`Worker ${workerId} resumed`)
+  resumeWorker(workerId: string): void {
+    const w = this.workers.get(workerId)
+    if (w && w.status === 'paused') {
+      w.status = 'idle'
       this.assignTasks()
     }
   }
 
-  // Task Assignment
   private assignTasks(): void {
-    const idleWorkers = Array.from(this.workers.values())
-      .filter(w => w.status === 'idle')
-      .sort((a, b) => a.lastHeartbeat.getTime() - b.lastHeartbeat.getTime())
-
-    const pendingTasks = Array.from(this.tasks.values())
-      .filter(t => t.status === 'pending')
-      .filter(t => !t.scheduledFor || t.scheduledFor <= new Date())
+    const idle = Array.from(this.workers.values()).filter(w => w.status === 'idle')
+    const pending = Array.from(this.tasks.values())
+      .filter(t => t.status === 'pending' && (!t.scheduledFor || t.scheduledFor <= new Date()))
       .sort((a, b) => a.queuePosition - b.queuePosition)
 
-    for (const worker of idleWorkers) {
-      if (pendingTasks.length === 0) break
-
-      // Find task that matches worker capabilities
-      const taskIndex = pendingTasks.findIndex(task => 
-        this.taskMatchesWorker(task, worker)
-      )
-
-      if (taskIndex !== -1) {
-        const task = pendingTasks[taskIndex]
-        this.assignTaskToWorker(task.id, worker.id)
-        pendingTasks.splice(taskIndex, 1)
-      }
-    }
-  }
-
-  private taskMatchesWorker(task: QueuedTask, worker: Worker): boolean {
-    // Simple capability matching - in real implementation, this would be more sophisticated
-    const taskCategory = task.category
-    const workerAgent = worker.agentId
-
-    // Default delegation rules (similar to OpenClaw orchestrator)
-    switch (taskCategory) {
-      case 'coding':
-        return workerAgent.includes('coder')
-      case 'security':
-        return workerAgent.includes('security')
-      case 'marketing':
-        return workerAgent.includes('marketing')
-      case 'monitoring':
-        return workerAgent.includes('vigil')
-      default:
-        return workerAgent.includes('coder') // Default to coder
-    }
-  }
-
-  private assignTaskToWorker(taskId: string, workerId: string): void {
-    const task = this.tasks.get(taskId)
-    const worker = this.workers.get(workerId)
-
-    if (task && worker) {
+    for (const worker of idle) {
+      const task = pending.shift()
+      if (!task) break
       task.status = 'in_progress'
       task.assignedTo = worker.agentId
       task.startedAt = new Date()
-
       worker.status = 'working'
-      worker.currentTaskId = taskId
+      worker.currentTaskId = task.id
       worker.startedAt = new Date()
 
-      console.log(`Task "${task.title}" assigned to worker ${workerId} (${worker.agentId})`)
-
-      // Set timeout
       setTimeout(() => {
-        this.checkTaskTimeout(taskId)
+        const t = this.tasks.get(task.id)
+        if (t && t.status === 'in_progress') {
+          this.failTask(task.id, `Timeout after ${task.timeoutMs}ms`)
+        }
       }, task.timeoutMs)
     }
   }
 
-  // Task Completion
-  public completeTask(taskId: string, result: any): void {
+  completeTask(taskId: string, _result: unknown): void {
     const task = this.tasks.get(taskId)
+    if (!task) return
+    task.status = 'completed'
+    task.completedAt = new Date()
     const worker = Array.from(this.workers.values()).find(w => w.currentTaskId === taskId)
-
-    if (task) {
-      task.status = 'completed'
-      task.completedAt = new Date()
-      console.log(`Task "${task.title}" completed with result:`, result)
-
-      if (worker) {
-        this.releaseWorker(worker.id)
-      }
-
-      // Remove completed task after a delay
-      setTimeout(() => {
-        this.tasks.delete(taskId)
-      }, 60000) // Keep for 1 minute for monitoring
-    }
+    if (worker) this.releaseWorker(worker.id)
   }
 
-  public failTask(taskId: string, error: string): void {
+  failTask(taskId: string, _error: string): void {
     const task = this.tasks.get(taskId)
+    if (!task) return
+    task.retryCount++
     const worker = Array.from(this.workers.values()).find(w => w.currentTaskId === taskId)
+    if (worker) this.releaseWorker(worker.id)
 
-    if (task) {
-      task.retryCount++
-
-      if (task.retryCount >= task.maxRetries) {
-        task.status = 'failed'
-        console.error(`Task "${task.title}" failed permanently after ${task.maxRetries} retries:`, error)
-      } else {
-        task.status = 'pending'
-        task.assignedTo = undefined
-        task.startedAt = undefined
-        console.warn(`Task "${task.title}" failed, retry ${task.retryCount}/${task.maxRetries}:`, error)
-      }
-
-      if (worker) {
-        this.releaseWorker(worker.id)
-      }
-
-      if (task.status === 'pending') {
-        // Reschedule failed task
-        setTimeout(() => this.assignTasks(), 5000)
-      }
+    if (task.retryCount >= task.maxRetries) {
+      task.status = 'failed'
+    } else {
+      task.status = 'pending'
+      task.assignedTo = undefined
+      task.startedAt = undefined
+      setTimeout(() => this.assignTasks(), 5000 * task.retryCount)
     }
   }
 
   private releaseWorker(workerId: string): void {
-    const worker = this.workers.get(workerId)
-    if (worker) {
-      worker.status = 'idle'
-      worker.currentTaskId = undefined
-      worker.startedAt = undefined
-      this.updateWorkerHeartbeat(workerId)
-      
-      // Assign new tasks
-      setTimeout(() => this.assignTasks(), 100)
-    }
+    const w = this.workers.get(workerId)
+    if (!w) return
+    w.status = 'idle'
+    w.currentTaskId = undefined
+    w.startedAt = undefined
+    w.lastHeartbeat = new Date()
+    setTimeout(() => this.assignTasks(), 100)
   }
 
-  // Monitoring
-  private checkTaskTimeout(taskId: string): void {
-    const task = this.tasks.get(taskId)
-    if (task && task.status === 'in_progress') {
-      console.error(`Task "${task.title}" timed out after ${task.timeoutMs}ms`)
-      this.failTask(taskId, `Timeout after ${task.timeoutMs}ms`)
+  getQueueStats(): QueueStats {
+    let pending = 0, inProgress = 0, completed = 0, failed = 0
+    for (const t of this.tasks.values()) {
+      if (t.status === 'pending') pending++
+      else if (t.status === 'in_progress') inProgress++
+      else if (t.status === 'completed') completed++
+      else if (t.status === 'failed') failed++
     }
-  }
-
-  private monitorWorkers(): void {
-    const now = new Date()
-    const staleThreshold = 60000 // 1 minute
-
-    for (const [workerId, worker] of this.workers) {
-      const timeSinceHeartbeat = now.getTime() - worker.lastHeartbeat.getTime()
-
-      if (timeSinceHeartbeat > staleThreshold) {
-        console.warn(`Worker ${workerId} hasn't sent heartbeat in ${timeSinceHeartbeat}ms`)
-
-        if (worker.status === 'working' && worker.currentTaskId) {
-          // Worker died while processing task
-          this.failTask(worker.currentTaskId, `Worker ${workerId} stopped responding`)
-        }
-
-        // Mark worker as error
-        worker.status = 'error'
-      }
-    }
-  }
-
-  // Statistics
-  public getQueueStats(): {
-    totalTasks: number
-    pending: number
-    inProgress: number
-    completed: number
-    failed: number
-    totalWorkers: number
-    idleWorkers: number
-    workingWorkers: number
-  } {
-    let pending = 0
-    let inProgress = 0
-    let completed = 0
-    let failed = 0
-
-    for (const task of this.tasks.values()) {
-      switch (task.status) {
-        case 'pending': pending++; break
-        case 'in_progress': inProgress++; break
-        case 'completed': completed++; break
-        case 'failed': failed++; break
-      }
-    }
-
     const workers = Array.from(this.workers.values())
-    const idleWorkers = workers.filter(w => w.status === 'idle').length
-    const workingWorkers = workers.filter(w => w.status === 'working').length
-
     return {
-      totalTasks: this.tasks.size,
-      pending,
-      inProgress,
-      completed,
-      failed,
+      totalTasks: this.tasks.size, pending, inProgress, completed, failed,
       totalWorkers: workers.length,
-      idleWorkers,
-      workingWorkers
+      idleWorkers: workers.filter(w => w.status === 'idle').length,
+      workingWorkers: workers.filter(w => w.status === 'working').length,
     }
   }
 
-  public getWorkerStats(workerId: string): Worker | undefined {
+  getWorkerStats(workerId: string): Worker | undefined {
     return this.workers.get(workerId)
   }
 
-  public getTaskStats(taskId: string): QueuedTask | undefined {
+  getTaskStats(taskId: string): QueuedTask | undefined {
     return this.tasks.get(taskId)
   }
 }
 
-// Singleton instance
-export const taskQueue = new TaskQueue()
+let _redisQueue: ITaskQueue | null = null
+
+async function createRedisQueue(): Promise<ITaskQueue | null> {
+  try {
+    const { Queue, Worker: BullWorker } = await import('bullmq')
+    const Redis = (await import('ioredis')).default
+
+    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
+    const connection = new Redis(redisUrl, { maxRetriesPerRequest: null, lazyConnect: true })
+
+    await connection.connect()
+    await connection.ping()
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const queue = new Queue('agent-tasks', { connection: connection as any })
+    const workers = new Map<string, Worker>()
+    const completedTasks = new Map<string, QueuedTask>()
+
+    const bullWorker = new BullWorker('agent-tasks', async (job) => {
+      const task = job.data as QueuedTask
+      task.status = 'in_progress'
+      task.startedAt = new Date()
+
+      const worker = Array.from(workers.values()).find(w => w.status === 'idle')
+      if (worker) {
+        worker.status = 'working'
+        worker.currentTaskId = task.id
+        task.assignedTo = worker.agentId
+      }
+
+      return task
+    }, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      connection: connection as any,
+      concurrency: 5,
+    })
+
+    bullWorker.on('completed', (job) => {
+      const task = job.data as QueuedTask
+      task.status = 'completed'
+      task.completedAt = new Date()
+      completedTasks.set(task.id, task)
+      const worker = Array.from(workers.values()).find(w => w.currentTaskId === task.id)
+      if (worker) {
+        worker.status = 'idle'
+        worker.currentTaskId = undefined
+      }
+    })
+
+    bullWorker.on('failed', (job, err) => {
+      if (!job) return
+      const task = job.data as QueuedTask
+      task.status = 'failed'
+      completedTasks.set(task.id, task)
+      const worker = Array.from(workers.values()).find(w => w.currentTaskId === task.id)
+      if (worker) {
+        worker.status = 'idle'
+        worker.currentTaskId = undefined
+      }
+    })
+
+    const redisQueue: ITaskQueue = {
+      async enqueueTask(task: Task, options: EnqueueOptions = {}): Promise<string> {
+        const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`
+        const priority = options.priority || 3
+        const queuedTask: QueuedTask = {
+          ...task,
+          id: taskId,
+          queuePosition: priority,
+          retryCount: 0,
+          maxRetries: options.maxRetries || 3,
+          timeoutMs: options.timeoutMs || 300000,
+          createdAt: new Date(),
+          scheduledFor: options.scheduledFor,
+          status: 'pending',
+        }
+
+        const jobOptions: Record<string, unknown> = {
+          jobId: taskId,
+          priority: 10 - priority,
+          attempts: queuedTask.maxRetries,
+          backoff: { type: 'exponential', delay: 5000 },
+          timeout: queuedTask.timeoutMs,
+        }
+
+        if (options.scheduledFor) {
+          jobOptions.delay = options.scheduledFor.getTime() - Date.now()
+        }
+
+        await queue.add('process-task', queuedTask, jobOptions)
+        return taskId
+      },
+
+      completeTask(taskId: string, _result: unknown): void {
+        completedTasks.set(taskId, {
+          id: taskId, title: '', description: '', category: 'general',
+          priority: 'medium', estimatedComplexity: 5, status: 'completed',
+          createdAt: new Date(), completedAt: new Date(), queuePosition: 0,
+          retryCount: 0, maxRetries: 3, timeoutMs: 300000,
+        })
+      },
+
+      failTask(taskId: string, _error: string): void {
+        completedTasks.set(taskId, {
+          id: taskId, title: '', description: '', category: 'general',
+          priority: 'medium', estimatedComplexity: 5, status: 'failed',
+          createdAt: new Date(), queuePosition: 0,
+          retryCount: 0, maxRetries: 3, timeoutMs: 300000,
+        })
+      },
+
+      registerWorker(worker: Omit<Worker, 'id' | 'status' | 'lastHeartbeat'>): string {
+        const workerId = `worker_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        workers.set(workerId, { ...worker, id: workerId, status: 'idle', lastHeartbeat: new Date() })
+        return workerId
+      },
+
+      updateWorkerHeartbeat(workerId: string): void {
+        const w = workers.get(workerId)
+        if (w) w.lastHeartbeat = new Date()
+      },
+
+      pauseWorker(workerId: string): void {
+        const w = workers.get(workerId)
+        if (w) w.status = 'paused'
+      },
+
+      resumeWorker(workerId: string): void {
+        const w = workers.get(workerId)
+        if (w && w.status === 'paused') w.status = 'idle'
+      },
+
+      getQueueStats(): QueueStats {
+        const workerList = Array.from(workers.values())
+        let pending = 0, inProgress = 0, completed = 0, failed = 0
+        for (const t of completedTasks.values()) {
+          if (t.status === 'completed') completed++
+          else if (t.status === 'failed') failed++
+        }
+        for (const w of workerList) {
+          if (w.status === 'working') inProgress++
+        }
+        return {
+          totalTasks: completedTasks.size + inProgress + pending,
+          pending, inProgress, completed, failed,
+          totalWorkers: workerList.length,
+          idleWorkers: workerList.filter(w => w.status === 'idle').length,
+          workingWorkers: workerList.filter(w => w.status === 'working').length,
+        }
+      },
+
+      getWorkerStats(workerId: string): Worker | undefined {
+        return workers.get(workerId)
+      },
+
+      getTaskStats(taskId: string): QueuedTask | undefined {
+        return completedTasks.get(taskId)
+      },
+    }
+
+    console.log('Connected to Redis - using BullMQ task queue')
+    return redisQueue
+  } catch {
+    return null
+  }
+}
+
+let _taskQueue: ITaskQueue | null = null
+const _fallback = new InMemoryTaskQueue()
+
+async function getQueue(): Promise<ITaskQueue> {
+  if (_taskQueue) return _taskQueue
+  if (_redisQueue === null) {
+    _redisQueue = await createRedisQueue()
+  }
+  if (_redisQueue) {
+    _taskQueue = _redisQueue
+    return _taskQueue
+  }
+  console.log('Redis unavailable - using in-memory task queue')
+  _taskQueue = _fallback
+  return _taskQueue
+}
+
+// Export synchronous fallback for existing usage, and async getter for new code
+export const taskQueue = _fallback
+export { getQueue }
+export type { ITaskQueue, EnqueueOptions, QueueStats }
