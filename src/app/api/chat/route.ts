@@ -1,6 +1,7 @@
 import { chatStore } from '@/lib/chat-store'
 import { agentStore } from '@/lib/agent-store'
 import { resolveModelAndProvider } from '@/lib/provider-registry'
+import { costStore, calculateCost } from '@/lib/cost-store'
 import OpenAI from 'openai'
 
 export async function POST(req: Request) {
@@ -65,6 +66,8 @@ export async function POST(req: Request) {
       send({ type: 'session', sessionId: session!.id })
 
       let fullResponse = ''
+      let promptTokens = 0
+      let completionTokens = 0
       let totalTokens = 0
 
       try {
@@ -81,6 +84,8 @@ export async function POST(req: Request) {
             fullResponse += delta.content
           }
           if (chunk.usage) {
+            promptTokens = chunk.usage.prompt_tokens || 0
+            completionTokens = chunk.usage.completion_tokens || 0
             totalTokens = chunk.usage.total_tokens || 0
           }
         }
@@ -90,6 +95,9 @@ export async function POST(req: Request) {
         fullResponse = `Error: ${errMsg}`
       }
 
+      if (!totalTokens) totalTokens = estimateTokens(fullResponse)
+      if (!completionTokens) completionTokens = estimateTokens(fullResponse)
+
       // Store assistant message
       chatStore.addMessage({
         sessionId: session!.id,
@@ -98,11 +106,23 @@ export async function POST(req: Request) {
         content: fullResponse,
         metadata: {
           model: modelId,
-          tokens: totalTokens || estimateTokens(fullResponse),
+          tokens: totalTokens,
         },
       })
 
-      send({ type: 'done', tokens: totalTokens || estimateTokens(fullResponse) })
+      // Record usage for cost tracking
+      costStore.recordUsage({
+        agentId,
+        sessionId: session!.id,
+        model: modelId,
+        provider: provider.id,
+        promptTokens,
+        completionTokens,
+        totalTokens,
+        cost: calculateCost(modelId, promptTokens, completionTokens),
+      })
+
+      send({ type: 'done', tokens: totalTokens })
       controller.close()
     },
   })
