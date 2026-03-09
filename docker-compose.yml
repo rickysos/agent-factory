@@ -10,7 +10,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:3001
+      - NEXT_PUBLIC_API_URL=http://api:3001
       - DATABASE_URL=postgresql://postgres:password@db:5432/agent_factory
       - REDIS_URL=redis://redis:6379
     volumes:
@@ -40,16 +40,6 @@ services:
       - GITHUB_TOKEN=${GITHUB_TOKEN:-}
       - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN:-}
       - VERCEL_TOKEN=${VERCEL_TOKEN:-}
-    volumes:
-      - .:/app
-      - /app/node_modules
-    depends_on:
-      - db
-      - redis
-    command: npm run start:api
-
-  # Database - PostgreSQL
-  db:
     volumes:
       - .:/app
       - /app/node_modules
