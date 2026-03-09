@@ -1,0 +1,159 @@
+import { chatStore } from '@/lib/chat-store'
+import { agentStore } from '@/lib/agent-store'
+import { costStore, calculateCost } from '@/lib/cost-store'
+import OpenAI from 'openai'
+
+const openai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.OPENROUTER_API_KEY || '',
+})
+
+const DEFAULT_MODEL = 'arcee-ai/trinity-large-preview:free'
+
+export async function POST(req: Request) {
+  const body = await req.json()
+  const { agentId, sessionId, message } = body
+
+  if (!agentId || !message) {
+    return Response.json({ error: 'agentId and message required' }, { status: 400 })
+  }
+
+  const agent = agentStore.getById(agentId)
+  if (!agent) {
+    return Response.json({ error: 'Agent not found' }, { status: 404 })
+  }
+
+  if (!process.env.OPENROUTER_API_KEY) {
+    return Response.json({ error: 'OPENROUTER_API_KEY not configured' }, { status: 500 })
+  }
+
+  // Create or use existing session
+  let session = sessionId ? chatStore.getSession(sessionId) : null
+  if (!session) {
+    session = chatStore.createSession(agentId, message.slice(0, 50))
+  }
+
+  // Store user message
+  chatStore.addMessage({
+    sessionId: session.id,
+    agentId,
+    role: 'user',
+    content: message,
+  })
+
+  // Build conversation history
+  const history = chatStore.getMessages(session.id)
+  const systemPrompt = buildSystemPrompt(agent.name, agent.description, agent.capabilities || [])
+  const messages: OpenAI.ChatCompletionMessageParam[] = [
+    { role: 'system', content: systemPrompt },
+    ...history.map(m => ({
+      role: m.role as 'user' | 'assistant',
+      content: m.content,
+    })),
+  ]
+
+  const encoder = new TextEncoder()
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      const send = (data: Record<string, unknown>) => {
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`))
+      }
+
+      send({ type: 'session', sessionId: session!.id })
+
+      let fullResponse = ''
+      let promptTokens = 0
+      let completionTokens = 0
+      let totalTokens = 0
+
+      try {
+        const completion = await openai.chat.completions.create({
+          model: DEFAULT_MODEL,
+          messages,
+          stream: true,
+        })
+
+        for await (const chunk of completion) {
+          const delta = chunk.choices[0]?.delta
+          if (delta?.content) {
+            send({ type: 'token', content: delta.content })
+            fullResponse += delta.content
+          }
+          if (chunk.usage) {
+            promptTokens = chunk.usage.prompt_tokens || 0
+            completionTokens = chunk.usage.completion_tokens || 0
+            totalTokens = chunk.usage.total_tokens || 0
+          }
+        }
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : 'Unknown error'
+        send({ type: 'token', content: `Error: ${errMsg}` })
+        fullResponse = `Error: ${errMsg}`
+      }
+
+      if (!totalTokens) totalTokens = estimateTokens(fullResponse)
+      if (!completionTokens) completionTokens = estimateTokens(fullResponse)
+
+      // Store assistant message
+      chatStore.addMessage({
+        sessionId: session!.id,
+        agentId,
+        role: 'assistant',
+        content: fullResponse,
+        metadata: {
+          model: DEFAULT_MODEL,
+          tokens: totalTokens,
+        },
+      })
+
+      // Record usage for cost tracking
+      costStore.recordUsage({
+        agentId,
+        sessionId: session!.id,
+        model: DEFAULT_MODEL,
+        provider: 'openrouter',
+        promptTokens,
+        completionTokens,
+        totalTokens,
+        cost: calculateCost(DEFAULT_MODEL, promptTokens, completionTokens),
+      })
+
+      send({ type: 'done', tokens: totalTokens })
+      controller.close()
+    },
+  })
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+    },
+  })
+}
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url)
+  const agentId = searchParams.get('agentId')
+  const sessionId = searchParams.get('sessionId')
+
+  if (sessionId) {
+    const messages = chatStore.getMessages(sessionId)
+    return Response.json({ success: true, data: messages })
+  }
+
+  const sessions = chatStore.getSessions(agentId || undefined)
+  return Response.json({ success: true, data: sessions })
+}
+
+function buildSystemPrompt(name: string, description: string, capabilities: string[]): string {
+  const caps = capabilities.length > 0
+    ? `Your capabilities include: ${capabilities.join(', ')}.`
+    : ''
+  return `You are ${name}, an AI agent. ${description} ${caps} Be helpful, concise, and direct.`
+}
+
+function estimateTokens(text: string): number {
+  return Math.ceil(text.length / 4)
+}
