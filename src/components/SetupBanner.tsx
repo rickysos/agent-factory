@@ -16,10 +16,10 @@ export function SetupBanner() {
   if (!show) return null
 
   return (
-    <div className="mb-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl flex items-center justify-between">
+    <div className="mb-8 px-5 py-4 bg-amber-500/5 border border-amber-500/20 rounded-md flex items-center justify-between">
       <div>
-        <h3 className="font-semibold text-blue-900 dark:text-blue-100">New to Agent Factory?</h3>
-        <p className="text-sm text-blue-700 dark:text-blue-300">Complete the setup wizard to configure providers and create your first agent.</p>
+        <h3 className="text-sm font-display font-semibold text-forge-800 dark:text-forge-100">New to the Factory?</h3>
+        <p className="text-xs font-mono text-forge-400 dark:text-forge-500 mt-0.5">Complete setup to configure providers and forge your first agent.</p>
       </div>
       <div className="flex items-center gap-3 shrink-0 ml-4">
         <button
@@ -27,15 +27,15 @@ export function SetupBanner() {
             localStorage.setItem('setup-complete', 'true')
             setShow(false)
           }}
-          className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200"
+          className="text-xs font-mono uppercase tracking-wider text-forge-400 dark:text-forge-500 hover:text-forge-600 dark:hover:text-forge-300 transition-colors"
         >
           Dismiss
         </button>
         <Link
           href="/setup"
-          className="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          className="px-4 py-1.5 text-xs font-mono font-medium uppercase tracking-wider bg-amber-500 text-forge-950 rounded hover:bg-amber-400 transition-colors"
         >
-          Complete Setup
+          Setup
         </Link>
       </div>
     </div>

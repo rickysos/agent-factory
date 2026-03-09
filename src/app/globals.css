@@ -3,18 +3,21 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafaf8;
+  --foreground: #12110f;
+  --dot-color: rgba(0, 0, 0, 0.06);
 }
 
 .dark {
-  --background: #0f1117;
-  --foreground: #ededed;
+  --background: #0a0a08;
+  --foreground: #e0ded3;
+  --dot-color: rgba(255, 255, 255, 0.04);
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
+  font-feature-settings: 'liga' 1, 'calt' 1;
 }
 
 @layer utilities {
@@ -23,38 +26,55 @@ body {
   }
 }
 
-/* Colorblind-safe palettes — remap status colors via CSS custom properties */
-:root {
-  --status-success: #16a34a;
-  --status-warning: #ca8a04;
-  --status-error: #dc2626;
-  --status-info: #2563eb;
-  --status-active: #16a34a;
-  --status-draft: #ca8a04;
-  --status-inactive: #6b7280;
+/* Dot grid background for surfaces */
+.bg-grid {
+  background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-/* Protanopia (red-blind) — replace red/green with blue/orange */
+/* Forge glow effect for accent elements */
+.glow-amber {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.15), 0 0 60px rgba(245, 158, 11, 0.05);
+}
+
+.dark .glow-amber {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2), 0 0 60px rgba(245, 158, 11, 0.08);
+}
+
+/* Hairline border utility */
+.border-hairline {
+  border-width: 0.5px;
+}
+
+/* Status colors — colorblind-safe palettes */
+:root {
+  --status-success: #16a34a;
+  --status-warning: #d97706;
+  --status-error: #dc2626;
+  --status-info: #f59e0b;
+  --status-active: #f59e0b;
+  --status-draft: #9a9684;
+  --status-inactive: #706c5c;
+}
+
 [data-color-vision="protanopia"] {
   --status-success: #0284c7;
   --status-warning: #ea580c;
   --status-error: #c026d3;
-  --status-info: #2563eb;
+  --status-info: #f59e0b;
   --status-active: #0284c7;
   --status-draft: #ea580c;
 }
 
-/* Deuteranopia (green-blind) — replace green with blue, red with orange */
 [data-color-vision="deuteranopia"] {
   --status-success: #0284c7;
   --status-warning: #ea580c;
   --status-error: #c026d3;
-  --status-info: #2563eb;
+  --status-info: #f59e0b;
   --status-active: #0284c7;
   --status-draft: #ea580c;
 }
 
-/* Tritanopia (blue-blind) — replace blue with teal, yellow with pink */
 [data-color-vision="tritanopia"] {
   --status-success: #16a34a;
   --status-warning: #e11d48;
@@ -64,7 +84,6 @@ body {
   --status-draft: #e11d48;
 }
 
-/* Achromatopsia (total color blindness) — use shapes/patterns + high contrast grays */
 [data-color-vision="achromatopsia"] {
   --status-success: #171717;
   --status-warning: #737373;
@@ -75,7 +94,6 @@ body {
   --status-inactive: #a3a3a3;
 }
 
-/* Utility classes using the status color variables */
 .status-success { color: var(--status-success); }
 .status-warning { color: var(--status-warning); }
 .status-error { color: var(--status-error); }
@@ -84,3 +102,11 @@ body {
 .bg-status-warning { background-color: var(--status-warning); }
 .bg-status-error { background-color: var(--status-error); }
 .bg-status-info { background-color: var(--status-info); }
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(154, 150, 132, 0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(154, 150, 132, 0.5); }
+.dark ::-webkit-scrollbar-thumb { background: rgba(154, 150, 132, 0.15); }
+.dark ::-webkit-scrollbar-thumb:hover { background: rgba(154, 150, 132, 0.3); }

@@ -78,9 +78,9 @@ export function CreateAgentForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label htmlFor="name" className="block text-[10px] font-mono uppercase tracking-wider text-forge-400 dark:text-forge-500 mb-1.5">
           Agent Name
         </label>
         <input
@@ -88,36 +88,36 @@ export function CreateAgentForm() {
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          placeholder="e.g., Customer Support Bot"
+          className="w-full px-3 py-2 text-sm font-mono bg-forge-50 dark:bg-forge-900 border border-forge-200 dark:border-forge-700 rounded text-forge-800 dark:text-forge-100 placeholder:text-forge-300 dark:placeholder:text-forge-600 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 transition-colors"
+          placeholder="e.g., Support Bot"
           required
         />
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label htmlFor="description" className="block text-[10px] font-mono uppercase tracking-wider text-forge-400 dark:text-forge-500 mb-1.5">
           Description
         </label>
         <textarea
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          rows={3}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Describe what this agent does..."
+          rows={2}
+          className="w-full px-3 py-2 text-sm font-mono bg-forge-50 dark:bg-forge-900 border border-forge-200 dark:border-forge-700 rounded text-forge-800 dark:text-forge-100 placeholder:text-forge-300 dark:placeholder:text-forge-600 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 transition-colors resize-none"
+          placeholder="What does this agent do..."
           required
         />
       </div>
 
       <div>
-        <label htmlFor="model" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          AI Model
+        <label htmlFor="model" className="block text-[10px] font-mono uppercase tracking-wider text-forge-400 dark:text-forge-500 mb-1.5">
+          Model
         </label>
         <select
           id="model"
           value={selectedModel}
           onChange={(e) => setSelectedModel(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 text-sm font-mono bg-forge-50 dark:bg-forge-900 border border-forge-200 dark:border-forge-700 rounded text-forge-800 dark:text-forge-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 transition-colors"
         >
           {models.map((model) => (
             <option key={model} value={model}>
@@ -128,53 +128,37 @@ export function CreateAgentForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-[10px] font-mono uppercase tracking-wider text-forge-400 dark:text-forge-500 mb-1.5">
           Capabilities
         </label>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-1.5 max-h-40 overflow-y-auto">
           {capabilityOptions.map((capability) => (
-            <label
+            <button
               key={capability}
-              className={`flex items-center p-2 border rounded-lg cursor-pointer transition ${
+              type="button"
+              onClick={() => toggleCapability(capability)}
+              className={`text-left px-2.5 py-1.5 text-xs font-mono rounded border transition-colors ${
                 selectedCapabilities.includes(capability)
-                  ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-500 dark:border-blue-600'
-                  : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400'
+                  : 'bg-forge-50 dark:bg-forge-900 border-forge-200 dark:border-forge-700 text-forge-500 dark:text-forge-400 hover:border-forge-300 dark:hover:border-forge-600'
               }`}
             >
-              <input
-                type="checkbox"
-                checked={selectedCapabilities.includes(capability)}
-                onChange={() => toggleCapability(capability)}
-                className="mr-2"
-              />
-              <span className="text-sm text-gray-900 dark:text-gray-100">{capability}</span>
-            </label>
+              {capability}
+            </button>
           ))}
         </div>
-        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          Selected: {selectedCapabilities.length} capability{selectedCapabilities.length !== 1 ? 'ies' : ''}
+        <p className="mt-1.5 text-[10px] font-mono text-forge-400 dark:text-forge-500 uppercase tracking-wider">
+          {selectedCapabilities.length} selected
         </p>
       </div>
 
-      <div className="pt-4">
-        <button
-          type="submit"
-          disabled={isSubmitting || !name || !description}
-          className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? (
-            <span className="flex items-center justify-center">
-              <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-              Creating...
-            </span>
-          ) : (
-            'Create Agent'
-          )}
-        </button>
-      </div>
+      <button
+        type="submit"
+        disabled={isSubmitting || !name || !description}
+        className="w-full py-2.5 text-xs font-mono font-medium uppercase tracking-wider bg-amber-500 text-forge-950 rounded hover:bg-amber-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+      >
+        {isSubmitting ? 'Forging...' : 'Forge Agent'}
+      </button>
     </form>
   )
 }

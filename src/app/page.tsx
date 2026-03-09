@@ -5,52 +5,56 @@ import { SetupBanner } from '@/components/SetupBanner'
 
 export default function Home() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <SetupBanner />
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-          Welcome to <span className="text-blue-600 dark:text-blue-400">Agent Factory</span>
+
+      <div className="mb-10">
+        <h1 className="text-3xl font-display font-bold text-forge-800 dark:text-forge-100 tracking-tight mb-2">
+          Command Center
         </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-          Create, deploy, and manage AI agents with our intuitive platform.
-          No coding required - just define your agent&apos;s capabilities and let us handle the rest.
+        <p className="text-sm font-mono text-forge-400 dark:text-forge-500 uppercase tracking-wider">
+          Agent orchestration &amp; monitoring
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
         <div className="lg:col-span-2">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg dark:shadow-gray-950/50 p-6">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Your Agents</h2>
+          <div className="bg-forge-100/50 dark:bg-forge-900/50 border border-forge-200 dark:border-forge-800 rounded-md p-6 bg-grid">
+            <h2 className="text-sm font-mono font-medium text-forge-500 dark:text-forge-400 uppercase tracking-wider mb-5">Active Agents</h2>
             <AgentDashboard />
           </div>
         </div>
 
-        <div className="space-y-8">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg dark:shadow-gray-950/50 p-6">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Create New Agent</h2>
+        <div className="space-y-6">
+          <div className="bg-forge-100/50 dark:bg-forge-900/50 border border-forge-200 dark:border-forge-800 rounded-md p-6">
+            <h2 className="text-sm font-mono font-medium text-forge-500 dark:text-forge-400 uppercase tracking-wider mb-5">Forge New Agent</h2>
             <CreateAgentForm />
           </div>
 
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg dark:shadow-gray-950/50 p-6">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Quick Actions</h2>
+          <div className="bg-forge-100/50 dark:bg-forge-900/50 border border-forge-200 dark:border-forge-800 rounded-md p-6">
+            <h2 className="text-sm font-mono font-medium text-forge-500 dark:text-forge-400 uppercase tracking-wider mb-5">Quick Actions</h2>
             <QuickActions />
           </div>
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-xl p-8 text-white">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Scale Your AI Operations?</h2>
-          <p className="text-xl mb-6">
-            Agent Factory helps you build, deploy, and monitor AI agents at scale.
-            From simple chatbots to complex autonomous systems.
+      <div className="bg-forge-800 dark:bg-forge-850 border border-forge-700 dark:border-forge-700 rounded-md p-8 relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid opacity-10" />
+        <div className="relative max-w-3xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 mb-4 rounded-full bg-amber-500/10 border border-amber-500/20">
+            <div className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
+            <span className="text-xs font-mono text-amber-400 uppercase tracking-wider">Production Ready</span>
+          </div>
+          <h2 className="text-2xl font-display font-bold text-forge-100 mb-3 tracking-tight">Scale Your AI Operations</h2>
+          <p className="text-forge-400 mb-6 max-w-xl mx-auto">
+            From simple chatbots to complex autonomous systems. Build, deploy, and monitor agent fleets from a single command center.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 font-semibold py-3 px-8 rounded-lg hover:bg-gray-100 transition">
-              View Documentation
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button className="px-6 py-2.5 text-sm font-mono font-medium uppercase tracking-wider bg-amber-500 text-forge-950 rounded hover:bg-amber-400 transition-colors">
+              View Docs
             </button>
-            <button className="bg-transparent border-2 border-white font-semibold py-3 px-8 rounded-lg hover:bg-white/10 transition">
-              Schedule Demo
+            <button className="px-6 py-2.5 text-sm font-mono font-medium uppercase tracking-wider border border-forge-600 text-forge-300 rounded hover:border-forge-500 hover:text-forge-100 transition-colors">
+              Explore Templates
             </button>
           </div>
         </div>

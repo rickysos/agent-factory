@@ -1,15 +1,16 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { JetBrains_Mono, Outfit } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/Header'
 import { AgentProvider } from '@/lib/agent-context'
 import { ThemeProvider } from '@/lib/theme-context'
 
-const inter = Inter({ subsets: ['latin'] })
+const outfit = Outfit({ subsets: ['latin'], variable: '--font-display' })
+const jetbrains = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' })
 
 export const metadata: Metadata = {
-  title: 'Agent Factory - AI Agent Development Platform',
-  description: 'Create, deploy, and manage AI agents with ease',
+  title: 'Agent Factory — AI Agent Command Center',
+  description: 'Build, deploy, and orchestrate AI agents at scale',
 }
 
 export default function RootLayout({
@@ -19,16 +20,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${outfit.variable} ${jetbrains.variable} font-sans`}>
         <ThemeProvider>
           <AgentProvider>
             <Header />
-            <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-950 dark:to-gray-900">
+            <main className="min-h-screen bg-forge-50 dark:bg-forge-950">
               {children}
             </main>
-            <footer className="bg-gray-800 dark:bg-gray-950 text-white p-8 border-t border-gray-700">
-              <div className="max-w-7xl mx-auto">
-                <p className="text-center text-gray-400">Agent Factory &copy; 2026 - AI Agent Development Platform</p>
+            <footer className="bg-forge-100 dark:bg-forge-900 border-t border-forge-200 dark:border-forge-800 py-6">
+              <div className="max-w-7xl mx-auto px-4">
+                <p className="text-center text-xs font-mono text-forge-400 dark:text-forge-500 tracking-wider uppercase">
+                  Agent Factory &copy; 2026 — Command Center v2.0
+                </p>
               </div>
             </footer>
           </AgentProvider>

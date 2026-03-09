@@ -83,6 +83,7 @@ const navGroups: NavGroup[] = [
   {
     label: 'Marketplace',
     items: [
+      { name: 'Browse All', href: '/marketplace' },
       { name: 'Templates', href: '/marketplace/templates' },
       { name: 'Skills', href: '/marketplace/skills' },
     ],
@@ -118,21 +119,21 @@ function Dropdown({ group }: { group: NavGroup }) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition inline-flex items-center gap-1"
+        className="text-forge-500 dark:text-forge-400 hover:text-amber-600 dark:hover:text-amber-400 px-2.5 py-1.5 text-xs font-mono font-medium uppercase tracking-wider transition inline-flex items-center gap-1"
       >
         {group.label}
-        <svg className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className={`h-3 w-3 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
       {open && (
-        <div className="absolute left-0 mt-1 w-52 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+        <div className="absolute left-0 mt-1 w-52 bg-forge-50 dark:bg-forge-850 border border-forge-200 dark:border-forge-700 rounded-md py-1 z-50">
           {group.items.map(item => (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-600 dark:hover:text-blue-400"
+              className="block px-4 py-1.5 text-sm text-forge-600 dark:text-forge-300 hover:bg-amber-50 dark:hover:bg-amber-900/10 hover:text-amber-700 dark:hover:text-amber-400 transition-colors"
             >
               {item.name}
             </Link>
@@ -149,95 +150,87 @@ export function Header() {
   const { connected } = useAgents()
 
   return (
-    <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-800">
+    <header className="bg-forge-50/80 dark:bg-forge-950/80 backdrop-blur-md border-b border-forge-200 dark:border-forge-800 sticky top-0 z-40">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
-        <div className="w-full py-4 flex items-center justify-between">
+        <div className="w-full py-3 flex items-center justify-between">
           <div className="flex items-center">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <div className="h-10 w-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">AF</span>
-                </div>
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="h-8 w-8 bg-amber-500 dark:bg-amber-400 rounded flex items-center justify-center transition-all group-hover:glow-amber">
+                <span className="text-forge-950 font-mono font-black text-sm">AF</span>
               </div>
-              <div className="ml-4">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  <Link href="/">Agent Factory</Link>
-                </h1>
+              <div className="flex items-baseline gap-2">
+                <span className="text-lg font-display font-bold text-forge-800 dark:text-forge-100 tracking-tight">
+                  Agent Factory
+                </span>
+                <span className="hidden sm:inline text-[10px] font-mono text-forge-400 dark:text-forge-500 uppercase tracking-widest">
+                  v2.0
+                </span>
               </div>
-            </div>
+            </Link>
 
-            <div className="hidden lg:ml-8 lg:flex lg:items-center lg:space-x-1">
+            <div className="hidden lg:ml-8 lg:flex lg:items-center">
               {navGroups.map(group => (
                 <Dropdown key={group.label} group={group} />
               ))}
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-1.5" title={connected ? 'Connected' : 'Disconnected'}>
-              <div className={`h-2 w-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-400'}`} />
-              <span className="text-xs text-gray-400">{connected ? 'Live' : 'Offline'}</span>
+          <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-1.5" title={connected ? 'Connected' : 'Disconnected'}>
+              <div className={`h-1.5 w-1.5 rounded-full ${connected ? 'bg-amber-400 animate-pulse' : 'bg-forge-400'}`} />
+              <span className="text-[10px] font-mono uppercase tracking-wider text-forge-400 dark:text-forge-500">
+                {connected ? 'Live' : 'Off'}
+              </span>
             </div>
 
             <ThemeMenu />
 
             <Link
               href="/quick-start"
-              className="hidden md:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="hidden md:inline-flex items-center px-3 py-1.5 text-xs font-mono font-medium uppercase tracking-wider rounded bg-amber-500 dark:bg-amber-400 text-forge-950 hover:bg-amber-400 dark:hover:bg-amber-300 transition-colors"
             >
-              Create Agent
+              + New Agent
             </Link>
 
-            <div className="relative hidden md:block">
-              <div className="flex items-center space-x-2 cursor-pointer">
-                <div className="h-8 w-8 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                  <span className="text-gray-700 dark:text-gray-200 font-medium text-sm">RB</span>
-                </div>
+            <div className="hidden md:flex items-center">
+              <div className="h-7 w-7 bg-forge-200 dark:bg-forge-700 rounded flex items-center justify-center">
+                <span className="text-forge-600 dark:text-forge-300 font-mono text-xs font-bold">RB</span>
               </div>
             </div>
 
             <button
               type="button"
-              className="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="lg:hidden p-1.5 rounded text-forge-400 hover:text-forge-600 dark:hover:text-forge-200 hover:bg-forge-100 dark:hover:bg-forge-800"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <span className="sr-only">Open main menu</span>
               {mobileMenuOpen ? (
-                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               ) : (
-                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
               )}
             </button>
           </div>
         </div>
 
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-gray-200 dark:border-gray-700 py-4 max-h-[70vh] overflow-y-auto">
+          <div className="lg:hidden border-t border-forge-200 dark:border-forge-800 py-3 max-h-[70vh] overflow-y-auto">
             <div className="px-2 space-y-1">
               {navGroups.map(group => (
                 <div key={group.label}>
                   <button
                     onClick={() => setMobileExpanded(mobileExpanded === group.label ? null : group.label)}
-                    className="w-full flex justify-between items-center px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-100 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="w-full flex justify-between items-center px-3 py-2 text-xs font-mono font-medium uppercase tracking-wider text-forge-600 dark:text-forge-300 rounded hover:bg-forge-100 dark:hover:bg-forge-800"
                   >
                     {group.label}
-                    <svg className={`h-4 w-4 transition-transform ${mobileExpanded === group.label ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className={`h-3 w-3 transition-transform ${mobileExpanded === group.label ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
                   {mobileExpanded === group.label && (
-                    <div className="pl-4 space-y-1">
+                    <div className="pl-4 space-y-0.5">
                       {group.items.map(item => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="block px-3 py-2 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800"
-                        >
+                        <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)} className="block px-3 py-1.5 rounded text-sm text-forge-500 dark:text-forge-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-forge-100 dark:hover:bg-forge-800">
                           {item.name}
                         </Link>
                       ))}
@@ -245,12 +238,8 @@ export function Header() {
                   )}
                 </div>
               ))}
-              <Link
-                href="/quick-start"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block w-full mt-4 text-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-              >
-                Create Agent
+              <Link href="/quick-start" onClick={() => setMobileMenuOpen(false)} className="block w-full mt-3 text-center px-4 py-2 text-xs font-mono font-medium uppercase tracking-wider rounded bg-amber-500 text-forge-950 hover:bg-amber-400">
+                + New Agent
               </Link>
             </div>
           </div>
