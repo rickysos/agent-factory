@@ -7,7 +7,7 @@ export type { Agent }
 
 interface AgentContextType {
   agents: Agent[]
-  addAgent: (agent: Omit<Agent, 'id' | 'createdAt' | 'deployments'>) => Promise<void>
+  addAgent: (agent: Omit<Agent, 'id' | 'createdAt' | 'deployments' | 'autonomyLevel'> & { autonomyLevel?: Agent['autonomyLevel'] }) => Promise<void>
   updateAgent: (id: string, updates: Partial<Agent>) => Promise<void>
   deleteAgent: (id: string) => Promise<void>
   deployAgent: (id: string) => Promise<void>
@@ -64,7 +64,7 @@ export function AgentProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const addAgent = async (agentData: Omit<Agent, 'id' | 'createdAt' | 'deployments'>) => {
+  const addAgent = async (agentData: Omit<Agent, 'id' | 'createdAt' | 'deployments' | 'autonomyLevel'> & { autonomyLevel?: Agent['autonomyLevel'] }) => {
     const res = await fetch('/api/agents', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

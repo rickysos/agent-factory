@@ -9,6 +9,7 @@ const initialAgents: Agent[] = [
     model: 'gpt-4',
     status: 'active',
     capabilities: ['Q&A', 'Ticket Creation', 'Escalation'],
+    autonomyLevel: 'supervised',
     createdAt: new Date('2026-03-01'),
     lastDeployed: new Date('2026-03-08'),
     deployments: 3,
@@ -20,6 +21,7 @@ const initialAgents: Agent[] = [
     model: 'claude-3',
     status: 'active',
     capabilities: ['Content Writing', 'SEO Optimization', 'Social Media'],
+    autonomyLevel: 'supervised',
     createdAt: new Date('2026-03-05'),
     lastDeployed: new Date('2026-03-07'),
     deployments: 2,
@@ -31,6 +33,7 @@ const initialAgents: Agent[] = [
     model: 'deepseek-coder',
     status: 'draft',
     capabilities: ['Code Analysis', 'Security Review', 'Best Practices'],
+    autonomyLevel: 'supervised',
     createdAt: new Date('2026-03-08'),
     deployments: 0,
   },
@@ -48,8 +51,9 @@ export const agentStore = {
     return agents.find(a => a.id === id)
   },
 
-  create(data: Omit<Agent, 'id' | 'createdAt' | 'deployments'>): Agent {
+  create(data: Omit<Agent, 'id' | 'createdAt' | 'deployments' | 'autonomyLevel'> & { autonomyLevel?: Agent['autonomyLevel'] }): Agent {
     const agent: Agent = {
+      autonomyLevel: 'supervised',
       ...data,
       id: String(nextId++),
       createdAt: new Date(),
