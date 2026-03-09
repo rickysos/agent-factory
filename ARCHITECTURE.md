@@ -155,25 +155,101 @@ api.agent-factory.com → Backend API
 openclaw-gateway → Agent orchestration
 ```
 
+## Expanded Architecture
+
+### 5. Agent Stack System
+Rather than creating individual agents, Agent Factory creates **agent stacks** — complete multi-agent systems with pre-configured delegation rules, cron jobs, and tool permissions.
+
+```
+┌─────────────────────────────────────────┐
+│            Agent Stack Template         │
+├─────────────────────────────────────────┤
+│  Orchestrator                           │
+│  ├── Coder Agent (DeepSeek V3.2)        │
+│  ├── Security Agent (DeepSeek V3.2)     │
+│  ├── Vigil Agent (GLM-4.5-AIR)          │
+│  └── Marketing Agent (Gemini 2.5 Flash) │
+├─────────────────────────────────────────┤
+│  Delegation Rules                       │
+│  Cron Jobs                              │
+│  Environment Variables                  │
+│  Tool Permissions                       │
+│  Channel Bindings (Slack, Discord, etc) │
+└─────────────────────────────────────────┘
+```
+
+### 6. Protocol Support (Planned)
+- **MCP (Model Context Protocol)**: Standardized tool/resource sharing between agents
+- **A2A (Agent-to-Agent)**: Cross-framework agent communication (AG2 pattern)
+- **OpenClaw Gateway API**: Native runtime execution
+
+### 7. Agent Memory & State (Planned)
+Inspired by Letta's memory-first architecture:
+- **Context Repositories**: Git-like versioned agent memory
+- **Shared Memory**: Cross-agent state for collaborative tasks
+- **Sleep-time Learning**: Offline processing during idle periods
+
+### 8. Observability Stack (Planned)
+Inspired by LangSmith and AgentOps:
+- **Execution Traces**: Full trace of agent decision chains
+- **Session Replay**: Replay agent sessions for debugging (AgentOps pattern)
+- **Custom Dashboards**: Token usage, latency (P50/P99), error rates, cost
+- **OpenTelemetry Export**: Standard observability integration
+
+### 9. Visual Workflow Builder (Planned)
+Inspired by Flowise and CrewAI:
+- **Drag-and-drop agent composition**: Visual agent stack builder
+- **Flow editor**: Define delegation rules visually
+- **Template library**: Pre-built stacks for common use cases
+
 ## Roadmap
 
 ### Phase 1: Core MVP (Current)
 - [x] Agent creation UI
 - [x] Basic dashboard
-- [x] Delegation engine
+- [x] Delegation engine (in-memory)
 - [x] OpenClaw configuration export
+- [x] Docker Compose setup
+- [x] Database schema (PostgreSQL)
 
-### Phase 2: Enhanced Features
-- [ ] Task queue system
-- [ ] Performance monitoring
-- [ ] Template marketplace
-- [ ] Collaborative agents
+### Phase 2: Foundation (Next)
+- [ ] Real backend API (replace mocked context)
+- [ ] PostgreSQL integration (use existing schema)
+- [ ] Redis task queue (replace in-memory queue)
+- [ ] WebSocket real-time updates
+- [ ] Authentication & RBAC
+- [ ] Agent stack templates (pre-built configs)
 
-### Phase 3: Advanced Features
-- [ ] Agent training/feedback loops
-- [ ] Autonomous agent teams
-- [ ] Marketplace for agent skills
-- [ ] Enterprise features
+### Phase 3: Orchestration
+- [ ] Live OpenClaw gateway integration
+- [ ] Visual workflow/delegation editor
+- [ ] Cron job management UI
+- [ ] Agent-to-agent communication
+- [ ] MCP protocol support
+- [ ] Channel bindings management (Slack, Discord)
+
+### Phase 4: Observability
+- [ ] Execution trace viewer
+- [ ] Session replay for debugging
+- [ ] Custom monitoring dashboards
+- [ ] Cost tracking per agent/task
+- [ ] OpenTelemetry export
+- [ ] Alerting (PagerDuty, Slack webhooks)
+
+### Phase 5: Intelligence
+- [ ] Agent memory system (context repositories)
+- [ ] Feedback loops (human-in-the-loop training)
+- [ ] Auto-scaling agent concurrency
+- [ ] Smart model routing (cost vs capability)
+- [ ] Agent performance scoring
+
+### Phase 6: Marketplace & Enterprise
+- [ ] Template marketplace (share/sell agent stacks)
+- [ ] Skill marketplace (reusable agent capabilities)
+- [ ] SSO integration (Okta, MS Entra)
+- [ ] Audit logging
+- [ ] Multi-tenant support
+- [ ] API keys and usage billing
 
 ## Success Metrics (Inspired by OpenClaw)
 
@@ -191,18 +267,29 @@ openclaw-gateway → Agent orchestration
 
 ## Competitive Advantage
 
-### vs. LangChain/AutoGen/CrewAI
-- **Simpler**: No complex prompt engineering required
-- **Integrated**: Built-in deployment, monitoring, UI
-- **Production-ready**: Based on battle-tested OpenClaw patterns
-- **User-friendly**: Visual interface for non-technical users
+### vs. CrewAI ($25/mo, 60% Fortune 500)
+- **Stack-level**: Create entire agent teams, not individual agents
+- **OpenClaw-native**: First-class runtime integration, not another abstraction layer
+- **Cost-optimized**: Route to cheapest capable model per task
+- **Self-hosted**: No per-execution pricing, run on your infrastructure
 
-### vs. OpenAI Assistants API
+### vs. LangGraph/LangSmith (code-first)
+- **Visual**: UI-driven agent creation, no Python required
+- **Batteries included**: Delegation, scheduling, monitoring in one platform
+- **Stack templates**: Pre-built multi-agent configs for common use cases
+
+### vs. Flowise/Dify (visual builders)
+- **Multi-agent first**: Built for agent teams, not single chatbot flows
+- **Runtime integration**: Direct OpenClaw gateway execution
+- **Production patterns**: Battle-tested orchestration from OpenClaw ecosystem
+
+### vs. AG2/AutoGen (framework interop)
+- **Simpler**: No framework complexity, just configure and deploy
+- **UI-first**: Visual management vs code-first approach
+
+### vs. Relevance AI (no-code enterprise)
 - **Open-source**: Full control, no vendor lock-in
-- **Cost-effective**: Use any model provider
-- **Extensible**: Add custom tools, integrations
-- **Private**: Run on your infrastructure
+- **General purpose**: Not limited to GTM/sales workflows
+- **Transparent pricing**: Self-host free
 
-## Conclusion
-
-Agent Factory takes the proven OpenClaw orchestrator architecture and makes it accessible through a user-friendly interface. It enables teams to build, deploy, and manage AI agents without deep technical expertise while maintaining the power and flexibility of professional agent orchestration systems.
+See [docs/COMPETITIVE-ANALYSIS.md](docs/COMPETITIVE-ANALYSIS.md) for detailed competitor profiles.
