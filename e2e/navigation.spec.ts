@@ -14,6 +14,7 @@ const navPages = [
   { menu: 'Configure', item: 'Skills Catalog', url: '/skills', heading: 'Skill' },
   { menu: 'Configure', item: 'Tools & Permissions', url: '/tools', heading: 'Tool Permission' },
   { menu: 'Configure', item: 'Providers', url: '/providers', heading: 'Provider' },
+  { menu: 'Connect', item: /^Triggers$/, url: '/triggers', heading: 'Trigger' },
   { menu: 'Connect', item: 'Channels', url: '/channels', heading: 'Channel Binding' },
   { menu: 'Connect', item: 'MCP Servers', url: '/mcp', heading: 'MCP' },
   { menu: 'Connect', item: 'Cron Jobs', url: '/cron', heading: 'Scheduled' },

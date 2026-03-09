@@ -54,6 +54,7 @@ const navGroups: NavGroup[] = [
   {
     label: 'Connect',
     items: [
+      { name: 'Triggers', href: '/triggers' },
       { name: 'Channels', href: '/channels' },
       { name: 'Messaging', href: '/messaging' },
       { name: 'MCP Servers', href: '/mcp' },

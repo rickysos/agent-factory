@@ -25,6 +25,7 @@ const pages = [
   { url: '/providers', title: 'Provider' },
   { url: '/config-diff', title: 'Config' },
   { url: '/routing', title: 'Model Routing' },
+  { url: '/triggers', title: 'Trigger' },
   { url: '/channels', title: 'Channel' },
   { url: '/messaging', title: 'Messaging' },
   { url: '/mcp', title: 'MCP' },
