@@ -1,20 +1,144 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useAgents } from '@/lib/agent-context'
 
+interface NavGroup {
+  label: string
+  items: { name: string; href: string }[]
+}
+
+const navGroups: NavGroup[] = [
+  {
+    label: 'Agents',
+    items: [
+      { name: 'Dashboard', href: '/' },
+      { name: 'Agent Library', href: '/library' },
+      { name: 'Agent Editor', href: '/agent-editor' },
+      { name: 'Presets', href: '/presets' },
+      { name: 'Launch & Run', href: '/launch' },
+      { name: 'Maintenance', href: '/maintenance' },
+      { name: 'Scoring', href: '/scoring' },
+    ],
+  },
+  {
+    label: 'Build',
+    items: [
+      { name: 'Stacks', href: '/stacks' },
+      { name: 'Templates', href: '/templates' },
+      { name: 'Team Templates', href: '/templates/teams' },
+      { name: 'Persona Templates', href: '/templates' },
+      { name: 'Skill Creator', href: '/skill-creator' },
+      { name: 'Workflows', href: '/workflows' },
+      { name: 'Agent Routing', href: '/agent-routing' },
+    ],
+  },
+  {
+    label: 'Configure',
+    items: [
+      { name: 'Models', href: '/models' },
+      { name: 'Local Models', href: '/local-models' },
+      { name: 'Skills Catalog', href: '/skills' },
+      { name: 'Tools & Permissions', href: '/tools' },
+      { name: 'Thinking Level', href: '/thinking' },
+      { name: 'Memory Config', href: '/memory-config' },
+      { name: 'Providers', href: '/providers' },
+      { name: 'Config Diff', href: '/config-diff' },
+      { name: 'Smart Routing', href: '/routing' },
+    ],
+  },
+  {
+    label: 'Connect',
+    items: [
+      { name: 'Channels', href: '/channels' },
+      { name: 'Messaging', href: '/messaging' },
+      { name: 'MCP Servers', href: '/mcp' },
+      { name: 'Cron Jobs', href: '/cron' },
+      { name: 'Gateway', href: '/gateway' },
+      { name: 'Gateway Config', href: '/gateway-config' },
+      { name: 'Deploy', href: '/deploy' },
+    ],
+  },
+  {
+    label: 'Observe',
+    items: [
+      { name: 'Monitoring', href: '/monitoring' },
+      { name: 'Traces', href: '/traces' },
+      { name: 'Sessions', href: '/sessions' },
+      { name: 'Costs', href: '/costs' },
+      { name: 'Alerts', href: '/alerts' },
+      { name: 'Telemetry', href: '/telemetry' },
+      { name: 'Memory', href: '/memory' },
+      { name: 'Feedback', href: '/feedback' },
+    ],
+  },
+  {
+    label: 'Marketplace',
+    items: [
+      { name: 'Templates', href: '/marketplace/templates' },
+      { name: 'Skills', href: '/marketplace/skills' },
+    ],
+  },
+  {
+    label: 'Settings',
+    items: [
+      { name: 'Environment', href: '/environment' },
+      { name: 'SSO', href: '/settings/sso' },
+      { name: 'Audit Log', href: '/settings/audit' },
+      { name: 'Tenants', href: '/settings/tenants' },
+      { name: 'Billing & Keys', href: '/settings/billing' },
+      { name: 'Setup Wizard', href: '/setup' },
+      { name: 'Quick Start', href: '/quick-start' },
+    ],
+  },
+]
+
+function Dropdown({ group }: { group: NavGroup }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition inline-flex items-center gap-1"
+      >
+        {group.label}
+        <svg className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute left-0 mt-1 w-52 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+          {group.items.map(item => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+            >
+              {item.name}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null)
   const { connected } = useAgents()
-
-  const navigation = [
-    { name: 'Dashboard', href: '/' },
-    { name: 'Agents', href: '/agents' },
-    { name: 'Templates', href: '/templates' },
-    { name: 'Deployments', href: '/deployments' },
-    { name: 'Documentation', href: '/docs' },
-  ]
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
@@ -31,19 +155,12 @@ export function Header() {
                 <h1 className="text-2xl font-bold text-gray-900">
                   <Link href="/">Agent Factory</Link>
                 </h1>
-                <p className="text-sm text-gray-500">AI Agent Development Platform</p>
               </div>
             </div>
-            
-            <div className="hidden md:ml-10 md:flex md:space-x-8">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition"
-                >
-                  {item.name}
-                </Link>
+
+            <div className="hidden lg:ml-8 lg:flex lg:items-center lg:space-x-1">
+              {navGroups.map(group => (
+                <Dropdown key={group.label} group={group} />
               ))}
             </div>
           </div>
@@ -54,25 +171,24 @@ export function Header() {
               <span className="text-xs text-gray-400">{connected ? 'Live' : 'Offline'}</span>
             </div>
 
-            <button className="hidden md:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <Link
+              href="/quick-start"
+              className="hidden md:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
               Create Agent
-            </button>
-            
-            <div className="relative">
+            </Link>
+
+            <div className="relative hidden md:block">
               <div className="flex items-center space-x-2 cursor-pointer">
                 <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
-                  <span className="text-gray-700 font-medium">RB</span>
+                  <span className="text-gray-700 font-medium text-sm">RB</span>
                 </div>
-                <span className="hidden md:block text-sm font-medium text-gray-700">Ricky</span>
-                <svg className="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
               </div>
             </div>
 
             <button
               type="button"
-              className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+              className="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <span className="sr-only">Open main menu</span>
@@ -89,23 +205,43 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-4">
+          <div className="lg:hidden border-t border-gray-200 py-4 max-h-[70vh] overflow-y-auto">
             <div className="px-2 space-y-1">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
+              {navGroups.map(group => (
+                <div key={group.label}>
+                  <button
+                    onClick={() => setMobileExpanded(mobileExpanded === group.label ? null : group.label)}
+                    className="w-full flex justify-between items-center px-3 py-2 text-base font-medium text-gray-900 rounded-md hover:bg-gray-50"
+                  >
+                    {group.label}
+                    <svg className={`h-4 w-4 transition-transform ${mobileExpanded === group.label ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {mobileExpanded === group.label && (
+                    <div className="pl-4 space-y-1">
+                      {group.items.map(item => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="block px-3 py-2 rounded-md text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
-              <button className="w-full mt-4 inline-flex justify-center items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+              <Link
+                href="/quick-start"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full mt-4 text-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              >
                 Create Agent
-              </button>
+              </Link>
             </div>
           </div>
         )}
