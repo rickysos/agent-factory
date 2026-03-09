@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
     model: body.model,
     status: body.status || 'draft',
     capabilities: body.capabilities || [],
+    autonomyLevel: body.autonomyLevel || 'supervised',
   })
 
   return NextResponse.json({ success: true, data: agent }, { status: 201 })

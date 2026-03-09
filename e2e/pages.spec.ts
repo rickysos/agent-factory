@@ -5,12 +5,15 @@ const pages = [
   { url: '/library', title: 'Agent Library' },
   { url: '/agent-editor', title: 'Agent Definition' },
   { url: '/presets', title: 'Agent Type Presets' },
+  { url: '/chat', title: 'Agent Chat' },
+  { url: '/playground', title: 'Playground' },
   { url: '/launch', title: 'Agent Launcher' },
   { url: '/maintenance', title: 'Maintenance' },
   { url: '/scoring', title: 'Performance' },
   { url: '/stacks', title: 'Stack Templates' },
   { url: '/templates', title: 'Persona' },
   { url: '/templates/teams', title: 'Team' },
+  { url: '/sandbox', title: 'Code Sandbox' },
   { url: '/skill-creator', title: 'Skill Creator' },
   { url: '/workflows', title: 'Workflow' },
   { url: '/agent-routing', title: 'Routing' },
@@ -23,6 +26,7 @@ const pages = [
   { url: '/providers', title: 'Provider' },
   { url: '/config-diff', title: 'Config' },
   { url: '/routing', title: 'Model Routing' },
+  { url: '/triggers', title: 'Trigger' },
   { url: '/channels', title: 'Channel' },
   { url: '/messaging', title: 'Messaging' },
   { url: '/mcp', title: 'MCP' },
@@ -55,8 +59,7 @@ test.describe('All Pages Load', () => {
     test(`${url} loads and contains "${title}"`, async ({ page }) => {
       const res = await page.goto(url)
       expect(res?.status()).toBeLessThan(400)
-      const content = await page.textContent('body')
-      expect(content?.toLowerCase()).toContain(title.toLowerCase())
+      await expect(page.locator('body')).toContainText(title, { ignoreCase: true, timeout: 10000 })
     })
   }
 })

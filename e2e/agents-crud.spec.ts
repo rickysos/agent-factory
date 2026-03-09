@@ -14,28 +14,21 @@ test.describe('Agent CRUD', () => {
     page.on('dialog', dialog => dialog.accept())
     await page.locator('form button[type="submit"]').click()
 
-    await expect(page.locator(`text=${name}`)).toBeVisible({ timeout: 10000 })
+    await expect(page.locator(`text=${name}`).first()).toBeVisible({ timeout: 10000 })
   })
 
-  test('deletes an agent', async ({ page, request }) => {
-    // Create an agent via API first
+  test('deletes an agent via API', async ({ request }) => {
     const createRes = await request.post('/api/agents', {
       data: { name: 'Delete Me Agent', description: 'Will be deleted', model: 'gpt-4' },
     })
-    expect(createRes.ok()).toBeTruthy()
+    const { data } = await createRes.json()
+    expect(data.id).toBeTruthy()
 
-    await page.goto('/')
-    await expect(page.locator('text=Delete Me Agent').first()).toBeVisible({ timeout: 10000 })
+    const delRes = await request.delete(`/api/agents/${data.id}`)
+    expect(delRes.status()).toBe(200)
 
-    const card = page.locator('[data-testid="agent-card"]', { hasText: 'Delete Me Agent' }).first()
-    // Fallback: find any parent container with delete button
-    const deleteBtn = card.isVisible()
-      ? card.locator('button', { hasText: 'Delete' }).first()
-      : page.locator('button', { hasText: 'Delete' }).first()
-
-    if (await deleteBtn.isVisible()) {
-      await deleteBtn.click()
-    }
+    const getRes = await request.get(`/api/agents/${data.id}`)
+    expect(getRes.status()).toBe(404)
   })
 
   test('deploys a draft agent', async ({ page }) => {

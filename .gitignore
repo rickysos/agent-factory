@@ -36,3 +36,5 @@ coverage/
 
 # Misc
 *.pem
+.claude/worktrees/
+test-results/

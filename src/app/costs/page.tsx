@@ -1,184 +1,228 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
-interface AgentCost {
+interface AgentUsage {
+  agentId: string
   agentName: string
-  model: string
-  inputTokens: number
-  outputTokens: number
-  cost: number
-}
-
-interface TaskCost {
-  id: string
-  taskName: string
-  agentName: string
-  timestamp: string
   tokens: number
   cost: number
-  status?: 'completed' | 'failed'
+  requests: number
+  lastUsed: string
 }
 
-const agentCosts: AgentCost[] = [
-  { agentName: 'code-reviewer', model: 'claude-sonnet-4-20250514', inputTokens: 612_000, outputTokens: 280_100, cost: 48.21 },
-  { agentName: 'security-scanner', model: 'claude-opus-4-20250514', inputTokens: 184_200, outputTokens: 99_900, cost: 38.15 },
-  { agentName: 'support-agent', model: 'claude-sonnet-4-20250514', inputTokens: 382_400, outputTokens: 158_800, cost: 29.23 },
-  { agentName: 'data-pipeline', model: 'claude-haiku-4-20250414', inputTokens: 412_300, outputTokens: 212_200, cost: 12.49 },
-  { agentName: 'billing-agent', model: 'claude-haiku-4-20250414', inputTokens: 128_400, outputTokens: 64_292, cost: 8.53 },
-  { agentName: 'deploy-bot', model: 'claude-haiku-4-20250414', inputTokens: 208_600, outputTokens: 104_200, cost: 6.26 },
-]
+interface ModelUsage {
+  model: string
+  requests: number
+  totalTokens: number
+  cost: number
+}
 
-const recentTasks = [
-  { id: 'task-301', taskName: 'Review PR #482', agentName: 'code-reviewer', timestamp: '2026-03-09T14:32:11Z', tokens: 18_420, cost: 0.98 },
-  { id: 'task-300', taskName: 'Scan auth module', agentName: 'security-scanner', timestamp: '2026-03-09T14:15:02Z', tokens: 12_800, cost: 1.72 },
-  { id: 'task-299', taskName: 'Ticket #1094 response', agentName: 'support-agent', timestamp: '2026-03-09T10:42:18Z', tokens: 8_920, cost: 0.47 },
-  { id: 'task-298', taskName: 'Daily ETL 2026-03-09', agentName: 'data-pipeline', timestamp: '2026-03-09T13:00:02Z', tokens: 6_140, cost: 0.12 },
-  { id: 'task-297', taskName: 'Deploy v2.4.1 staging', agentName: 'deploy-bot', timestamp: '2026-03-09T11:15:44Z', tokens: 4_280, cost: 0.09, status: 'failed' },
-  { id: 'task-296', taskName: 'Review PR #481', agentName: 'code-reviewer', timestamp: '2026-03-09T09:22:33Z', tokens: 22_100, cost: 1.18 },
-  { id: 'task-295', taskName: 'Refund processing', agentName: 'billing-agent', timestamp: '2026-03-09T10:44:00Z', tokens: 3_200, cost: 0.06 },
-  { id: 'task-294', taskName: 'Ticket #1093 response', agentName: 'support-agent', timestamp: '2026-03-08T16:30:12Z', tokens: 7_640, cost: 0.41 },
-  { id: 'task-293', taskName: 'Daily ETL 2026-03-08', agentName: 'data-pipeline', timestamp: '2026-03-08T13:00:01Z', tokens: 5_890, cost: 0.11 },
-  { id: 'task-292', taskName: 'Scan payments module', agentName: 'security-scanner', timestamp: '2026-03-08T11:05:44Z', tokens: 14_200, cost: 1.91 },
-].map(t => ({ ...t, status: t.status || 'completed' as const }))
+interface DailyUsage {
+  date: string
+  cost: number
+  tokens: number
+  requests: number
+}
 
-const totalCost = agentCosts.reduce((s, a) => s + a.cost, 0)
-const costToday = recentTasks.filter(t => t.timestamp.startsWith('2026-03-09')).reduce((s, t) => s + t.cost, 0)
-const avgCostPerTask = totalCost / recentTasks.length
-
-type Period = '24h' | '7d' | '30d'
+interface UsageData {
+  totalCost: number
+  totalTokens: number
+  byAgent: AgentUsage[]
+  byModel: ModelUsage[]
+  daily: DailyUsage[]
+}
 
 export default function CostsPage() {
-  const [period, setPeriod] = useState<Period>('24h')
+  const [days, setDays] = useState(7)
+  const [data, setData] = useState<UsageData | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  const fetchData = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/usage?days=${days}`)
+      const json = await res.json()
+      setData(json)
+    } catch {
+      // keep existing data on error
+    } finally {
+      setLoading(false)
+    }
+  }, [days])
+
+  useEffect(() => {
+    setLoading(true)
+    fetchData()
+  }, [fetchData])
+
+  if (loading && !data) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <p className="text-gray-500 dark:text-gray-400">Loading usage data...</p>
+      </div>
+    )
+  }
+
+  const totalCost = data?.totalCost ?? 0
+  const totalTokens = data?.totalTokens ?? 0
+  const byAgent = data?.byAgent ?? []
+  const byModel = data?.byModel ?? []
+  const daily = data?.daily ?? []
+  const maxAgentCost = Math.max(...byAgent.map(a => a.cost), 1)
+  const maxModelCost = Math.max(...byModel.map(m => m.cost), 1)
+  const maxDailyCost = Math.max(...daily.map(d => d.cost), 1)
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Cost Tracking</h1>
-          <p className="text-gray-600 mt-2">Monitor spend across agents, models, and individual tasks.</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Cost Tracking</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">Monitor spend across agents and models.</p>
         </div>
         <div className="flex gap-2">
-          {(['24h', '7d', '30d'] as const).map(p => (
+          {[1, 7, 30].map(d => (
             <button
-              key={p}
-              onClick={() => setPeriod(p)}
+              key={d}
+              onClick={() => setDays(d)}
               className={`px-3 py-1.5 text-sm font-medium rounded-lg transition ${
-                period === p ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                days === d
+                  ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
               }`}
             >
-              {p}
+              {d === 1 ? '24h' : `${d}d`}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Cost</p>
-          <p className="text-3xl font-bold text-gray-900 mt-1">${totalCost.toFixed(2)}</p>
-          <p className="text-xs text-gray-400 mt-1">All time</p>
+      {/* Summary cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total Spend</p>
+          <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">
+            {totalCost === 0 ? (
+              <span className="text-green-600 dark:text-green-400">Free</span>
+            ) : (
+              `$${totalCost.toFixed(4)}`
+            )}
+          </p>
+          <p className="text-xs text-gray-400 mt-1">Last {days} day{days > 1 ? 's' : ''}</p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Cost Today</p>
-          <p className="text-3xl font-bold text-gray-900 mt-1">${costToday.toFixed(2)}</p>
-          <p className="text-xs text-gray-400 mt-1">2026-03-09</p>
-        </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Avg Cost per Task</p>
-          <p className="text-3xl font-bold text-gray-900 mt-1">${avgCostPerTask.toFixed(2)}</p>
-          <p className="text-xs text-gray-400 mt-1">Across {recentTasks.length} recent tasks</p>
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Tokens Used</p>
+          <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{totalTokens.toLocaleString()}</p>
+          <p className="text-xs text-gray-400 mt-1">Prompt + completion</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900">Cost by Agent</h2>
+      {/* Usage by Agent */}
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Usage by Agent</h2>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <th className="px-6 py-3">Agent</th>
-                <th className="px-6 py-3">Model</th>
-                <th className="px-6 py-3 text-right">Input Tokens</th>
-                <th className="px-6 py-3 text-right">Output Tokens</th>
-                <th className="px-6 py-3 text-right">Cost</th>
-                <th className="px-6 py-3 text-right">% of Total</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {agentCosts.map(a => (
-                <tr key={a.agentName} className="hover:bg-gray-50 transition">
-                  <td className="px-6 py-3 font-medium text-gray-900">{a.agentName}</td>
-                  <td className="px-6 py-3 text-gray-500 font-mono text-xs">{a.model}</td>
-                  <td className="px-6 py-3 text-right text-gray-700">{a.inputTokens.toLocaleString()}</td>
-                  <td className="px-6 py-3 text-right text-gray-700">{a.outputTokens.toLocaleString()}</td>
-                  <td className="px-6 py-3 text-right font-medium text-gray-900">${a.cost.toFixed(2)}</td>
-                  <td className="px-6 py-3 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <div className="w-16 bg-gray-200 rounded-full h-1.5">
-                        <div
-                          className="bg-blue-600 h-1.5 rounded-full"
-                          style={{ width: `${(a.cost / totalCost) * 100}%` }}
-                        />
+        {byAgent.length === 0 ? (
+          <p className="px-6 py-8 text-gray-500 dark:text-gray-400 text-center">No usage recorded yet. Chat with an agent to see data here.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 dark:bg-gray-800 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3">Agent</th>
+                  <th className="px-6 py-3 text-right">Requests</th>
+                  <th className="px-6 py-3 text-right">Tokens</th>
+                  <th className="px-6 py-3 text-right">Cost</th>
+                  <th className="px-6 py-3 text-right">Last Used</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                {byAgent.map(a => (
+                  <tr key={a.agentId} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                    <td className="px-6 py-3 font-medium text-gray-900 dark:text-white">{a.agentName}</td>
+                    <td className="px-6 py-3 text-right text-gray-700 dark:text-gray-300">{a.requests}</td>
+                    <td className="px-6 py-3 text-right text-gray-700 dark:text-gray-300">{a.tokens.toLocaleString()}</td>
+                    <td className="px-6 py-3 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                          <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: `${(a.cost / maxAgentCost) * 100}%` }} />
+                        </div>
+                        <span className="font-medium text-gray-900 dark:text-white">{a.cost === 0 ? 'Free' : `$${a.cost.toFixed(4)}`}</span>
                       </div>
-                      <span className="text-xs text-gray-500 w-10 text-right">{((a.cost / totalCost) * 100).toFixed(1)}%</span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr className="bg-gray-50 font-semibold text-sm">
-                <td className="px-6 py-3 text-gray-900">Total</td>
-                <td className="px-6 py-3" />
-                <td className="px-6 py-3 text-right text-gray-900">{agentCosts.reduce((s, a) => s + a.inputTokens, 0).toLocaleString()}</td>
-                <td className="px-6 py-3 text-right text-gray-900">{agentCosts.reduce((s, a) => s + a.outputTokens, 0).toLocaleString()}</td>
-                <td className="px-6 py-3 text-right text-gray-900">${totalCost.toFixed(2)}</td>
-                <td className="px-6 py-3 text-right text-gray-500">100%</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+                    </td>
+                    <td className="px-6 py-3 text-right text-xs text-gray-500 dark:text-gray-400">{new Date(a.lastUsed).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900">Recent Tasks</h2>
+      {/* Usage by Model */}
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Usage by Model</h2>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <th className="px-6 py-3">Task</th>
-                <th className="px-6 py-3">Agent</th>
-                <th className="px-6 py-3">Timestamp</th>
-                <th className="px-6 py-3 text-right">Tokens</th>
-                <th className="px-6 py-3 text-right">Cost</th>
-                <th className="px-6 py-3 text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {recentTasks.map(t => (
-                <tr key={t.id} className="hover:bg-gray-50 transition">
-                  <td className="px-6 py-3 font-medium text-gray-900">{t.taskName}</td>
-                  <td className="px-6 py-3 text-gray-600">{t.agentName}</td>
-                  <td className="px-6 py-3 text-gray-500 text-xs">{new Date(t.timestamp).toLocaleString()}</td>
-                  <td className="px-6 py-3 text-right text-gray-700">{t.tokens.toLocaleString()}</td>
-                  <td className="px-6 py-3 text-right font-medium text-gray-900">${t.cost.toFixed(2)}</td>
-                  <td className="px-6 py-3 text-center">
-                    <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
-                      t.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                    }`}>
-                      {t.status}
-                    </span>
-                  </td>
+        {byModel.length === 0 ? (
+          <p className="px-6 py-8 text-gray-500 dark:text-gray-400 text-center">No model usage recorded yet.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 dark:bg-gray-800 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3">Model</th>
+                  <th className="px-6 py-3 text-right">Requests</th>
+                  <th className="px-6 py-3 text-right">Tokens</th>
+                  <th className="px-6 py-3 text-right">Cost</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                {byModel.map(m => (
+                  <tr key={m.model} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                    <td className="px-6 py-3 font-mono text-xs text-gray-900 dark:text-white">{m.model}</td>
+                    <td className="px-6 py-3 text-right text-gray-700 dark:text-gray-300">{m.requests}</td>
+                    <td className="px-6 py-3 text-right text-gray-700 dark:text-gray-300">{m.totalTokens.toLocaleString()}</td>
+                    <td className="px-6 py-3 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                          <div className="bg-purple-600 h-1.5 rounded-full" style={{ width: `${(m.cost / maxModelCost) * 100}%` }} />
+                        </div>
+                        <span className="font-medium text-gray-900 dark:text-white">{m.cost === 0 ? 'Free' : `$${m.cost.toFixed(4)}`}</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Daily Usage */}
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Daily Usage</h2>
         </div>
+        {daily.length === 0 ? (
+          <p className="px-6 py-8 text-gray-500 dark:text-gray-400 text-center">No daily usage data yet.</p>
+        ) : (
+          <div className="divide-y divide-gray-100 dark:divide-gray-800">
+            {daily.map(d => (
+              <div key={d.date} className="px-6 py-3 flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-gray-900 dark:text-white">{d.date}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{d.requests} request{d.requests !== 1 ? 's' : ''} / {d.tokens.toLocaleString()} tokens</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(d.cost / maxDailyCost) * 100}%` }} />
+                  </div>
+                  <span className="text-sm font-medium text-gray-900 dark:text-white w-16 text-right">{d.cost === 0 ? 'Free' : `$${d.cost.toFixed(4)}`}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
