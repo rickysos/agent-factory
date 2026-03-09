@@ -1,0 +1,25 @@
+{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "test": "jest",
+    "api:dev": "node src/server/api-server.js",
+    "start:api": "NODE_ENV=production node src/server/api-server.js",
+    "worker:dev": "node src/server/worker-server.js",
+    "start:worker": "NODE_ENV=production node src/server/worker-server.js",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:build": "docker-compose build",
+    "docker:reset": "docker-compose down -v && docker-compose up -d --build",
+    "db:migrate": "node scripts/db-migrate.js",
+    "db:seed": "node scripts/db-seed.js",
+    "agents:deploy": "node scripts/deploy-agents.js",
+    "agents:list": "node scripts/list-agents.js",
+    "agents:create": "node scripts/create-agent.js",
+    "queue:stats": "node scripts/queue-stats.js",
+    "queue:monitor": "node scripts/queue-monitor.js"
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "generatedBy": "Agent Factory",
+    "version": "1.0.0",
+    "exportDate": "2026-03-09"
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openrouter/deepseek/deepseek-v3.2",
+        "fallbacks": ["openrouter/minimax/minimax-m2.5", "openrouter/anthropic/claude-sonnet-4.5"]
+      },
+      "workspace": "/Users/bots/openclaw/workspace-orchestrator/agent-factory",
+      "contextPruning": {
+        "mode": "cache-ttl",
+        "ttl": "1h"
+      },
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "heartbeat": {
+        "every": "30m"
+      },
+      "maxConcurrent": 8,
+      "env": {
+        "GITHUB_TOKEN": "{{GITHUB_TOKEN}}",
+        "SENTRY_AUTH_TOKEN": "{{SENTRY_AUTH_TOKEN}}",
+        "VERCEL_TOKEN": "{{VERCEL_TOKEN}}",
+        "SUPABASE_ACCESS_TOKEN_PROD": "{{SUPABASE_ACCESS_TOKEN_PROD}}",
+        "AGENT_FACTORY_URL": "http://localhost:3000",
+        "OPENCLAW_GATEWAY_URL": "http://localhost:18789"
+      }
+    },
+    "list": [
+      {
+        "id": "agent-factory-orchestrator",
+        "name": "Agent Factory Orchestrator",
+        "workspace": "/Users/bots/openclaw/workspace-orchestrator/agent-factory",
+        "model": "openrouter/deepseek/deepseek-v3.2",
+        "tools": {
+          "allow": ["read", "write", "exec", "agent.delegate", "web.fetch", "web.search"]
+        },
+        "description": "Orchestrator for Agent Factory - delegates tasks to specialist agents"
+      },
+      {
+        "id": "agent-factory-coder",
+        "name": "Agent Factory Coder",
+        "workspace": "/Users/bots/openclaw/workspace-orchestrator/agent-factory",
+        "model": "openrouter/deepseek/deepseek-v3.2",
+        "tools": {
+          "allow": ["read", "write", "exec", "web.fetch", "web.search"]
+        },
+        "description": "Coder agent for Agent Factory - implements features, fixes bugs"
+      },
+      {
+        "id": "agent-factory-marketing",
+        "name": "Agent Factory Marketing",
+        "workspace": "/Users/bots/openclaw/workspace-orchestrator/agent-factory",
+        "model": "openrouter/google/gemini-2.5-flash-lite",
+        "tools": {
+          "allow": ["read", "write", "exec", "web.fetch", "web.search"]
+        },
+        "description": "Marketing agent for Agent Factory - creates content, campaigns"
+      },
+      {
+        "id": "agent-factory-vigil",
+        "name": "Agent Factory Vigil",
+        "workspace": "/Users/bots/openclaw/workspace-orchestrator/agent-factory",
+        "model": "openrouter/z-ai/glm-4.5-air:free",
+        "tools": {
+          "allow": ["read", "write", "exec", "web.fetch", "web.search"]
+        },
+        "description": "Monitoring agent for Agent Factory - health checks, alerts"
+      },
+      {
+        "id": "agent-factory-security",
+        "name": "Agent Factory Security",
+        "workspace": "/Users/bots/openclaw/workspace-orchestrator/agent-factory",
+        "model": "openrouter/deepseek/deepseek-v3.2",
+        "tools": {
+          "allow": ["read", "write", "exec", "web.fetch", "web.search"]
+        },
+        "description": "Security agent for Agent Factory - audits, vulnerability checks"
+      }
+    ]
+  },
+  "bindings": [
+    {
+      "agentId": "agent-factory-orchestrator",
+      "match": {
+        "channel": "slack",
+        "channelId": "C0AGUC6GFUY"
+      }
+    },
+    {
+      "agentId": "agent-factory-coder",
+      "match": {
+        "channel": "slack",
+        "keywords": ["code", "fix", "deploy", "github", "bug"]
+      }
+    }
+  ],
+  "cron": {
+    "jobs": [
+      {
+        "id": "agent-factory-health-check",
+        "agentId": "agent-factory-vigil",
+        "name": "Agent Factory Health Check",
+        "description": "Health check every 15 minutes",
+        "enabled": true,
+        "schedule": {
+          "kind": "every",
+          "everyMs": 900000
+        },
+        "payload": {
+          "kind": "agentTurn",
+          "message": "Check Agent Factory health: 1. Frontend (localhost:3000), 2. API server, 3. Database connection, 4. External services (GitHub, Vercel). Report any issues."
+        }
+      },
+      {
+        "id": "agent-factory-issue-check",
+        "agentId": "agent-factory-coder",
+        "name": "Agent Factory Issue Check",
+        "description": "Check for GitHub issues every 30 minutes",
+        "enabled": true,
+        "schedule": {
+          "kind": "every",
+          "everyMs": 1800000
+        },
+        "payload": {
+          "kind": "agentTurn",
+          "message": "Check GitHub issues for rickysos/agent-factory. Fix bugs, implement feature requests. Use coding-agent (claude) for implementation."
+        }
+      },
+      {
+        "id": "agent-factory-deployment-check",
+        "agentId": "agent-factory-orchestrator",
+        "name": "Agent Factory Deployment Check",
+        "description": "Check deployment status every hour",
+        "enabled": true,
+        "schedule": {
+          "kind": "every",
+          "everyMs": 3600000
+        },
+        "payload": {
+          "kind": "agentTurn",
+          "message": "Check Agent Factory deployment status on Vercel. Monitor performance, error rates, user activity. Report findings."
+        }
+      }
+    ]
+  },
+  "skills": {
+    "entries": {
+      "gh-issues": {
+        "apiKey": "{{GITHUB_TOKEN}}"
+      }
+    }
+  }
+}

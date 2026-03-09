@@ -1,0 +1,24 @@
+# API Dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install dependencies
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
+
+# Set permissions
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
+EXPOSE 3001
+
+# Development command (override in docker-compose for production)
+CMD ["npm", "run", "start:api"]
