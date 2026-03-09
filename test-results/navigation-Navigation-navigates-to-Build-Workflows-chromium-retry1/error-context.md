@@ -1,0 +1,182 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - navigation "Top" [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e6]:
+            - generic [ref=e9]: AF
+            - heading "Agent Factory" [level=1] [ref=e11]:
+              - link "Agent Factory" [ref=e12] [cursor=pointer]:
+                - /url: /
+          - generic [ref=e13]:
+            - button "Agents" [ref=e15] [cursor=pointer]:
+              - text: Agents
+              - img [ref=e16]
+            - button "Build" [active] [ref=e19] [cursor=pointer]:
+              - text: Build
+              - img [ref=e20]
+            - button "Configure" [ref=e23] [cursor=pointer]:
+              - text: Configure
+              - img [ref=e24]
+            - button "Connect" [ref=e27] [cursor=pointer]:
+              - text: Connect
+              - img [ref=e28]
+            - button "Observe" [ref=e31] [cursor=pointer]:
+              - text: Observe
+              - img [ref=e32]
+            - button "Marketplace" [ref=e35] [cursor=pointer]:
+              - text: Marketplace
+              - img [ref=e36]
+            - button "Settings" [ref=e39] [cursor=pointer]:
+              - text: Settings
+              - img [ref=e40]
+        - generic [ref=e42]:
+          - generic "Disconnected" [ref=e43]:
+            - generic [ref=e45]: Offline
+          - button "Theme settings" [ref=e47] [cursor=pointer]:
+            - img [ref=e48]
+          - link "Create Agent" [ref=e50] [cursor=pointer]:
+            - /url: /quick-start
+          - generic [ref=e54] [cursor=pointer]: RB
+  - main [ref=e55]:
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - heading "Welcome to Agent Factory" [level=1] [ref=e58]
+        - paragraph [ref=e59]: Create, deploy, and manage AI agents with our intuitive platform. No coding required - just define your agent's capabilities and let us handle the rest.
+      - generic [ref=e60]:
+        - generic [ref=e62]:
+          - heading "Your Agents" [level=2] [ref=e63]
+          - generic [ref=e64]:
+            - generic [ref=e65]:
+              - generic [ref=e66]:
+                - paragraph [ref=e67]: Total Agents
+                - paragraph [ref=e68]: "0"
+              - generic [ref=e69]:
+                - paragraph [ref=e70]: Active
+                - paragraph [ref=e71]: "0"
+              - generic [ref=e72]:
+                - paragraph [ref=e73]: In Draft
+                - paragraph [ref=e74]: "0"
+              - generic [ref=e75]:
+                - paragraph [ref=e76]: Deployments
+                - paragraph [ref=e77]: "0"
+            - generic [ref=e78]:
+              - heading "Your Agents" [level=3] [ref=e79]
+              - generic [ref=e80]:
+                - button "Filter" [ref=e81] [cursor=pointer]
+                - button "Sort" [ref=e82] [cursor=pointer]
+            - generic [ref=e83]:
+              - img [ref=e85]
+              - heading "No agents yet" [level=3] [ref=e87]
+              - paragraph [ref=e88]: Create your first AI agent to get started
+              - button "Create Agent" [ref=e89] [cursor=pointer]
+        - generic [ref=e90]:
+          - generic [ref=e91]:
+            - heading "Create New Agent" [level=2] [ref=e92]
+            - generic [ref=e93]:
+              - generic [ref=e94]:
+                - generic [ref=e95]: Agent Name
+                - textbox "Agent Name" [ref=e96]:
+                  - /placeholder: e.g., Customer Support Bot
+              - generic [ref=e97]:
+                - generic [ref=e98]: Description
+                - textbox "Description" [ref=e99]:
+                  - /placeholder: Describe what this agent does...
+              - generic [ref=e100]:
+                - generic [ref=e101]: AI Model
+                - combobox "AI Model" [ref=e102]:
+                  - option "gpt-4" [selected]
+                  - option "gpt-3.5-turbo"
+                  - option "claude-3-opus"
+                  - option "claude-3-sonnet"
+                  - option "claude-3-haiku"
+                  - option "gemini-pro"
+                  - option "llama-3-70b"
+                  - option "mixtral-8x7b"
+                  - option "deepseek-coder"
+                  - option "custom"
+              - generic [ref=e103]:
+                - generic [ref=e104]: Capabilities
+                - generic [ref=e105]:
+                  - generic [ref=e106] [cursor=pointer]:
+                    - checkbox "Q&A" [ref=e107]
+                    - generic [ref=e108]: Q&A
+                  - generic [ref=e109] [cursor=pointer]:
+                    - checkbox "Content Generation" [ref=e110]
+                    - generic [ref=e111]: Content Generation
+                  - generic [ref=e112] [cursor=pointer]:
+                    - checkbox "Code Review" [ref=e113]
+                    - generic [ref=e114]: Code Review
+                  - generic [ref=e115] [cursor=pointer]:
+                    - checkbox "Data Analysis" [ref=e116]
+                    - generic [ref=e117]: Data Analysis
+                  - generic [ref=e118] [cursor=pointer]:
+                    - checkbox "Customer Support" [ref=e119]
+                    - generic [ref=e120]: Customer Support
+                  - generic [ref=e121] [cursor=pointer]:
+                    - checkbox "Translation" [ref=e122]
+                    - generic [ref=e123]: Translation
+                  - generic [ref=e124] [cursor=pointer]:
+                    - checkbox "Summarization" [ref=e125]
+                    - generic [ref=e126]: Summarization
+                  - generic [ref=e127] [cursor=pointer]:
+                    - checkbox "Research" [ref=e128]
+                    - generic [ref=e129]: Research
+                  - generic [ref=e130] [cursor=pointer]:
+                    - checkbox "Creative Writing" [ref=e131]
+                    - generic [ref=e132]: Creative Writing
+                  - generic [ref=e133] [cursor=pointer]:
+                    - checkbox "Technical Writing" [ref=e134]
+                    - generic [ref=e135]: Technical Writing
+                  - generic [ref=e136] [cursor=pointer]:
+                    - checkbox "Social Media" [ref=e137]
+                    - generic [ref=e138]: Social Media
+                  - generic [ref=e139] [cursor=pointer]:
+                    - checkbox "SEO Optimization" [ref=e140]
+                    - generic [ref=e141]: SEO Optimization
+                  - generic [ref=e142] [cursor=pointer]:
+                    - checkbox "Security Analysis" [ref=e143]
+                    - generic [ref=e144]: Security Analysis
+                  - generic [ref=e145] [cursor=pointer]:
+                    - checkbox "Bug Detection" [ref=e146]
+                    - generic [ref=e147]: Bug Detection
+                  - generic [ref=e148] [cursor=pointer]:
+                    - checkbox "Performance Review" [ref=e149]
+                    - generic [ref=e150]: Performance Review
+                - paragraph [ref=e151]: "Selected: 0 capabilityies"
+              - button "Create Agent" [disabled] [ref=e153]
+          - generic [ref=e154]:
+            - heading "Quick Actions" [level=2] [ref=e155]
+            - generic [ref=e156]:
+              - link "View Logs" [ref=e157] [cursor=pointer]:
+                - /url: /traces
+                - img [ref=e159]
+                - generic [ref=e161]: View Logs
+                - img [ref=e162]
+              - link "Settings" [ref=e164] [cursor=pointer]:
+                - /url: /settings/billing
+                - img [ref=e166]
+                - generic [ref=e169]: Settings
+                - img [ref=e170]
+              - link "API Keys" [ref=e172] [cursor=pointer]:
+                - /url: /settings/billing
+                - img [ref=e174]
+                - generic [ref=e176]: API Keys
+                - img [ref=e177]
+              - link "Costs" [ref=e179] [cursor=pointer]:
+                - /url: /costs
+                - img [ref=e181]
+                - generic [ref=e183]: Costs
+                - img [ref=e184]
+      - generic [ref=e187]:
+        - heading "Ready to Scale Your AI Operations?" [level=2] [ref=e188]
+        - paragraph [ref=e189]: Agent Factory helps you build, deploy, and monitor AI agents at scale. From simple chatbots to complex autonomous systems.
+        - generic [ref=e190]:
+          - button "View Documentation" [ref=e191] [cursor=pointer]
+          - button "Schedule Demo" [ref=e192] [cursor=pointer]
+  - contentinfo [ref=e193]:
+    - paragraph [ref=e195]: Agent Factory © 2026 - AI Agent Development Platform
+```

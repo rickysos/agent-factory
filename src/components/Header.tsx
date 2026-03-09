@@ -47,6 +47,7 @@ const navGroups: NavGroup[] = [
       { name: 'Skills Catalog', href: '/skills' },
       { name: 'Tools & Permissions', href: '/tools' },
       { name: 'Thinking Level', href: '/thinking' },
+      { name: 'Knowledge Base', href: '/knowledge' },
       { name: 'Memory Config', href: '/memory-config' },
       { name: 'Providers', href: '/providers' },
       { name: 'Config Diff', href: '/config-diff' },

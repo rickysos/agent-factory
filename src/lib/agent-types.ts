@@ -13,4 +13,5 @@ export interface Agent {
   deployments: number
   maxConcurrentTasks?: number
   mcpServers?: string[]
+  knowledgeBases?: string[]
 }
