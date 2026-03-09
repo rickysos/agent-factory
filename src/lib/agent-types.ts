@@ -1,3 +1,5 @@
+export type AutonomyLevel = 'full' | 'supervised' | 'manual'
+
 export interface Agent {
   id: string
   name: string
@@ -5,6 +7,7 @@ export interface Agent {
   model: string
   status: 'draft' | 'active' | 'inactive' | 'error'
   capabilities: string[]
+  autonomyLevel: AutonomyLevel
   createdAt: Date
   lastDeployed?: Date
   deployments: number

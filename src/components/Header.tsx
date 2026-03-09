@@ -23,6 +23,7 @@ const navGroups: NavGroup[] = [
       { name: 'Launch & Run', href: '/launch' },
       { name: 'Maintenance', href: '/maintenance' },
       { name: 'Scoring', href: '/scoring' },
+      { name: 'Approvals', href: '/approvals' },
     ],
   },
   {
