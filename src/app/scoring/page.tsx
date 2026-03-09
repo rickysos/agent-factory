@@ -1,195 +1,459 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
-type AutonomyLevel = 'L1' | 'L2' | 'L3' | 'L4'
-type Trend = 'up' | 'down' | 'stable'
+interface TestCase {
+  id: string
+  input: string
+  expectedOutput?: string
+  criteria: string
+  weight: number
+}
 
-interface AgentScore {
+interface EvalSuite {
   id: string
   name: string
-  overallScore: number
-  completionRate: number
-  avgSpeedMs: number
-  costEfficiency: number
-  errorRate: number
-  autonomy: AutonomyLevel
-  trend: Trend
-  tasksCompleted: number
+  description: string
+  agentId: string
+  testCases: TestCase[]
+  createdAt: string
 }
 
-const mockAgents: AgentScore[] = [
-  { id: 'a1', name: 'CodeBot', overallScore: 94, completionRate: 97.2, avgSpeedMs: 1200, costEfficiency: 91, errorRate: 1.8, autonomy: 'L3', trend: 'up', tasksCompleted: 1482 },
-  { id: 'a2', name: 'DeployBot', overallScore: 89, completionRate: 95.0, avgSpeedMs: 3400, costEfficiency: 88, errorRate: 3.1, autonomy: 'L2', trend: 'up', tasksCompleted: 634 },
-  { id: 'a3', name: 'ResearchBot', overallScore: 87, completionRate: 92.5, avgSpeedMs: 4500, costEfficiency: 85, errorRate: 4.2, autonomy: 'L3', trend: 'stable', tasksCompleted: 891 },
-  { id: 'a4', name: 'OpsBot', overallScore: 82, completionRate: 90.1, avgSpeedMs: 2100, costEfficiency: 79, errorRate: 5.0, autonomy: 'L4', trend: 'down', tasksCompleted: 2103 },
-  { id: 'a5', name: 'DataBot', overallScore: 78, completionRate: 88.3, avgSpeedMs: 5600, costEfficiency: 82, errorRate: 6.7, autonomy: 'L2', trend: 'stable', tasksCompleted: 445 },
-  { id: 'a6', name: 'WriterBot', overallScore: 75, completionRate: 93.8, avgSpeedMs: 3200, costEfficiency: 70, errorRate: 2.5, autonomy: 'L1', trend: 'up', tasksCompleted: 312 },
-  { id: 'a7', name: 'TestBot', overallScore: 71, completionRate: 85.0, avgSpeedMs: 7800, costEfficiency: 76, errorRate: 8.2, autonomy: 'L2', trend: 'down', tasksCompleted: 567 },
-  { id: 'a8', name: 'SecurityBot', overallScore: 68, completionRate: 80.5, avgSpeedMs: 9200, costEfficiency: 65, errorRate: 10.1, autonomy: 'L1', trend: 'stable', tasksCompleted: 198 },
-]
-
-const autonomyLabels: Record<AutonomyLevel, string> = {
-  L1: 'Human-supervised',
-  L2: 'Human-assisted',
-  L3: 'Semi-autonomous',
-  L4: 'Fully autonomous',
+interface TestResult {
+  testCaseId: string
+  input: string
+  output: string
+  score: number
+  passed: boolean
+  reasoning: string
 }
 
-const autonomyColors: Record<AutonomyLevel, string> = {
-  L1: 'bg-gray-100 text-gray-700',
-  L2: 'bg-blue-100 text-blue-700',
-  L3: 'bg-purple-100 text-purple-700',
-  L4: 'bg-green-100 text-green-700',
+interface EvalRun {
+  id: string
+  suiteId: string
+  agentId: string
+  status: 'pending' | 'running' | 'completed'
+  results: TestResult[]
+  score: number
+  startedAt: string
+  completedAt?: string
 }
 
-function TrendArrow({ trend }: { trend: Trend }) {
-  if (trend === 'up') return <span className="text-green-600 font-bold">^</span>
-  if (trend === 'down') return <span className="text-red-600 font-bold">v</span>
-  return <span className="text-gray-400 font-bold">--</span>
+interface Agent {
+  id: string
+  name: string
 }
 
-function ScoreBar({ value, max = 100 }: { value: number; max?: number }) {
-  const pct = (value / max) * 100
+interface TestCaseForm {
+  input: string
+  expectedOutput: string
+  criteria: string
+  weight: number
+}
+
+function ScoreBadge({ score }: { score: number }) {
+  const color = score >= 80 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+    : score >= 50 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
   return (
-    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-      <div
-        className={`h-full rounded-full ${pct > 80 ? 'bg-green-500' : pct > 50 ? 'bg-yellow-500' : 'bg-red-500'}`}
-        style={{ width: `${pct}%` }}
-      />
-    </div>
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-semibold ${color}`}>
+      {score}%
+    </span>
   )
 }
 
-function formatSpeed(ms: number) {
-  if (ms < 1000) return `${ms}ms`
-  return `${(ms / 1000).toFixed(1)}s`
+function PassFailBadge({ passed }: { passed: boolean }) {
+  return passed
+    ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">PASS</span>
+    : <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">FAIL</span>
 }
 
 export default function ScoringPage() {
-  const [sortBy, setSortBy] = useState<'score' | 'completion' | 'speed' | 'cost' | 'error'>('score')
+  const [suites, setSuites] = useState<EvalSuite[]>([])
+  const [agents, setAgents] = useState<Agent[]>([])
+  const [selectedSuiteId, setSelectedSuiteId] = useState<string | null>(null)
+  const [runs, setRuns] = useState<EvalRun[]>([])
+  const [expandedRunId, setExpandedRunId] = useState<string | null>(null)
+  const [running, setRunning] = useState(false)
+  const [showCreateForm, setShowCreateForm] = useState(false)
 
-  const sorted = [...mockAgents].sort((a, b) => {
-    switch (sortBy) {
-      case 'score': return b.overallScore - a.overallScore
-      case 'completion': return b.completionRate - a.completionRate
-      case 'speed': return a.avgSpeedMs - b.avgSpeedMs
-      case 'cost': return b.costEfficiency - a.costEfficiency
-      case 'error': return a.errorRate - b.errorRate
-      default: return 0
+  const [formName, setFormName] = useState('')
+  const [formDescription, setFormDescription] = useState('')
+  const [formAgentId, setFormAgentId] = useState('')
+  const [formTestCases, setFormTestCases] = useState<TestCaseForm[]>([
+    { input: '', expectedOutput: '', criteria: '', weight: 1 },
+  ])
+
+  const fetchSuites = useCallback(async () => {
+    const res = await fetch('/api/evals')
+    const data = await res.json()
+    if (data.success) setSuites(data.data)
+  }, [])
+
+  const fetchAgents = useCallback(async () => {
+    const res = await fetch('/api/agents')
+    const data = await res.json()
+    if (data.success) setAgents(data.data)
+  }, [])
+
+  const fetchRuns = useCallback(async (suiteId: string) => {
+    const res = await fetch(`/api/evals/${suiteId}/run`)
+    const data = await res.json()
+    if (data.success) setRuns(data.data)
+  }, [])
+
+  useEffect(() => {
+    fetchSuites()
+    fetchAgents()
+  }, [fetchSuites, fetchAgents])
+
+  useEffect(() => {
+    if (selectedSuiteId) fetchRuns(selectedSuiteId)
+    else setRuns([])
+  }, [selectedSuiteId, fetchRuns])
+
+  const handleCreateSuite = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const validCases = formTestCases.filter(tc => tc.input.trim())
+    if (!formName.trim() || !formAgentId || validCases.length === 0) return
+
+    const res = await fetch('/api/evals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: formName,
+        description: formDescription,
+        agentId: formAgentId,
+        testCases: validCases.map(tc => ({
+          input: tc.input,
+          expectedOutput: tc.expectedOutput || undefined,
+          criteria: tc.criteria,
+          weight: tc.weight,
+        })),
+      }),
+    })
+    const data = await res.json()
+    if (data.success) {
+      setShowCreateForm(false)
+      setFormName('')
+      setFormDescription('')
+      setFormAgentId('')
+      setFormTestCases([{ input: '', expectedOutput: '', criteria: '', weight: 1 }])
+      fetchSuites()
     }
-  })
+  }
+
+  const handleDeleteSuite = async (id: string) => {
+    await fetch(`/api/evals/${id}`, { method: 'DELETE' })
+    if (selectedSuiteId === id) {
+      setSelectedSuiteId(null)
+      setRuns([])
+    }
+    fetchSuites()
+  }
+
+  const handleRunEval = async (suiteId: string) => {
+    setRunning(true)
+    const res = await fetch(`/api/evals/${suiteId}/run`, { method: 'POST' })
+    const data = await res.json()
+    if (data.success) {
+      await fetchRuns(suiteId)
+    }
+    setRunning(false)
+  }
+
+  const addTestCase = () => {
+    setFormTestCases([...formTestCases, { input: '', expectedOutput: '', criteria: '', weight: 1 }])
+  }
+
+  const removeTestCase = (index: number) => {
+    if (formTestCases.length <= 1) return
+    setFormTestCases(formTestCases.filter((_, i) => i !== index))
+  }
+
+  const updateTestCase = (index: number, field: keyof TestCaseForm, value: string | number) => {
+    const updated = [...formTestCases]
+    updated[index] = { ...updated[index], [field]: value }
+    setFormTestCases(updated)
+  }
+
+  const getAgentName = (agentId: string) => {
+    return agents.find(a => a.id === agentId)?.name || `Agent ${agentId}`
+  }
+
+  const getLastRunScore = (suiteId: string) => {
+    const suiteRuns = runs.filter(r => r.suiteId === suiteId)
+    if (suiteRuns.length === 0) return null
+    return suiteRuns[suiteRuns.length - 1].score
+  }
+
+  const selectedSuite = suites.find(s => s.id === selectedSuiteId)
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
-          Agent <span className="text-blue-600">Scoring</span>
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+          Agent <span className="text-blue-600">Evaluation</span>
         </h1>
-        <p className="text-lg text-gray-600">
-          Performance leaderboard across all active agents.
+        <p className="text-lg text-gray-600 dark:text-gray-400">
+          Test suites for evaluating agent responses and scoring performance.
         </p>
       </div>
 
-      {/* Top 3 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        {sorted.slice(0, 3).map((agent, i) => (
-          <div
-            key={agent.id}
-            className={`rounded-xl border p-5 ${
-              i === 0
-                ? 'border-yellow-300 bg-yellow-50'
-                : i === 1
-                ? 'border-gray-300 bg-gray-50'
-                : 'border-orange-200 bg-orange-50'
-            }`}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-2xl font-bold text-gray-400">#{i + 1}</span>
-              <TrendArrow trend={agent.trend} />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-1">{agent.name}</h3>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-3xl font-bold text-gray-900">{agent.overallScore}</span>
-              <span className="text-sm text-gray-500">/ 100</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${autonomyColors[agent.autonomy]}`}>
-                {agent.autonomy} {autonomyLabels[agent.autonomy]}
-              </span>
-            </div>
-            <p className="text-xs text-gray-500 mt-2">{agent.tasksCompleted.toLocaleString()} tasks completed</p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Eval Suites Section */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Eval Suites</h2>
+            <button
+              onClick={() => setShowCreateForm(!showCreateForm)}
+              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              {showCreateForm ? 'Cancel' : 'New Suite'}
+            </button>
           </div>
-        ))}
-      </div>
 
-      {/* Sort controls */}
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-sm text-gray-500">Sort by:</span>
-        {([
-          ['score', 'Score'],
-          ['completion', 'Completion'],
-          ['speed', 'Speed'],
-          ['cost', 'Cost Eff.'],
-          ['error', 'Error Rate'],
-        ] as const).map(([key, label]) => (
-          <button
-            key={key}
-            onClick={() => setSortBy(key)}
-            className={`px-3 py-1 text-xs font-medium rounded-lg transition-colors ${
-              sortBy === key ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+          {showCreateForm && (
+            <form onSubmit={handleCreateSuite} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 mb-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                <input
+                  type="text"
+                  value={formName}
+                  onChange={e => setFormName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Suite name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+                <input
+                  type="text"
+                  value={formDescription}
+                  onChange={e => setFormDescription(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Optional description"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Agent</label>
+                <select
+                  value={formAgentId}
+                  onChange={e => setFormAgentId(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Select an agent</option>
+                  {agents.map(a => (
+                    <option key={a.id} value={a.id}>{a.name}</option>
+                  ))}
+                </select>
+              </div>
 
-      {/* Full leaderboard */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-gray-100 bg-gray-50">
-              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3 w-10">Rank</th>
-              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Agent</th>
-              <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Score</th>
-              <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Completion</th>
-              <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Avg Speed</th>
-              <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Cost Eff.</th>
-              <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Error Rate</th>
-              <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Autonomy</th>
-              <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3 w-10">Trend</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sorted.map((agent, i) => (
-              <tr key={agent.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                <td className="px-4 py-3 text-sm text-gray-400 font-mono">{i + 1}</td>
-                <td className="px-4 py-3">
-                  <span className="text-sm font-semibold text-gray-900">{agent.name}</span>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="text-center">
-                    <span className="text-sm font-bold text-gray-900">{agent.overallScore}</span>
-                    <ScoreBar value={agent.overallScore} />
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Test Cases</label>
+                  <button type="button" onClick={addTestCase} className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                    + Add Test Case
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  {formTestCases.map((tc, i) => (
+                    <div key={i} className="border border-gray-200 dark:border-gray-600 rounded-lg p-3 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Test Case {i + 1}</span>
+                        {formTestCases.length > 1 && (
+                          <button type="button" onClick={() => removeTestCase(i)} className="text-xs text-red-500 hover:text-red-600 font-medium">
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                      <input
+                        type="text"
+                        value={tc.input}
+                        onChange={e => updateTestCase(i, 'input', e.target.value)}
+                        className="w-full px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                        placeholder="Input prompt"
+                      />
+                      <input
+                        type="text"
+                        value={tc.expectedOutput}
+                        onChange={e => updateTestCase(i, 'expectedOutput', e.target.value)}
+                        className="w-full px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                        placeholder="Expected output (keywords)"
+                      />
+                      <input
+                        type="text"
+                        value={tc.criteria}
+                        onChange={e => updateTestCase(i, 'criteria', e.target.value)}
+                        className="w-full px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                        placeholder="Evaluation criteria"
+                      />
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs text-gray-500 dark:text-gray-400">Weight:</label>
+                        <input
+                          type="number"
+                          min={1}
+                          max={10}
+                          value={tc.weight}
+                          onChange={e => updateTestCase(i, 'weight', parseInt(e.target.value) || 1)}
+                          className="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Create Suite
+              </button>
+            </form>
+          )}
+
+          <div className="space-y-3">
+            {suites.length === 0 && !showCreateForm && (
+              <p className="text-sm text-gray-500 dark:text-gray-400">No eval suites yet. Create one to get started.</p>
+            )}
+            {suites.map(suite => {
+              const lastScore = getLastRunScore(suite.id)
+              return (
+                <div
+                  key={suite.id}
+                  onClick={() => setSelectedSuiteId(suite.id)}
+                  className={`bg-white dark:bg-gray-800 border rounded-xl p-4 cursor-pointer transition-colors ${
+                    selectedSuiteId === suite.id
+                      ? 'border-blue-500 ring-2 ring-blue-200 dark:ring-blue-800'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">{suite.name}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{suite.description}</p>
+                      <div className="flex items-center gap-3 mt-2">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          Agent: <span className="font-medium text-gray-700 dark:text-gray-300">{getAgentName(suite.agentId)}</span>
+                        </span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          {suite.testCases.length} test case{suite.testCases.length !== 1 ? 's' : ''}
+                        </span>
+                        {lastScore !== null && <ScoreBadge score={lastScore} />}
+                      </div>
+                    </div>
+                    <button
+                      onClick={e => { e.stopPropagation(); handleDeleteSuite(suite.id) }}
+                      className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                      title="Delete suite"
+                    >
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
                   </div>
-                </td>
-                <td className="px-4 py-3 text-center text-sm text-gray-700">{agent.completionRate}%</td>
-                <td className="px-4 py-3 text-center text-sm font-mono text-gray-700">{formatSpeed(agent.avgSpeedMs)}</td>
-                <td className="px-4 py-3 text-center text-sm text-gray-700">{agent.costEfficiency}%</td>
-                <td className="px-4 py-3 text-center text-sm text-gray-700">{agent.errorRate}%</td>
-                <td className="px-4 py-3 text-center">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${autonomyColors[agent.autonomy]}`}>
-                    {agent.autonomy}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-center">
-                  <TrendArrow trend={agent.trend} />
-                </td>
-              </tr>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Run Results Section */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              {selectedSuite ? `Runs: ${selectedSuite.name}` : 'Run Results'}
+            </h2>
+            {selectedSuiteId && (
+              <button
+                onClick={() => handleRunEval(selectedSuiteId)}
+                disabled={running}
+                className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {running && (
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                )}
+                {running ? 'Running...' : 'Run Evaluation'}
+              </button>
+            )}
+          </div>
+
+          {!selectedSuiteId && (
+            <p className="text-sm text-gray-500 dark:text-gray-400">Select a suite to view its runs.</p>
+          )}
+
+          {selectedSuiteId && runs.length === 0 && (
+            <p className="text-sm text-gray-500 dark:text-gray-400">No runs yet. Click &quot;Run Evaluation&quot; to start.</p>
+          )}
+
+          <div className="space-y-3">
+            {runs.map(run => (
+              <div key={run.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                <div
+                  onClick={() => setExpandedRunId(expandedRunId === run.id ? null : run.id)}
+                  className="p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <ScoreBadge score={run.score} />
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                        run.status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                          : run.status === 'running' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
+                          : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+                      }`}>
+                        {run.status}
+                      </span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {run.results.filter(r => r.passed).length}/{run.results.length} passed
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-400">
+                        {new Date(run.startedAt).toLocaleString()}
+                      </span>
+                      <svg className={`h-4 w-4 text-gray-400 transition-transform ${expandedRunId === run.id ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {expandedRunId === run.id && (
+                  <div className="border-t border-gray-200 dark:border-gray-700">
+                    {run.results.map((result, i) => (
+                      <div key={result.testCaseId} className={`p-4 ${i > 0 ? 'border-t border-gray-100 dark:border-gray-700' : ''}`}>
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <PassFailBadge passed={result.passed} />
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Score: {result.score}/100</span>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <div>
+                            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Input</span>
+                            <p className="text-sm text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 rounded px-3 py-2 mt-0.5">{result.input}</p>
+                          </div>
+                          <div>
+                            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Output</span>
+                            <p className="text-sm text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 rounded px-3 py-2 mt-0.5">{result.output}</p>
+                          </div>
+                          <div>
+                            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Reasoning</span>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">{result.reasoning}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
     </div>
   )
