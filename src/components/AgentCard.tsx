@@ -2,6 +2,7 @@
 
 import { Agent } from '@/lib/agent-context'
 import { useAgents } from '@/lib/agent-context'
+import Link from 'next/link'
 import { useState } from 'react'
 
 interface AgentCardProps {
@@ -18,6 +19,8 @@ const statusConfig = {
 export function AgentCard({ agent }: AgentCardProps) {
   const { deleteAgent, deployAgent, isLoading } = useAgents()
   const [isDeploying, setIsDeploying] = useState(false)
+  const [isStarting, setIsStarting] = useState(false)
+  const [isStopping, setIsStopping] = useState(false)
 
   const handleDeploy = async () => {
     setIsDeploying(true)
@@ -25,6 +28,26 @@ export function AgentCard({ agent }: AgentCardProps) {
       await deployAgent(agent.id)
     } finally {
       setIsDeploying(false)
+    }
+  }
+
+  const handleStart = async () => {
+    setIsStarting(true)
+    try {
+      const res = await fetch(`/api/agents/${agent.id}/start`, { method: 'POST' })
+      if (res.ok) window.location.reload()
+    } finally {
+      setIsStarting(false)
+    }
+  }
+
+  const handleStop = async () => {
+    setIsStopping(true)
+    try {
+      const res = await fetch(`/api/agents/${agent.id}/stop`, { method: 'POST' })
+      if (res.ok) window.location.reload()
+    } finally {
+      setIsStopping(false)
     }
   }
 
@@ -86,6 +109,34 @@ export function AgentCard({ agent }: AgentCardProps) {
         </span>
 
         <div className="flex gap-2">
+          {agent.status === 'active' && (
+            <>
+              <Link
+                href={`/chat/${agent.id}`}
+                className="px-3 py-1 text-xs font-mono font-medium uppercase tracking-wider bg-accent-500 text-forge-950 rounded hover:bg-accent-400 transition-colors"
+              >
+                Chat
+              </Link>
+              <button
+                onClick={handleStop}
+                disabled={isStopping}
+                className="px-3 py-1 text-xs font-mono uppercase tracking-wider text-forge-500 dark:text-forge-400 border border-forge-200 dark:border-forge-700 rounded hover:border-red-500/50 hover:text-red-500 transition-colors"
+              >
+                {isStopping ? 'Stopping...' : 'Stop'}
+              </button>
+            </>
+          )}
+
+          {agent.status === 'inactive' && (
+            <button
+              onClick={handleStart}
+              disabled={isStarting}
+              className="px-3 py-1 text-xs font-mono font-medium uppercase tracking-wider bg-accent-500 text-forge-950 rounded hover:bg-accent-400 disabled:opacity-50 transition-colors"
+            >
+              {isStarting ? 'Starting...' : 'Start'}
+            </button>
+          )}
+
           {agent.status === 'draft' && (
             <button
               onClick={handleDeploy}

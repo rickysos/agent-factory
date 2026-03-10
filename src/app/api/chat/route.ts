@@ -1,5 +1,6 @@
 import { chatStore } from '@/lib/chat-store'
 import { agentStore } from '@/lib/agent-store'
+import { agentRuntime } from '@/lib/agent-runtime'
 import { resolveModelAndProvider } from '@/lib/provider-registry'
 import { costStore, calculateCost } from '@/lib/cost-store'
 import OpenAI from 'openai'
@@ -66,20 +67,32 @@ export async function POST(req: Request) {
       send({ type: 'session', sessionId: session!.id })
 
       let fullResponse = ''
+      let thinkingContent = ''
       let promptTokens = 0
       let completionTokens = 0
       let totalTokens = 0
 
       try {
+        // Emit thinking start
+        send({ type: 'thinking-start' })
+
         const completion = await openai.chat.completions.create({
           model: modelId,
           messages,
           stream: true,
         })
 
+        let thinkingEnded = false
+
         for await (const chunk of completion) {
           const delta = chunk.choices[0]?.delta
           if (delta?.content) {
+            // End thinking on first real content token
+            if (!thinkingEnded) {
+              send({ type: 'thinking', content: 'Analyzing request and formulating response...' })
+              send({ type: 'thinking-end' })
+              thinkingEnded = true
+            }
             send({ type: 'token', content: delta.content })
             fullResponse += delta.content
           }
@@ -89,14 +102,22 @@ export async function POST(req: Request) {
             totalTokens = chunk.usage.total_tokens || 0
           }
         }
+
+        if (!thinkingEnded) {
+          send({ type: 'thinking-end' })
+        }
       } catch (err: unknown) {
         const errMsg = err instanceof Error ? err.message : 'Unknown error'
+        send({ type: 'thinking-end' })
         send({ type: 'token', content: `Error: ${errMsg}` })
         fullResponse = `Error: ${errMsg}`
       }
 
       if (!totalTokens) totalTokens = estimateTokens(fullResponse)
       if (!completionTokens) completionTokens = estimateTokens(fullResponse)
+
+      // Track message in runtime
+      agentRuntime.recordMessage(agentId)
 
       // Store assistant message
       chatStore.addMessage({
@@ -107,6 +128,7 @@ export async function POST(req: Request) {
         metadata: {
           model: modelId,
           tokens: totalTokens,
+          thinking: thinkingContent || undefined,
         },
       })
 

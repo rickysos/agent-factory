@@ -27,6 +27,15 @@ interface Message {
   tokens?: number
 }
 
+interface ChatSession {
+  id: string
+  agentId: string
+  title: string
+  createdAt: string
+  updatedAt: string
+  messageCount: number
+}
+
 type StreamEvent =
   | { type: 'session'; sessionId: string }
   | { type: 'thinking-start' }
@@ -42,7 +51,6 @@ function renderMarkdown(text: string) {
   const elements: React.ReactNode[] = []
   let inCodeBlock = false
   let codeLines: string[] = []
-  let codeLang = ''
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
@@ -58,7 +66,6 @@ function renderMarkdown(text: string) {
         inCodeBlock = false
       } else {
         inCodeBlock = true
-        codeLang = line.slice(3).trim()
       }
       continue
     }
@@ -138,6 +145,8 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
   const [isStreaming, setIsStreaming] = useState(false)
   const [isThinking, setIsThinking] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
+  const [sessions, setSessions] = useState<ChatSession[]>([])
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [expandedThinking, setExpandedThinking] = useState<Set<string>>(new Set())
   const [expandedTools, setExpandedTools] = useState<Set<string>>(new Set())
 
@@ -145,12 +154,45 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const abortRef = useRef<AbortController | null>(null)
 
+  // Load agent info
   useEffect(() => {
     fetch(`/api/agents/${agentId}`)
       .then(r => r.json())
-      .then(setAgent)
+      .then(d => setAgent(d.data || d))
       .catch(() => setAgent({ id: agentId, name: 'Agent', model: 'unknown', status: 'active', description: '' }))
   }, [agentId])
+
+  // Load session list
+  const loadSessions = useCallback(() => {
+    fetch(`/api/chat?agentId=${agentId}`)
+      .then(r => r.json())
+      .then(d => setSessions(d.data || []))
+      .catch(() => {})
+  }, [agentId])
+
+  useEffect(() => {
+    loadSessions()
+  }, [loadSessions])
+
+  // Load session messages
+  const loadSession = useCallback(async (sid: string) => {
+    setSessionId(sid)
+    try {
+      const res = await fetch(`/api/chat?sessionId=${sid}`)
+      const data = await res.json()
+      const msgs: Message[] = (data.data || []).map((m: Record<string, unknown>) => ({
+        id: m.id as string,
+        role: m.role as 'user' | 'assistant',
+        content: m.content as string,
+        thinking: (m.metadata as Record<string, unknown>)?.thinking as string | undefined,
+        tokens: (m.metadata as Record<string, unknown>)?.tokens as number | undefined,
+      }))
+      setMessages(msgs)
+    } catch {
+      // ignore
+    }
+    setSidebarOpen(false)
+  }, [])
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -286,6 +328,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
                 next[next.length - 1] = last
                 return next
               })
+              loadSessions()
               break
           }
         }
@@ -307,7 +350,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
       setIsThinking(false)
       abortRef.current = null
     }
-  }, [agentId, sessionId, isStreaming])
+  }, [agentId, sessionId, isStreaming, loadSessions])
 
   const stopGeneration = () => {
     abortRef.current?.abort()
@@ -335,234 +378,273 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
     }
   }
 
-  const statusColor = agent?.status === 'active' ? 'bg-accent-500' : agent?.status === 'error' ? 'bg-red-500/50' : 'bg-amber-400'
+  const statusColor = agent?.status === 'active' ? 'bg-accent-500' : agent?.status === 'error' ? 'bg-red-500' : 'bg-forge-400'
 
   return (
-    <div className="flex flex-col h-[calc(100vh-theme(spacing.16))] max-w-5xl mx-auto px-4">
-      {/* Agent Header */}
-      <div className="flex items-center justify-between py-3 border-b border-forge-200 dark:border-forge-800 shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-forge-950 font-bold text-lg">
-            {agent?.name?.[0] || '?'}
+    <div className="flex h-[calc(100vh-theme(spacing.16))] max-w-6xl mx-auto px-4">
+      {/* Session Sidebar */}
+      <div className={`${sidebarOpen ? 'w-64' : 'w-0'} transition-all duration-200 overflow-hidden shrink-0 border-r border-forge-200 dark:border-forge-800`}>
+        <div className="w-64 py-3 pr-3 h-full flex flex-col">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[10px] font-mono font-medium text-forge-400 dark:text-forge-500 uppercase tracking-wider">History</span>
+            <button
+              onClick={newConversation}
+              className="text-[10px] font-mono uppercase tracking-wider text-accent-600 dark:text-accent-400 hover:text-accent-500 transition-colors"
+            >
+              + New
+            </button>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="font-semibold text-forge-800 dark:text-forge-100">{agent?.name || 'Loading...'}</h1>
-              <span className={`w-2 h-2 rounded-full ${statusColor}`} />
-            </div>
-            <p className="text-xs text-forge-400 dark:text-forge-500">{agent?.model || ''}</p>
+          <div className="flex-1 overflow-y-auto space-y-1">
+            {sessions.map(s => (
+              <button
+                key={s.id}
+                onClick={() => loadSession(s.id)}
+                className={`w-full text-left px-3 py-2 rounded text-xs font-mono transition-colors ${
+                  sessionId === s.id
+                    ? 'bg-accent-500/10 text-accent-600 dark:text-accent-400 border border-accent-500/20'
+                    : 'text-forge-600 dark:text-forge-300 hover:bg-forge-100 dark:hover:bg-forge-800 border border-transparent'
+                }`}
+              >
+                <span className="block truncate">{s.title}</span>
+                <span className="block text-[10px] text-forge-400 dark:text-forge-500 mt-0.5">
+                  {s.messageCount} messages
+                </span>
+              </button>
+            ))}
+            {sessions.length === 0 && (
+              <p className="text-[10px] font-mono text-forge-400 dark:text-forge-500 px-3 py-2">No sessions yet</p>
+            )}
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={newConversation}
-            className="px-3 py-1.5 text-sm rounded bg-forge-200 dark:bg-forge-800 text-forge-600 dark:text-forge-300 hover:bg-forge-200 dark:hover:bg-forge-800 transition-colors"
-          >
-            New Chat
-          </button>
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto py-4 space-y-4">
-        {messages.length === 0 && (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center text-forge-300 dark:text-forge-500">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-indigo-600/20 flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-                </svg>
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Agent Header */}
+        <div className="flex items-center justify-between py-3 border-b border-forge-200 dark:border-forge-800 shrink-0 px-2">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-1.5 rounded text-forge-400 dark:text-forge-500 hover:text-accent-600 dark:hover:text-accent-400 hover:bg-forge-100 dark:hover:bg-forge-800 transition-colors"
+              title="Toggle history"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            </button>
+            <div className="w-8 h-8 rounded-md bg-accent-500/10 border border-accent-500/20 flex items-center justify-center text-accent-600 dark:text-accent-400 font-mono font-bold text-sm">
+              {agent?.name?.[0] || '?'}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-sm font-display font-semibold text-forge-800 dark:text-forge-100">{agent?.name || 'Loading...'}</h1>
+                <span className={`h-1.5 w-1.5 rounded-full ${statusColor}`} />
               </div>
-              <p className="text-lg font-medium">Start a conversation with {agent?.name || 'this agent'}</p>
-              <p className="text-sm mt-1">Type a message below to begin.</p>
+              <p className="text-[10px] font-mono text-forge-400 dark:text-forge-500">{agent?.model || ''}</p>
             </div>
           </div>
-        )}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={newConversation}
+              className="px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-forge-500 dark:text-forge-400 border border-forge-200 dark:border-forge-700 rounded hover:border-accent-500/40 transition-colors"
+            >
+              New Chat
+            </button>
+          </div>
+        </div>
 
-        {messages.map(msg => (
-          <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[80%] ${msg.role === 'user' ? 'order-1' : ''}`}>
-              {/* User message */}
-              {msg.role === 'user' && (
-                <div className="bg-accent-500 text-forge-950 rounded-2xl rounded-br-md px-4 py-3 text-sm whitespace-pre-wrap">
-                  {msg.content}
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto py-4 space-y-4 px-2">
+          {messages.length === 0 && (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center text-forge-400 dark:text-forge-500">
+                <div className="w-14 h-14 rounded-md bg-accent-500/10 border border-accent-500/20 flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-7 h-7 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                  </svg>
                 </div>
-              )}
+                <p className="text-sm font-display font-semibold text-forge-800 dark:text-forge-100">Start a conversation with {agent?.name || 'this agent'}</p>
+                <p className="text-xs font-mono text-forge-400 dark:text-forge-500 mt-1">Type a message below to begin.</p>
+              </div>
+            </div>
+          )}
 
-              {/* Assistant message */}
-              {msg.role === 'assistant' && (
-                <div className="space-y-2">
-                  {/* Thinking */}
-                  {msg.thinking && (
-                    <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 rounded-md overflow-hidden">
-                      <button
-                        onClick={() => toggleThinking(msg.id)}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors"
-                      >
-                        <svg
-                          className={`w-3 h-3 transition-transform ${expandedThinking.has(msg.id) ? 'rotate-90' : ''}`}
-                          fill="currentColor" viewBox="0 0 20 20"
-                        >
-                          <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
-                        </svg>
-                        Thinking
-                      </button>
-                      {expandedThinking.has(msg.id) && (
-                        <div className="px-3 pb-3 text-xs text-amber-800 dark:text-amber-300/80 whitespace-pre-wrap font-mono">
-                          {msg.thinking}
-                        </div>
-                      )}
-                    </div>
-                  )}
+          {messages.map(msg => (
+            <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[80%] ${msg.role === 'user' ? 'order-1' : ''}`}>
+                {msg.role === 'user' && (
+                  <div className="bg-accent-500 text-forge-950 rounded-md px-4 py-3 text-sm whitespace-pre-wrap">
+                    {msg.content}
+                  </div>
+                )}
 
-                  {/* Tool calls */}
-                  {msg.toolCalls?.map(tc => (
-                    <div key={tc.id} className="border border-forge-200 dark:border-forge-700 rounded-md overflow-hidden bg-forge-100 dark:bg-forge-900">
-                      <button
-                        onClick={() => toggleTool(tc.id)}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-forge-200 dark:hover:bg-forge-800 transition-colors"
-                      >
-                        <svg
-                          className={`w-3 h-3 text-forge-500 transition-transform ${expandedTools.has(tc.id) ? 'rotate-90' : ''}`}
-                          fill="currentColor" viewBox="0 0 20 20"
+                {msg.role === 'assistant' && (
+                  <div className="space-y-2">
+                    {msg.thinking && (
+                      <div className="bg-forge-100/50 dark:bg-forge-900/50 border border-forge-200 dark:border-forge-800 rounded-md overflow-hidden">
+                        <button
+                          onClick={() => toggleThinking(msg.id)}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-xs font-mono hover:bg-forge-100 dark:hover:bg-forge-800 transition-colors"
                         >
-                          <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
-                        </svg>
-                        <span className="font-medium text-forge-600 dark:text-forge-400">{tc.name}</span>
-                        {tc.status && (
-                          <span className={`ml-auto px-1.5 py-0.5 rounded text-[10px] font-medium ${
-                            tc.status === 'success'
-                              ? 'bg-accent-500/10 dark:bg-accent-500/10 text-accent-600 dark:text-accent-400'
-                              : 'bg-red-500/50/10 dark:bg-red-500/50/10 text-red-700 dark:text-red-400'
-                          }`}>
-                            {tc.status}
-                          </span>
+                          <svg
+                            className={`w-3 h-3 text-forge-400 transition-transform ${expandedThinking.has(msg.id) ? 'rotate-90' : ''}`}
+                            fill="currentColor" viewBox="0 0 20 20"
+                          >
+                            <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-forge-500 dark:text-forge-400 font-medium uppercase tracking-wider">Reasoning</span>
+                        </button>
+                        {expandedThinking.has(msg.id) && (
+                          <div className="px-3 pb-3 text-xs text-forge-500 dark:text-forge-400 whitespace-pre-wrap font-mono">
+                            {msg.thinking}
+                          </div>
                         )}
-                        {!tc.status && (
-                          <span className="ml-auto">
-                            <span className="inline-flex gap-0.5">
+                      </div>
+                    )}
+
+                    {msg.toolCalls?.map(tc => (
+                      <div key={tc.id} className="border border-forge-200 dark:border-forge-700 rounded-md overflow-hidden bg-forge-100 dark:bg-forge-900">
+                        <button
+                          onClick={() => toggleTool(tc.id)}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-forge-200 dark:hover:bg-forge-800 transition-colors"
+                        >
+                          <svg
+                            className={`w-3 h-3 text-forge-500 transition-transform ${expandedTools.has(tc.id) ? 'rotate-90' : ''}`}
+                            fill="currentColor" viewBox="0 0 20 20"
+                          >
+                            <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+                          </svg>
+                          <span className="font-medium text-forge-600 dark:text-forge-400 font-mono">{tc.name}</span>
+                          {tc.status && (
+                            <span className={`ml-auto px-1.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider ${
+                              tc.status === 'success'
+                                ? 'bg-accent-500/10 text-accent-600 dark:text-accent-400'
+                                : 'bg-red-500/10 text-red-600 dark:text-red-400'
+                            }`}>
+                              {tc.status}
+                            </span>
+                          )}
+                          {!tc.status && (
+                            <span className="ml-auto inline-flex gap-0.5">
                               <span className="w-1 h-1 rounded-full bg-forge-400 animate-bounce" style={{ animationDelay: '0ms' }} />
                               <span className="w-1 h-1 rounded-full bg-forge-400 animate-bounce" style={{ animationDelay: '150ms' }} />
                               <span className="w-1 h-1 rounded-full bg-forge-400 animate-bounce" style={{ animationDelay: '300ms' }} />
                             </span>
-                          </span>
-                        )}
-                      </button>
-                      {expandedTools.has(tc.id) && (
-                        <div className="border-t border-forge-200 dark:border-forge-700 px-3 py-2 space-y-2">
-                          <div>
-                            <p className="text-[10px] font-semibold uppercase tracking-wider text-forge-500 dark:text-forge-400 mb-1">Input</p>
-                            <pre className="text-xs bg-forge-900 text-forge-300 rounded p-2 overflow-x-auto font-mono">
-                              {JSON.stringify(tc.input, null, 2)}
-                            </pre>
-                          </div>
-                          {tc.output && (
+                          )}
+                        </button>
+                        {expandedTools.has(tc.id) && (
+                          <div className="border-t border-forge-200 dark:border-forge-700 px-3 py-2 space-y-2">
                             <div>
-                              <p className="text-[10px] font-semibold uppercase tracking-wider text-forge-500 dark:text-forge-400 mb-1">Output</p>
-                              <pre className="text-xs bg-forge-900 text-forge-300 rounded p-2 overflow-x-auto font-mono max-h-48 overflow-y-auto">
-                                {tc.output}
+                              <p className="text-[10px] font-mono font-medium uppercase tracking-wider text-forge-400 dark:text-forge-500 mb-1">Input</p>
+                              <pre className="text-xs bg-forge-900 text-forge-300 rounded p-2 overflow-x-auto font-mono">
+                                {JSON.stringify(tc.input, null, 2)}
                               </pre>
                             </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-
-                  {/* Response content */}
-                  {msg.content && (
-                    <div className="bg-forge-50 dark:bg-forge-850 border border-forge-200 dark:border-forge-700 rounded-2xl rounded-bl-md px-4 py-3 text-sm text-forge-800 dark:text-forge-100">
-                      <div className="prose prose-sm dark:prose-invert max-w-none">
-                        {renderMarkdown(msg.content)}
+                            {tc.output && (
+                              <div>
+                                <p className="text-[10px] font-mono font-medium uppercase tracking-wider text-forge-400 dark:text-forge-500 mb-1">Output</p>
+                                <pre className="text-xs bg-forge-900 text-forge-300 rounded p-2 overflow-x-auto font-mono max-h-48 overflow-y-auto">
+                                  {tc.output}
+                                </pre>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  )}
+                    ))}
 
-                  {/* Token count */}
-                  {msg.tokens != null && (
-                    <p className="text-[10px] text-forge-300 dark:text-forge-500 ml-1">{msg.tokens} tokens</p>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
+                    {msg.content && (
+                      <div className="bg-forge-50 dark:bg-forge-850 border border-forge-200 dark:border-forge-700 rounded-md px-4 py-3 text-sm text-forge-800 dark:text-forge-100">
+                        <div className="prose prose-sm dark:prose-invert max-w-none">
+                          {renderMarkdown(msg.content)}
+                        </div>
+                      </div>
+                    )}
 
-        {/* Thinking indicator */}
-        {isThinking && (
-          <div className="flex justify-start">
-            <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 rounded-md px-4 py-2.5 flex items-center gap-2">
-              <span className="inline-flex gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-bounce" style={{ animationDelay: '300ms' }} />
-              </span>
-              <span className="text-xs text-amber-700 dark:text-amber-400 font-medium">Thinking...</span>
+                    {msg.tokens != null && (
+                      <p className="text-[10px] font-mono text-forge-400 dark:text-forge-500 ml-1">{msg.tokens} tokens</p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
+          ))}
+
+          {isThinking && (
+            <div className="flex justify-start">
+              <div className="bg-forge-100/50 dark:bg-forge-900/50 border border-forge-200 dark:border-forge-800 rounded-md px-4 py-2.5 flex items-center gap-2">
+                <span className="inline-flex gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                </span>
+                <span className="text-xs font-mono text-forge-500 dark:text-forge-400 uppercase tracking-wider">Reasoning...</span>
+              </div>
+            </div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Controls bar */}
+        {messages.length > 0 && !isStreaming && (
+          <div className="flex justify-center gap-2 pb-2 shrink-0">
+            <button
+              onClick={retryLast}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-forge-500 dark:text-forge-400 border border-forge-200 dark:border-forge-700 rounded hover:border-accent-500/40 transition-colors"
+            >
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+              </svg>
+              Retry
+            </button>
           </div>
         )}
 
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Controls bar */}
-      {messages.length > 0 && !isStreaming && (
-        <div className="flex justify-center gap-2 pb-2 shrink-0">
-          <button
-            onClick={retryLast}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded bg-forge-200 dark:bg-forge-800 text-forge-500 dark:text-forge-400 hover:bg-forge-200 dark:hover:bg-forge-800 transition-colors"
-          >
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
-            </svg>
-            Retry
-          </button>
-        </div>
-      )}
-
-      {/* Input area */}
-      <div className="border-t border-forge-200 dark:border-forge-800 py-3 shrink-0">
-        <div className="flex items-end gap-2">
-          <div className="flex-1 relative">
-            <textarea
-              ref={textareaRef}
-              value={input}
-              onChange={e => {
-                setInput(e.target.value)
-                const el = e.target
-                el.style.height = 'auto'
-                el.style.height = Math.min(el.scrollHeight, 200) + 'px'
-              }}
-              onKeyDown={handleKeyDown}
-              placeholder="Type a message..."
-              rows={1}
-              className="w-full resize-none rounded-md border border-forge-200 dark:border-forge-700 bg-forge-50 dark:bg-forge-850 px-4 py-3 text-sm text-forge-800 dark:text-forge-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent"
-            />
+        {/* Input area */}
+        <div className="border-t border-forge-200 dark:border-forge-800 py-3 shrink-0 px-2">
+          <div className="flex items-end gap-2">
+            <div className="flex-1 relative">
+              <textarea
+                ref={textareaRef}
+                value={input}
+                onChange={e => {
+                  setInput(e.target.value)
+                  const el = e.target
+                  el.style.height = 'auto'
+                  el.style.height = Math.min(el.scrollHeight, 200) + 'px'
+                }}
+                onKeyDown={handleKeyDown}
+                placeholder="Type a message..."
+                rows={1}
+                className="w-full resize-none rounded-md border border-forge-200 dark:border-forge-700 bg-forge-50 dark:bg-forge-900 px-4 py-3 text-sm font-mono text-forge-800 dark:text-forge-100 placeholder:text-forge-300 dark:placeholder:text-forge-600 focus:outline-none focus:border-accent-500 focus:ring-1 focus:ring-accent-500/20"
+              />
+            </div>
+            {isStreaming ? (
+              <button
+                onClick={stopGeneration}
+                className="shrink-0 p-3 rounded-md bg-red-500 hover:bg-red-600 text-forge-950 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <rect x="6" y="6" width="12" height="12" rx="1" />
+                </svg>
+              </button>
+            ) : (
+              <button
+                onClick={() => sendMessage(input)}
+                disabled={!input.trim()}
+                className="shrink-0 p-3 rounded-md bg-accent-500 hover:bg-accent-400 disabled:opacity-40 disabled:cursor-not-allowed text-forge-950 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                </svg>
+              </button>
+            )}
           </div>
-          {isStreaming ? (
-            <button
-              onClick={stopGeneration}
-              className="shrink-0 p-3 rounded-md bg-red-600 hover:bg-red-700 text-forge-950 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <rect x="6" y="6" width="12" height="12" rx="1" />
-              </svg>
-            </button>
-          ) : (
-            <button
-              onClick={() => sendMessage(input)}
-              disabled={!input.trim()}
-              className="shrink-0 p-3 rounded-md bg-accent-500 hover:bg-accent-400 disabled:opacity-40 disabled:cursor-not-allowed text-forge-950 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-              </svg>
-            </button>
-          )}
+          <p className="text-[10px] font-mono text-forge-400 dark:text-forge-500 mt-1.5 text-center">
+            Enter to send · Shift+Enter for new line
+          </p>
         </div>
-        <p className="text-[10px] text-forge-300 dark:text-forge-500 mt-1.5 text-center">
-          Enter to send, Shift+Enter for new line
-        </p>
       </div>
     </div>
   )
